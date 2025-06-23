@@ -1,0 +1,26 @@
+name: Validate Guidelines
+on:
+  pull_request:
+    paths:
+      - 'guidelines/**/*.md'
+      - '.vscode/**/*.json'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate Markdown
+        run: |
+          # Check for common issues
+          ! grep -r "�" guidelines/
+          ! grep -r "Remember: The best guidelines" guidelines/
+          ! grep -r "Last updated:" guidelines/
+          
+          # Check file headers
+          for file in $(find guidelines -name "*.md"); do
+            if ! grep -q "🤖 MANAGED BY BC GOVERNMENT GUIDELINES" "$file"; then
+              echo "Error: $file missing managed file header"
+              exit 1
+            fi
+          done
