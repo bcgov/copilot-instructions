@@ -45,6 +45,42 @@ You can add these settings to either:
 
 Note: The workspace already includes these settings in `.vscode/settings.json`
 
+## Installation
+
+1. Copy the instruction files to your project:
+```bash
+# Set the release version you want to use
+RELEASE="<RELEASE_NUMBER?"  # Change this to the latest release
+
+# Create directories and download files
+mkdir -p .github
+curl -o .github/copilot-instructions.md "https://raw.githubusercontent.com/bcgov/copilot-instructions/${RELEASE}/.github/copilot-instructions.md"
+curl -o .github/copilot-upstream.md "https://raw.githubusercontent.com/bcgov/copilot-instructions/${RELEASE}/.github/copilot-upstream.md"
+```
+
+2. Add VS Code settings:
+```bash
+# Set the release version you want to use
+RELEASE="<RELEASE_NUMBER?"  # Change this to the latest release
+mkdir -p .vscode
+curl -o .vscode/settings.json "https://raw.githubusercontent.com/bcgov/copilot-instructions/${RELEASE}/.vscode/settings.json"
+```
+
+## Versioning
+
+This repository uses GitHub releases for versioning. The `copilot-upstream.md` file is versioned through releases and can be tracked in your repository's dependencies through Renovate.
+
+## Automatic Updates
+
+To receive automatic updates to `copilot-upstream.md` visit [bcgov/renovate-config](https://github.com/bcgov/renovate-config) to onboard with Mend Renovate.
+
+Renovate will:
+- Monitor for new releases of these guidelines
+- Create PRs to update your copy of `copilot-upstream.md`
+- Respect your repository's merge requirements and schedule
+
+To opt out of updates, simply delete `.github/copilot-upstream.md` from your repository.  Continue with `.github/copilot-instructions.md` as normal.
+
 ## Usage
 
 1. For most projects, the default setup works well out of the box

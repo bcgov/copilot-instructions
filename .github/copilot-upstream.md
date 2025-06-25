@@ -1,7 +1,6 @@
 <!--
 🔒 BC GOVERNMENT MANAGED - DO NOT MODIFY
 ⚙️ Standard guidelines for BC Government projects
-📦 VERSION: 1.0.0
 
 Use this file by including it in VS Code settings (.vscode/settings.json):
 ```

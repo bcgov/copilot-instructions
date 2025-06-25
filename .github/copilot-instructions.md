@@ -1,7 +1,6 @@
 <!--
 ✏️ PROJECT-SPECIFIC INSTRUCTIONS
 📝 Customize this file for your project needs
-📦 VERSION: 1.0.0
 -->
 
 # Project Copilot Instructions
