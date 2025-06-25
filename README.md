@@ -1,6 +1,6 @@
-# BC Government Copilot Configuration
+# Shared Copilot Instructions
 
-Shared VS Code configuration intended to accelerate and guide the use of GitHub Copilot (AI coding assistant) across BC Government projects.
+Shared VS Code configuration intended to accelerate and guide the use of GitHub Copilot (AI coding assistant).
 
 ## Structure
 
@@ -14,7 +14,7 @@ The `.github` directory contains:
 
 ## Installation
 
-Download the instructions to your repository:
+Download the upstream instructions to your repository:
 ```bash
 mkdir -p .github
 curl -Lo .github/copilot-upstream.md https://github.com/bcgov/copilot-instructions/releases/latest/download/copilot-upstream.md
@@ -37,11 +37,9 @@ Or enable for the user, applying to all projects:
 - macOS: `~/Library/Application Support/Code/User/settings.json`
 - Windows: `%APPDATA%\Code\User\settings.json`
 
-## Automatic Updates
+## Versioning and Automatic Updates
 
-This repository versions `copilot-upstream.md` using GitHub releases.
-
-Onboard with [Mend Renovate](https://github.com/bcgov/renovate-config) to receive automatic updates.
+Onboard with [Mend Renovate](https://github.com/bcgov/renovate-config) to receive automatic updates to `copilot-upstream.md`.
 
 Renovate will:
 - Monitor for new releases of these guidelines
