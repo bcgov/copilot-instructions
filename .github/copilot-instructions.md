@@ -5,9 +5,11 @@
 
 # Project Copilot Instructions
 
-> For BC Government standard guidelines, see [copilot-upstream.md](./copilot-upstream.md)
+> For instructions see [copilot-upstream.md](./copilot-upstream.md)
 
 ## Project Configuration
+
+**Do not modify `.github/copilot-upstream.md`, which is managed and updated upstream.  Instead edit this file for project-specific instructions.**
 
 Use these technologies:
 - Next.js 14 with TypeScript
@@ -18,10 +20,17 @@ Use these technologies:
 Follow these conventions:
 - API endpoints: kebab-case
 - React components: PascalCase
-- Package manager: pnpm
 - Database: Always use parameterized queries
 
 Project-specific rules:
 - Python: 4 spaces (override BC Gov standard)
 - APIs: Additional validation for public endpoints
 - Branches: feature/JIRA-123-description
+
+Never:
+- Create duplicate files
+- Remove existing documentation
+- Override error handling
+- Bypass security checks
+- Generate non-compliant code
+- Modify or remove the UPSTREAM MANAGED header at the top of `.github/copilot-upstream.md`

@@ -1,6 +1,6 @@
 <!--
-🔒 BC GOVERNMENT MANAGED - DO NOT MODIFY
-⚙️ Standard guidelines for BC Government projects
+🔒 UPSTREAM MANAGED - DO NOT MODIFY
+⚙️ Standard instructions for GitHub Copilot (AI coding assistant)
 
 Use this file by including it in VS Code settings (.vscode/settings.json):
 ```jsonc
