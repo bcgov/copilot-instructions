@@ -5,60 +5,22 @@ Shared VS Code configuration intended to accelerate and guide the use of GitHub 
 ## Structure
 
 The `.github` directory contains:
-
-- `copilot-upstream.md` - 🔒 **BC Government managed guidelines**
-  - Standard guidelines for BC Government projects
-  - Maintained by the BC Government team
-  - Do not modify this file directly
-  - Updates managed through releases
-
-We also provide a template for your project-specific instructions:
-- `copilot-instructions.md` - ✏️ **Template for project teams**
+- `copilot-upstream.md` - 🔒 **Managed guidelines**
+  - Maintained and versioned upstream
+  - Non-default, needs to be referenced in VS Code settings
+- `copilot-instructions.md` - ✏️ **Template only**
   - Basic structure for your team's customizations
-  - Copy and modify freely for your needs
   - Standard location recognized by Copilot
-  - Can reference or ignore upstream guidelines
-  - Copy our file or create your own
-
-## Required VS Code Settings
-
-This repository uses two instruction files:
-- `copilot-instructions.md` - Project-specific customizations
-- `copilot-upstream.md` - BC Government guidelines
-
-To ensure both files are used, configure your VS Code settings:
-
-```jsonc
-{
-    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-    "github.copilot.chat.codeGeneration.instructions": [
-        {
-            "file": ".github/copilot-upstream.md"
-        }
-    ]
-}
-```
-Note: `.github/copilot-instructions.md` is referenced by default and does not need to be included in the above config.
-
-You can add these settings to either:
-- User Settings (applies to all projects)
-- Workspace Settings (applies to just this project)
-
-Note: The workspace already includes these settings in `.vscode/settings.json`
 
 ## Installation
 
-1. Copy the instruction files to your project:
+Download the instructions to your repository:
 ```bash
-# Download latest config
 mkdir -p .github
 curl -Lo .github/copilot-upstream.md https://github.com/bcgov/copilot-instructions/releases/latest/download/copilot-upstream.md
 ```
 
-2. Update VS Code settings:
-
-If you don't have a `.vscode/settings.json` file yet, create one. If you do, manually add these settings to the existing file:
-
+Add the instructions to your VS Code configuration:
 ```jsonc
 {
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
@@ -70,11 +32,13 @@ If you don't have a `.vscode/settings.json` file yet, create one. If you do, man
 }
 ```
 
-You can add these settings at either the:
-- User level: `~/Library/Application Support/Code/User/settings.json` (macOS)
-- Workspace level: `.vscode/settings.json` in your project
-
-Remember: Never overwrite your existing `.vscode/settings.json` file - always merge in new settings manually to preserve your existing configuration.
+VS Code settings are available:
+- Workspace, applying to just this project
+  - `.vscode/settings.json` in your repository
+- User, applying to all projects
+  - Linux: `~/.config/Code/User/settings.json`
+  - macOS: `~/Library/Application Support/Code/User/settings.json`
+  - Windows: `%APPDATA%\Code\User\settings.json`
 
 ## Versioning
 
@@ -94,28 +58,8 @@ To opt out of updates, simply delete `.github/copilot-upstream.md` from your rep
 ## Usage
 
 1. For most projects, the default setup works well out of the box
-2. To customize Copilot behavior for your project:
-   - Edit `copilot-instructions.md`
-   - Add your project-specific guidelines
-   - Keep or remove the reference to upstream guidelines as needed
-3. To update BC Government guidelines:
-   - Pull the latest changes from the upstream repository
-   - The `copilot-upstream.md` file will be updated automatically
-
-## Maintaining Instructions
-
-### For BC Government Teams
-- `copilot-upstream.md` is managed centrally
-- Updates will flow to downstream repositories
-- Do not modify this file in your projects
-
-### For Project Teams
-- Start with the provided `copilot-instructions.md` template
-- Customize it for your project needs
-- You can:
-  - Add your own guidelines
-  - Remove upstream references
-  - Override specific guidelines
+2. Put your changes in `.github/copilot-instructions.md`
+3. Recommend upstream changes at https://github.com/bcgov/copilot-instructions
 
 ## Additional Resources
 
