@@ -4,20 +4,21 @@ Shared VS Code configuration intended to accelerate and guide the use of GitHub 
 
 ## Structure
 
-The `.github` directory contains two key files:
-
-- `copilot-instructions.md` - ✏️ **Project-specific instructions**
-  - This is your team's file to customize
-  - Standard location recognized by all Copilot-enabled editors
-  - Automatically included in every Copilot chat request
-  - Add project-specific coding guidelines
-  - Modify or remove references to upstream as needed
+The `.github` directory contains:
 
 - `copilot-upstream.md` - 🔒 **BC Government managed guidelines**
   - Standard guidelines for BC Government projects
   - Maintained by the BC Government team
   - Do not modify this file directly
-  - Updates will be managed through the upstream repository
+  - Updates managed through releases
+
+We also provide a template for your project-specific instructions:
+- `copilot-instructions.md` - ✏️ **Template for project teams**
+  - Basic structure for your team's customizations
+  - Copy and modify freely for your needs
+  - Standard location recognized by Copilot
+  - Can reference or ignore upstream guidelines
+  - Copy our file or create your own
 
 ## Required VS Code Settings
 
@@ -50,21 +51,33 @@ Note: The workspace already includes these settings in `.vscode/settings.json`
 1. Copy the instruction files to your project:
 ```bash
 # Set the release version you want to use
-RELEASE="<RELEASE_NUMBER?"  # Change this to the latest release
+RELEASE="<RELEASE_NUMBER>"  # Change this to the latest release
 
 # Create directories and download files
 mkdir -p .github
-curl -o .github/copilot-instructions.md "https://raw.githubusercontent.com/bcgov/copilot-instructions/${RELEASE}/.github/copilot-instructions.md"
 curl -o .github/copilot-upstream.md "https://raw.githubusercontent.com/bcgov/copilot-instructions/${RELEASE}/.github/copilot-upstream.md"
 ```
 
-2. Add VS Code settings:
-```bash
-# Set the release version you want to use
-RELEASE="<RELEASE_NUMBER?"  # Change this to the latest release
-mkdir -p .vscode
-curl -o .vscode/settings.json "https://raw.githubusercontent.com/bcgov/copilot-instructions/${RELEASE}/.vscode/settings.json"
+2. Update VS Code settings:
+
+If you don't have a `.vscode/settings.json` file yet, create one. If you do, manually add these settings to the existing file:
+
+```jsonc
+{
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    "github.copilot.chat.codeGeneration.instructions": [
+        {
+            "file": ".github/copilot-upstream.md"
+        }
+    ]
+}
 ```
+
+You can add these settings at either the:
+- User level: `~/Library/Application Support/Code/User/settings.json` (macOS)
+- Workspace level: `.vscode/settings.json` in your project
+
+Remember: Never overwrite your existing `.vscode/settings.json` file - always merge in new settings manually to preserve your existing configuration.
 
 ## Versioning
 
