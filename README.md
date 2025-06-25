@@ -32,14 +32,12 @@ To ensure both files are used, configure your VS Code settings:
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
     "github.copilot.chat.codeGeneration.instructions": [
         {
-            "file": ".github/copilot-instructions.md"
-        },
-        {
             "file": ".github/copilot-upstream.md"
         }
     ]
 }
 ```
+Note: `.github/copilot-instructions.md` is referenced by default and does not need to be included in the above config.
 
 You can add these settings to either:
 - User Settings (applies to all projects)
