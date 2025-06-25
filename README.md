@@ -21,17 +21,31 @@ The `.github` directory contains two key files:
 
 ## Required VS Code Settings
 
-To enable Copilot instructions in your workspace, make sure you have the following setting enabled in your VS Code settings:
+This repository uses two instruction files:
+- `copilot-instructions.md` - Project-specific customizations
+- `copilot-upstream.md` - BC Government guidelines
+
+To ensure both files are used, configure your VS Code settings:
 
 ```jsonc
 {
-    "github.copilot.chat.codeGeneration.useInstructionFiles": true
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    "github.copilot.chat.codeGeneration.instructions": [
+        {
+            "file": ".github/copilot-instructions.md"
+        },
+        {
+            "file": ".github/copilot-upstream.md"
+        }
+    ]
 }
 ```
 
-You can add this to either:
+You can add these settings to either:
 - User Settings (applies to all projects)
 - Workspace Settings (applies to just this project)
+
+Note: The workspace already includes these settings in `.vscode/settings.json`
 
 ## Usage
 
