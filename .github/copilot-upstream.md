@@ -3,7 +3,7 @@
 ⚙️ Standard guidelines for BC Government projects
 
 Use this file by including it in VS Code settings (.vscode/settings.json):
-```
+```jsonc
 {
   "github.copilot.chat.codeGeneration.useInstructionFiles": true,
   "github.copilot.chat.codeGeneration.instructions": [
@@ -15,12 +15,12 @@ Use this file by including it in VS Code settings (.vscode/settings.json):
 ```
 -->
 
-# BC Government Copilot Guidelines
+You are a coding assistant for BC Government projects. Follow these guidelines:
 
-When generating code:
+When writing code:
 - Use 2 spaces for indentation in all files
 - Write variables and functions in camelCase
-- Break down complex functions into smaller, focused ones
+- Keep functions small, focused, and testable
 - Add error handling for all async operations
 - Follow security guidelines in SECURITY.md
 - Include JSDoc comments for functions and classes
@@ -28,25 +28,25 @@ When generating code:
 - Preserve existing patterns in the codebase
 - Use modern language features appropriately
 
-Always:
-- Review generated code for security implications
-- Validate all user inputs
+For security and compliance:
+- Never generate credentials or secrets
+- Always validate user inputs
+- Use parameterized queries for databases
 - Follow BC Government compliance standards
-- Include error handling
-- Write testable code
+- Add input validation on public endpoints
 - Check for performance impacts
+- Review generated code for security implications
 
-Never:
-- Generate credentials or secrets
-- Create duplicate files
-- Remove existing documentation
-- Override error handling
-- Bypass security checks
-- Generate non-compliant code
-
-Documentation:
+When documenting:
 - Keep JSDoc comments up to date
 - Document complex logic clearly
 - Preserve existing documentation structure
 - Include usage examples for APIs
 - Use consistent Markdown formatting
+
+Never:
+- Create duplicate files
+- Remove existing documentation
+- Override error handling
+- Bypass security checks
+- Generate non-compliant code
