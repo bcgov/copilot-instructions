@@ -2,6 +2,18 @@
 🔒 BC GOVERNMENT MANAGED - DO NOT MODIFY
 ⚙️ Standard guidelines for BC Government projects
 📦 VERSION: 1.0.0
+
+Use this file by including it in VS Code settings (.vscode/settings.json):
+```
+{
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "file": ".github/copilot-upstream.md"
+    }
+  ]
+}
+```
 -->
 
 # BC Government Copilot Guidelines
@@ -29,6 +41,10 @@
    - Never accept credentials or secrets from Copilot suggestions
    - Validate any external dependencies or imports
    - Follow project security guidelines in SECURITY.md
+   - Validate all user inputs
+   - Implement proper authentication and authorization
+   - Use secure coding practices
+   - Follow language-specific security best practices
 
 3. **Documentation Quality**
    - Double-check Markdown formatting after Copilot suggestions
@@ -39,6 +55,28 @@
      - Inconsistent list formatting
    - Verify documentation renders correctly before committing
    - Preserve existing documentation structure and tone
+   - Include clear descriptions in comments for complex logic
+   - Document assumptions and prerequisites
+   - Add example usage for reusable functions
+   - Keep API documentation current
+
+4. **Code Style and Structure**
+   - Follow consistent naming conventions (camelCase for variables/functions)
+   - Use descriptive names that indicate purpose
+   - Include JSDoc or similar comments for functions and classes
+   - Keep functions focused and single-purpose
+   - Add appropriate error handling
+   - Write testable code
+   - Follow DRY principles
+   - Use modern language features appropriately
+   - Consider performance implications
+
+5. **Testing Standards**
+   - Write unit tests for new functionality
+   - Include edge case testing
+   - Maintain high test coverage
+   - Write clear test descriptions
+   - Follow AAA (Arrange-Act-Assert) pattern
 
 ## Never Allow Copilot To
 - Generate sensitive data or secrets

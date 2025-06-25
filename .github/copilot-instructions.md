@@ -8,37 +8,30 @@
 
 > For BC Government standard guidelines, see [copilot-upstream.md](./copilot-upstream.md)
 
-## Code Style Guidelines
-- Follow consistent naming conventions using camelCase for variables and functions
-- Use descriptive variable and function names that clearly indicate their purpose
-- Include JSDoc comments for functions and classes
-- Keep functions focused and single-purpose
-- Add appropriate error handling where necessary
+## Project-Specific Guidelines
 
-## Documentation Requirements
-- Include a clear description in comments for complex logic
-- Document any assumptions or prerequisites
-- Add example usage in comments for reusable functions
-- Maintain up-to-date documentation for public APIs
+### Technology Choices
+- List your project's key technologies
+  - Example: "Use Next.js 14 with TypeScript"
+  - Example: "PostgreSQL for database"
+- Note any version requirements
+  - Example: "Node.js >= 18.0.0"
+- Highlight architectural decisions
+  - Example: "API-first design using OpenAPI"
 
-## Best Practices
-- Write testable code
-- Follow DRY (Don't Repeat Yourself) principles
-- Prioritize code readability and maintainability
-- Use modern JavaScript/TypeScript features appropriately
-- Implement proper error handling and logging
-- Consider performance implications in implementations
+### Project Conventions
+- Project-specific naming patterns
+  - Example: "API endpoints use kebab-case"
+  - Example: "React components use PascalCase"
+- Local development requirements
+  - Example: "Use pnpm for package management"
+- Special handling requirements
+  - Example: "All database queries must use parameterized statements"
 
-## Security Considerations
-- Validate all user inputs
-- Use secure coding practices
-- Avoid hard-coded credentials
-- Implement proper authentication and authorization
-- Follow security best practices for the specific language/framework being used
-
-## Testing Guidelines
-- Write unit tests for new functionality
-- Include edge case testing
-- Maintain high test coverage
-- Write clear test descriptions
-- Follow AAA (Arrange-Act-Assert) pattern in tests
+### Custom Requirements
+- Any deviations from BC Government standards
+  - Example: "Using 4 spaces instead of 2 for Python code"
+- Project-specific security considerations
+  - Example: "Additional validation for public-facing APIs"
+- Team-specific workflow notes
+  - Example: "Branch naming: feature/JIRA-123-description"
