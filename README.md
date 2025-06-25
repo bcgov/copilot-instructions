@@ -20,7 +20,7 @@ mkdir -p .github
 curl -Lo .github/copilot-upstream.md https://github.com/bcgov/copilot-instructions/releases/latest/download/copilot-upstream.md
 ```
 
-Add the instructions to your VS Code configuration:
+Add to VS Code Workspace settings (`.vscode/settings.json`):
 ```jsonc
 {
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
@@ -32,28 +32,24 @@ Add the instructions to your VS Code configuration:
 }
 ```
 
-VS Code settings are available:
-- Workspace, applying to just this project
-  - `.vscode/settings.json` in your repository
-- User, applying to all projects
-  - Linux: `~/.config/Code/User/settings.json`
-  - macOS: `~/Library/Application Support/Code/User/settings.json`
-  - Windows: `%APPDATA%\Code\User\settings.json`
-
-## Versioning
-
-This repository uses GitHub releases for versioning. The `copilot-upstream.md` file is versioned through releases and can be tracked in your repository's dependencies through Renovate.
+Or enable for the user, applying to all projects:
+- Linux: `~/.config/Code/User/settings.json`
+- macOS: `~/Library/Application Support/Code/User/settings.json`
+- Windows: `%APPDATA%\Code\User\settings.json`
 
 ## Automatic Updates
 
-To receive automatic updates to `copilot-upstream.md` visit [bcgov/renovate-config](https://github.com/bcgov/renovate-config) to onboard with Mend Renovate.
+This repository versions `copilot-upstream.md` using GitHub releases.
+
+Onboard with [Mend Renovate](https://github.com/bcgov/renovate-config) to receive automatic updates.
 
 Renovate will:
 - Monitor for new releases of these guidelines
 - Create PRs to update your copy of `copilot-upstream.md`
 - Respect your repository's merge requirements and schedule
+- Provide dependency updates for all other packages
 
-To opt out of updates, simply delete `.github/copilot-upstream.md` from your repository.  Continue with `.github/copilot-instructions.md` as normal.
+To stop using upstream config simply delete `.github/copilot-upstream.md` and continue with `.github/copilot-instructions.md` as normal.
 
 ## Usage
 
@@ -65,5 +61,3 @@ To opt out of updates, simply delete `.github/copilot-upstream.md` from your rep
 
 - [VS Code Copilot Documentation](https://code.visualstudio.com/docs/copilot/overview)
 - [Customizing Copilot](https://code.visualstudio.com/docs/copilot/copilot-customization)
-- [Custom Instructions Documentation](https://code.visualstudio.com/docs/copilot/copilot-customization)
-- [BC Government Development Guidelines](https://github.com/bcgov/vscode-settings)
