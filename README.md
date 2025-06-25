@@ -53,9 +53,9 @@ Note: The workspace already includes these settings in `.vscode/settings.json`
 # Set the release version you want to use
 RELEASE="<RELEASE_NUMBER>"  # Change this to the latest release
 
-# Create directories and download files
+# Download latest config
 mkdir -p .github
-curl -o .github/copilot-upstream.md "https://raw.githubusercontent.com/bcgov/copilot-instructions/${RELEASE}/.github/copilot-upstream.md"
+curl -Lo .github/copilot-upstream.md https://github.com/bcgov/copilot-instructions/releases/latest/download/copilot-upstream.md
 ```
 
 2. Update VS Code settings:
