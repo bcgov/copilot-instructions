@@ -8,9 +8,10 @@ The `.github` directory contains two key files:
 
 - `copilot-instructions.md` - ✏️ **Project-specific instructions**
   - This is your team's file to customize
+  - Standard location recognized by all Copilot-enabled editors
+  - Automatically included in every Copilot chat request
   - Add project-specific coding guidelines
   - Modify or remove references to upstream as needed
-  - VS Code automatically uses this for Copilot suggestions
 
 - `copilot-upstream.md` - 🔒 **BC Government managed guidelines**
   - Standard guidelines for BC Government projects
