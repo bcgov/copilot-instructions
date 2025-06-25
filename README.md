@@ -50,9 +50,6 @@ Note: The workspace already includes these settings in `.vscode/settings.json`
 
 1. Copy the instruction files to your project:
 ```bash
-# Set the release version you want to use
-RELEASE="<RELEASE_NUMBER>"  # Change this to the latest release
-
 # Download latest config
 mkdir -p .github
 curl -Lo .github/copilot-upstream.md https://github.com/bcgov/copilot-instructions/releases/latest/download/copilot-upstream.md
