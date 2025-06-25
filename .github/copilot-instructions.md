@@ -1,4 +1,12 @@
-# GitHub Copilot Instructions
+<!--
+✏️ PROJECT-SPECIFIC INSTRUCTIONS
+📝 This file is meant to be customized for your project needs
+📦 VERSION: 1.0.0
+-->
+
+# Project Copilot Instructions
+
+> For BC Government standard guidelines, see [copilot-upstream.md](./copilot-upstream.md)
 
 ## Code Style Guidelines
 - Follow consistent naming conventions using camelCase for variables and functions
