@@ -44,6 +44,21 @@ You can add this to either:
    - Pull the latest changes from the upstream repository
    - The `copilot-upstream.md` file will be updated automatically
 
+## Maintaining Instructions
+
+### For BC Government Teams
+- `copilot-upstream.md` is managed centrally
+- Updates will flow to downstream repositories
+- Do not modify this file in your projects
+
+### For Project Teams
+- Start with the provided `copilot-instructions.md` template
+- Customize it for your project needs
+- You can:
+  - Add your own guidelines
+  - Remove upstream references
+  - Override specific guidelines
+
 ## Additional Resources
 
 - [VS Code Copilot Documentation](https://code.visualstudio.com/docs/copilot/overview)
