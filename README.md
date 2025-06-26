@@ -20,7 +20,13 @@ mkdir -p .github
 curl -Lo .github/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
 ```
 
-Add to VS Code Workspace settings (`.vscode/settings.json`):
+Optionally, download the local instructions template to your repository:
+```bash
+mkdir -p .github
+curl -Lo .github/copilot-instructions.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
+```
+
+Add the upstream instructions to VS Code Workspace settings (`.vscode/settings.json`):
 ```jsonc
 {
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
