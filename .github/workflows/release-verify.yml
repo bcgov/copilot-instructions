@@ -1,0 +1,73 @@
+name: Verify Release Source
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  check-release-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if release was created by the designated workflow
+        id: check_workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const allowedWorkflow = 'release-create.yml';
+
+            // Query the GitHub API for recent workflow runs of the designated workflow file.
+            // This fetches the 10 most recent runs for 'release-create.yml' in the current repo.
+            const { data: runs } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: allowedWorkflow,
+              per_page: 10
+            });
+
+            // Get the release object and its tag name from the event payload.
+            // This is the release that triggered this workflow.
+            const release = context.payload.release;
+            const releaseTag = release.tag_name;
+
+            // Try to find a workflow run that matches the release tag.
+            // This checks if any recent run of the designated workflow was for this tag.
+            // It compares the workflow run's head_branch or display_title to the release tag.
+            const found = runs.workflow_runs.some(run => {
+              return run.head_branch === releaseTag || run.display_title === releaseTag;
+            });
+
+            // Set an output variable for later steps and fail the job if not found.
+            core.setOutput('is_valid', found);
+            if (!found) {
+              // If no matching workflow run is found, mark the job as failed.
+              // This will trigger the deletion of the release and tag in a later step.
+              core.setFailed(`Release ${releaseTag} was not created by the designated workflow (${allowedWorkflow}). Will delete release and tag.`);
+            } else {
+              // If a matching workflow run is found, log a success message.
+              core.info('Release was created by the correct workflow.');
+
+      - name: Delete invalid release and tag
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const release = context.payload.release;
+            const releaseTag = release.tag_name;
+            // Delete the release
+            await github.rest.repos.deleteRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: release.id
+            });
+            // Delete the tag
+            await github.rest.git.deleteRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `tags/${releaseTag}`
+            });
+            core.info(`Deleted release and tag: ${releaseTag}`);
+
+      - name: Warn maintainers if release is invalid
+        if: failure()
+        run: |
+          echo "::warning::This release was not created by the designated workflow. It and its tag have been deleted. Please re-create the release using the 'Release with Copilot Upstream Content' workflow (release-create.yml)."
