@@ -17,10 +17,16 @@ The `.github` directory contains:
 Download the upstream instructions to your repository:
 ```bash
 mkdir -p .github
-curl -Lo .github/copilot-upstream.md https://github.com/bcgov/copilot-instructions/releases/latest/download/copilot-upstream.md
+curl -Lo .github/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
 ```
 
-Add to VS Code Workspace settings (`.vscode/settings.json`):
+Optionally, download the local instructions template to your repository:
+```bash
+mkdir -p .github
+curl -Lo .github/copilot-instructions.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
+```
+
+Add the upstream instructions to VS Code Workspace settings (`.vscode/settings.json`):
 ```jsonc
 {
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
@@ -32,7 +38,21 @@ Add to VS Code Workspace settings (`.vscode/settings.json`):
 }
 ```
 
-Or enable for the user, applying to all projects:
+This can be done programmatically with jq:
+```
+# Ensure .vscode/settings.json exists and is valid JSON
+mkdir -p .vscode
+[ -s .vscode/settings.json ] || echo '{}' > .vscode/settings.json
+
+# Add or update Copilot instruction settings using jq
+jq '. 
+  + {"github.copilot.chat.codeGeneration.useInstructionFiles": true}
+  + {"github.copilot.chat.codeGeneration.instructions": [{"file": ".github/copilot-upstream.md"}]}
+' .vscode/settings.json > .vscode/settings.tmp && mv .vscode/settings.tmp .vscode/settings.json
+```
+
+
+Optionally, enable these settings across all projects:
 - Linux: `~/.config/Code/User/settings.json`
 - macOS: `~/Library/Application Support/Code/User/settings.json`
 - Windows: `%APPDATA%\Code\User\settings.json`
