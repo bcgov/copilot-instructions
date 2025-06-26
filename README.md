@@ -78,10 +78,17 @@ To stop using upstream config simply delete `.github/copilot-upstream.md` and co
 
 To ensure downstream repositories receive automatic updates via Renovate:
 
-1. **When creating a new release, copy the entire contents of `.github/copilot-upstream.md` and paste it as the release notes body.**
-    - Do **not** add extra headings or text—only the raw Markdown content of the file.
-    - This allows Renovate to propagate the latest guidelines to all subscribed downstream repositories.
-2. **Publish the release as usual.**
+1. **Always use the `release-create.yml` workflow to create a new release.**
+    - This workflow will automatically:
+      - Determine the next semantic version using Conventional Commits.
+      - Copy the entire contents of `.github/copilot-upstream.md` as the release notes body.
+      - Tag and title the release with the new version.
+    - **Do _not_ create releases manually or with any other workflow.**
+    - Do **not** add extra headings or text—only the raw Markdown content of the file is used.
+2. **Publish the release using the workflow.**
+
+> **Warning:**
+> Manual releases or releases created by other workflows will be detected and flagged. Only releases created by the designated workflow are valid.
 
 > **Note:**
 > Downstream repositories will receive a Renovate PR that fully replaces their `.github/copilot-upstream.md` file with the content from your release notes.
