@@ -17,7 +17,7 @@ The `.github` directory contains:
 Download the upstream instructions to your repository:
 ```bash
 mkdir -p .github
-curl -Lo .github/copilot-upstream.md https://github.com/bcgov/copilot-instructions/releases/latest/download/copilot-upstream.md
+curl -Lo .github/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
 ```
 
 Add to VS Code Workspace settings (`.vscode/settings.json`):
