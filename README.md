@@ -14,36 +14,36 @@ The `.github` directory contains:
 
 ## Installation - Single Repository
 
-Download the upstream instructions to your repository:
-```bash
-mkdir -p .github
-curl -Lo .github/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
-```
+1. Download the upstream instructions to your repository:
+    ```bash
+    mkdir -p .github
+    curl -Lo .github/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
+    ```
 
-Add the upstream instructions to VS Code Workspace settings (`.vscode/settings.json`):
-```jsonc
-{
-    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-    "github.copilot.chat.codeGeneration.instructions": [
-        {
-            "file": ".github/copilot-upstream.md"
-        }
-    ]
-}
-```
+2. Add the upstream instructions to VS Code Workspace settings (`.vscode/settings.json`):
+    ```jsonc
+    {
+        "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+        "github.copilot.chat.codeGeneration.instructions": [
+            {
+                "file": ".github/copilot-upstream.md"
+            }
+        ]
+    }
+    ```
 
-This can be done programmatically with jq:
-```
-# Ensure .vscode/settings.json exists and is valid JSON
-mkdir -p .vscode
-[ -s .vscode/settings.json ] || echo '{}' > .vscode/settings.json
+3. (Optional) Set up programmatically with jq:
+    ```bash
+    # Ensure .vscode/settings.json exists and is valid JSON
+    mkdir -p .vscode
+    [ -s .vscode/settings.json ] || echo '{}' > .vscode/settings.json
 
-# Add or update Copilot instruction settings using jq
-jq '. 
-  + {"github.copilot.chat.codeGeneration.useInstructionFiles": true}
-  + {"github.copilot.chat.codeGeneration.instructions": [{"file": ".github/copilot-upstream.md"}]}
-' .vscode/settings.json > .vscode/settings.tmp && mv .vscode/settings.tmp .vscode/settings.json
-```
+    # Add or update Copilot instruction settings using jq
+    jq '. 
+      + {"github.copilot.chat.codeGeneration.useInstructionFiles": true}
+      + {"github.copilot.chat.codeGeneration.instructions": [{"file": ".github/copilot-upstream.md"}]}
+    ' .vscode/settings.json > .vscode/settings.tmp && mv .vscode/settings.tmp .vscode/settings.json
+    ```
 
 ## Installation - Across All Workspaces (User Level)
 
