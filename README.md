@@ -12,18 +12,12 @@ The `.github` directory contains:
   - Basic structure for your team's customizations
   - Standard location recognized by Copilot
 
-## Installation
+## Installation - Single Repository
 
 Download the upstream instructions to your repository:
 ```bash
 mkdir -p .github
 curl -Lo .github/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
-```
-
-Optionally, download the local instructions template to your repository:
-```bash
-mkdir -p .github
-curl -Lo .github/copilot-instructions.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
 ```
 
 Add the upstream instructions to VS Code Workspace settings (`.vscode/settings.json`):
@@ -55,6 +49,54 @@ Optionally, enable these settings across all projects:
 - Linux: `~/.config/Code/User/settings.json`
 - macOS: `~/Library/Application Support/Code/User/settings.json`
 - Windows: `%APPDATA%\Code\User\settings.json`
+
+## Installation - Across All Workspaces (User Level)
+
+If you want to use the same upstream Copilot instructions for all your projects, you can reference the file by absolute path in your **VS Code user settings**. This way, you don’t need to copy `.github/copilot-upstream.md` into every repository.
+
+**Steps for Linux and macOS:**
+
+1. Download or update the upstream instructions in a central location (e.g., your home directory):
+
+    ```bash
+    mkdir -p ~/.git
+    curl -Lo ~/.git/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
+    ```
+
+2. Open your VS Code **user settings** file:
+
+    - Linux: `~/.config/Code/User/settings.json`
+    - macOS: `~/Library/Application Support/Code/User/settings.json`
+    - Windows: `%APPDATA%\Code\User\settings.json`
+
+3. Add (or update) the following settings, using the **absolute path** to your central file:
+
+    ```jsonc
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    "github.copilot.chat.codeGeneration.instructions": [
+        {
+            "file": "<ABSOLUTE_PATH>/.github/copilot-upstream.md"
+        }
+    ]
+    ```
+
+**Steps for Windows:**
+
+1. Install Linux
+
+2. See [Steps for Linux and macOS](#steps-for-linux-and-macos)
+
+**Notes:**
+- Windows paths require double backslashes (`\\`), since they are being escaped.
+    
+**Caveats:**
+- Only an absolute path can be used successfully.
+- The absolute path must exist and be accessible from your machine.
+- If you sync your VS Code settings across devices, ensure the path is valid on each device.
+- If the path is not valid there will be no effect.  It is harmless, but useless.
+
+**Result:**  
+- Copilot will use your central `.github/copilot-upstream.md` instructions for every workspace you open in VS Code.
 
 ## Versioning and Automatic Updates
 
