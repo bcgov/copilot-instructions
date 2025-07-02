@@ -60,14 +60,14 @@ If you want to use the same upstream Copilot instructions for all your projects,
 
 **Steps for Linux and macOS:**
 
-1. Download or update the upstream instructions in a central location (e.g., your home directory):
+1. **Download or update the upstream instructions centrally (e.g. home directory):**
 
     ```bash
     mkdir -p ~/.git
     curl -Lo ~/.git/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
     ```
 
-2. Open your VS Code **user settings** file:
+2. **Configure VS Code to use the instructions:**  
 
     - Linux: `~/.config/Code/User/settings.json`
     - macOS: `~/Library/Application Support/Code/User/settings.json`
@@ -79,10 +79,29 @@ If you want to use the same upstream Copilot instructions for all your projects,
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
     "github.copilot.chat.codeGeneration.instructions": [
         {
-            "file": "<ABSOLUTE_PATH>/.github/copilot-upstream.md"
+            "file": "/home/youruser/.git/copilot-upstream.md"
         }
     ]
     ```
+
+    Or, set this programmatically with `jq` (replace `$HOME` with your actual home directory if not using bash):
+
+    ```bash
+    # Ensure your user settings file exists and is valid JSON
+    SETTINGS="$HOME/.config/Code/User/settings.json"
+    mkdir -p "$(dirname "$SETTINGS")"
+    [ -s "$SETTINGS" ] || echo '{}' > "$SETTINGS"
+
+    # Add or update Copilot instruction settings using jq with absolute path
+    jq --arg file "$HOME/.git/copilot-upstream.md" '
+      . + {
+        "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+        "github.copilot.chat.codeGeneration.instructions": [ { "file": $file } ]
+      }
+    ' "$SETTINGS" > "$SETTINGS.tmp" && mv "$SETTINGS.tmp" "$SETTINGS"
+    ```
+
+**Choose either the manual or programmatic method for step 3.**
 
 **Steps for Windows:**
 
