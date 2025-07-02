@@ -68,12 +68,16 @@ If you want to use the same upstream Copilot instructions for all your projects,
     ```
 
 2. **Configure VS Code to use the instructions:**  
+    
+    File locations:
 
     - Linux: `~/.config/Code/User/settings.json`
     - macOS: `~/Library/Application Support/Code/User/settings.json`
     - Windows: `%APPDATA%\Code\User\settings.json`
 
-3. Add (or update) the following settings, using the **absolute path** to your central file:
+    Add (or update) the following settings, using the **absolute path** to your central file:
+
+    **Linux/macOS:**  
 
     ```jsonc
     "github.copilot.chat.codeGeneration.useInstructionFiles": true,
@@ -84,7 +88,18 @@ If you want to use the same upstream Copilot instructions for all your projects,
     ]
     ```
 
-    Or, set this programmatically with `jq` (replace `$HOME` with your actual home directory if not using bash):
+    **Windows:**  
+    Edit your settings file manually and use double backslashes in the path, for example:
+
+    ```jsonc
+    "github.copilot.chat.codeGeneration.instructions": [
+        {
+            "file": "C:\\Users\\youruser\\.git\\copilot-upstream.md"
+        }
+    ]
+    ```
+
+    Or, set this programmatically with `jq` (Linux/macOS):
 
     ```bash
     # Ensure your user settings file exists and is valid JSON
@@ -94,24 +109,16 @@ If you want to use the same upstream Copilot instructions for all your projects,
 
     # Add or update Copilot instruction settings using jq with absolute path
     jq --arg file "$HOME/.git/copilot-upstream.md" '
-      . + {
-        "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-        "github.copilot.chat.codeGeneration.instructions": [ { "file": $file } ]
-      }
+        . + {
+            "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+            "github.copilot.chat.codeGeneration.instructions": [ { "file": $file } ]
+        }
     ' "$SETTINGS" > "$SETTINGS.tmp" && mv "$SETTINGS.tmp" "$SETTINGS"
     ```
 
-**Choose either the manual or programmatic method for step 3.**
+    **Note: this will fail if there are any JSON misconfigurations, like a trailing comma. **
 
-**Steps for Windows:**
-
-1. Install Linux
-
-2. See [Steps for Linux and macOS](#steps-for-linux-and-macos)
-
-**Notes:**
-
-- Windows paths require double backslashes (`\\`), since they are being escaped.
+    **Choose either the manual or programmatic method for step 3.**
     
 **Caveats:**
 
