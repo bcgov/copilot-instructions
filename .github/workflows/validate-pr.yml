@@ -1,0 +1,68 @@
+name: Validate PR
+
+on:
+  pull_request:
+
+jobs:
+  validate-content:
+    name: Validate Content
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check file structure
+        run: |
+          # Verify required files exist
+          test -f README.md
+          test -f .github/copilot-upstream.md
+          
+      - name: Check upstream header
+        run: |
+          grep -q "UPSTREAM MANAGED" .github/copilot-upstream.md
+          
+      - name: Basic markdown validation
+        run: |
+          # Check for basic markdown issues
+          # Ensure no tabs in markdown files  
+          ! grep -P "^\t" *.md .github/*.md
+          
+          # Check for trailing whitespace
+          ! grep -E " +$" README.md
+          
+          # Verify code blocks are properly closed
+          opening=$(grep -c "^```" README.md || true)
+          closing=$(grep -c "^```$" README.md || true)
+          if [ "$opening" -ne "$((closing * 2))" ]; then
+            echo "Mismatched code block markers in README.md"
+            exit 1
+          fi
+          
+      - name: Validate JSON examples
+        run: |
+          # Extract and validate JSON examples from README
+          awk '/```jsonc/,/```/' README.md | grep -E '^\s*[{}"]' | while read -r line; do
+            echo "$line" | jq empty 2>/dev/null || {
+              echo "Invalid JSON found: $line"
+              exit 1
+            }
+          done
+          
+      - name: Check for sensitive data
+        run: |
+          # Ensure no secrets, tokens, or sensitive paths are hardcoded
+          ! grep -r -i "password\|token\|secret\|api[_-]key" . --exclude-dir=.git
+          
+          # Check for absolute paths that might expose user info
+          ! grep -r "/Users/[^<]" . --exclude-dir=.git
+          ! grep -r "/home/[^<]" . --exclude-dir=.git
+          
+      - name: Validate instruction format
+        run: |
+          # Verify copilot-upstream.md follows expected format and keywords
+          grep -q "You are a coding assistant" .github/copilot-upstream.md
+          grep -q "When writing code:" .github/copilot-upstream.md
+          grep -q "For security and compliance:" .github/copilot-upstream.md
+          grep -q "camelCase" .github/copilot-upstream.md
+          grep -q "error handling" .github/copilot-upstream.md
+          grep -q "security" .github/copilot-upstream.md
+          
