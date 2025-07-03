@@ -64,7 +64,7 @@ This will affect only the current repository.
 
 If you want to use the same upstream Copilot instructions for all your projects, you can reference the file by absolute path in your **VS Code user settings**. This way, you don’t need to copy `.github/copilot-upstream.md` into every repository.
 
-**Steps for Linux and macOS:**
+**Steps:**
 
 1. **Download or update the upstream instructions centrally (e.g. home directory):**
 
@@ -129,7 +129,7 @@ If you want to use the same upstream Copilot instructions for all your projects,
 
     **Note: this will fail if there are any non-standard JSON misconfigurations, like a trailing comma.**
 
-    **Choose either the manual or programmatic method for step 3.**
+    **Choose either the manual or programmatic method for step 2.**
 
 **Caveats:**
 
