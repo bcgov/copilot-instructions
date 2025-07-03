@@ -76,7 +76,7 @@ This configuration applies the upstream Copilot instructions globally across all
 **Caveats:**
 
 - Only an absolute path to an accessible path can be used successfully.
-- If VS Code settings are synchronized across devices, ensure the path is valid on each device.
+- If VS Code settings are synchronized across devices only the devices with this file present will benefit.
 - If the path is not valid there will be no effect. It is harmless.
 
 **Result:**
