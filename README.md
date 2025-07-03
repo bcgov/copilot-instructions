@@ -49,7 +49,7 @@ This will affect only the current repository.
        "github.copilot.chat.codeGeneration.useInstructionFiles": true,
        "github.copilot.chat.codeGeneration.instructions": [
          {
-           "file": ".git\\copilot-upstream.md"
+           "file": ".github\\copilot-upstream.md"
          }
        ]
      }
