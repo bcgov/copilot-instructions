@@ -2,13 +2,13 @@
 🔒 UPSTREAM MANAGED - DO NOT MODIFY
 ⚙️ Standard instructions for GitHub Copilot (AI coding assistant)
 
-Use this file by including it in VS Code settings (.vscode/settings.json):
+Use this file by including it in VS Code settings:
 ```jsonc
 {
   "github.copilot.chat.codeGeneration.useInstructionFiles": true,
   "github.copilot.chat.codeGeneration.instructions": [
     {
-      "file": ".github/copilot-upstream.md"
+      "file": "<ABSOLUTE_PATH_TO_THIS_FILE>/copilot-upstream.md"
     }
   ]
 }

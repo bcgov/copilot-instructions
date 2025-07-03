@@ -1,0 +1,34 @@
+name: PR Open
+
+on:
+  pull_request:
+
+permissions: {}
+
+jobs:
+  validate-content:
+    name: Validate Content
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+    
+          
+      - name: Check upstream header
+        run: |
+          grep -q "UPSTREAM MANAGED" .github/copilot-upstream.md
+          
+      - name: Basic markdown validation
+        run: |
+          # Check for basic markdown issues
+          # Ensure no tabs in markdown files  
+          ! grep -P "^\t" *.md .github/*.md
+          
+      - name: Validate JSON examples
+        run: |
+          # Extract and validate JSON examples from README
+          awk '/```jsonc/,/```/' README.md | grep -E '^\s*[{}"]' | while read -r line; do
+            echo "$line" | jq empty 2>/dev/null || {
+              echo "Invalid JSON found: $line"
+              exit 1
+            }
+          done
