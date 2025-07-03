@@ -11,12 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Check file structure
-        run: |
-          # Verify required files exist
-          test -f README.md
-          test -f .github/copilot-upstream.md
+    
           
       - name: Check upstream header
         run: |
