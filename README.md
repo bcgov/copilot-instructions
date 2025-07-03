@@ -13,8 +13,8 @@ This configuration applies the upstream Copilot instructions globally across all
    Copy `.github/copilot-upstream.md` to your home directory manually or using the commands below (Linux, macOS):
 
    ```bash
-   mkdir -p ~/.git
-   curl -Lo ~/.git/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
+   mkdir -p ~/.config
+   curl -Lo ~/.config/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
    ```
 
 2. **Configure VS Code to use the instructions:**
@@ -34,7 +34,7 @@ This configuration applies the upstream Copilot instructions globally across all
        "github.copilot.chat.codeGeneration.useInstructionFiles": true,
        "github.copilot.chat.codeGeneration.instructions": [
          {
-           "file": "/home/<YOUR_USER_NAME>/.git/copilot-upstream.md"
+           "file": "/home/<YOUR_USER_NAME>/.config/copilot-upstream.md"
          }
        ]
      }
@@ -48,7 +48,7 @@ This configuration applies the upstream Copilot instructions globally across all
        "github.copilot.chat.codeGeneration.useInstructionFiles": true,
        "github.copilot.chat.codeGeneration.instructions": [
          {
-           "file": "C:\\Users\\<YOUR_USER_NAME>\\.git\\copilot-upstream.md"
+           "file": "C:\\Users\\<YOUR_USER_NAME>\\.config\\copilot-upstream.md"
          }
        ]
      }
@@ -63,7 +63,7 @@ This configuration applies the upstream Copilot instructions globally across all
      [ -s "$SETTINGS" ] || echo '{}' > "$SETTINGS"
 
      # Add or update Copilot instruction settings using jq with absolute path
-     jq --arg file "$HOME/.git/copilot-upstream.md" '
+     jq --arg file "$HOME/.config/copilot-upstream.md" '
        . + {
          "github.copilot.chat.codeGeneration.useInstructionFiles": true,
          "github.copilot.chat.codeGeneration.instructions": [ { "file": $file } ]
@@ -75,14 +75,13 @@ This configuration applies the upstream Copilot instructions globally across all
 
 **Caveats:**
 
-- Only an absolute path can be used successfully.
-- The absolute path must exist and be accessible from your machine.
-- If you sync your VS Code settings across devices, ensure the path is valid on each device.
-- If the path is not valid there will be no effect. It is harmless, but useless.
+- Only an absolute path to an accessible path can be used successfully.
+- If VS Code settings are synchronized across devices, ensure the path is valid on each device.
+- If the path is not valid there will be no effect. It is harmless.
 
 **Result:**
 
-- Copilot will use your central `.github/copilot-upstream.md` instructions for every workspace you open in VS Code.
+- Copilot will use your central `.config/copilot-upstream.md` instructions for every workspace you open in VS Code.
 
 ## Installation - Single Repository (Project-Specific)
 
