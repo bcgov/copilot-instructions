@@ -151,6 +151,16 @@ Put your changes in a separate file. The default repo location is `.github/copil
 
 For most projects, the default setup works well out of the box.
 
+## Contributing
+
+We value your input! We want to make contributing as easy and transparent as possible, whether it's:
+
+- Reporting a bug
+- Discussing the current state of the guidelines
+- Submitting a feature or fix
+- Proposing new features
+- Becoming a maintainer
+
 ## Additional Resources
 
 - [VS Code Copilot Documentation](https://code.visualstudio.com/docs/copilot/overview)
