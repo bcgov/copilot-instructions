@@ -1,14 +1,12 @@
 # Shared Copilot Instructions
 
-Shared VS Code configuration intended to accelerate and guide the use of GitHub Copilot (AI coding assistant).
+Shared VS Code configuration to accelerate and guide the use of GitHub Copilot, an AI coding assistant.
 
 ## Installation
 
 ### All Workspaces (Recommended)
 
 This configuration applies the upstream Copilot instructions globally across all VS Code workspaces.
-
-**Steps:**
 
 1. **Download or update the upstream instructions centrally**
 
@@ -21,7 +19,7 @@ This configuration applies the upstream Copilot instructions globally across all
 
 2. **Configure VS Code to use the instructions**
 
-   Create or update `settings.json`, using an **absolute path** to your central file.
+   Create or update `settings.json`, using an **absolute path** to your file.
 
    - **Manual method (Linux, macOS)**
 
@@ -73,8 +71,6 @@ This configuration applies the upstream Copilot instructions globally across all
 ### Single Repository
 
 This will affect only the current repository. It is useful when projects have conflicting or incompatible requirements.
-
-**Steps:**
 
 1. **Download the upstream instructions to your repository**
 
@@ -133,7 +129,7 @@ This will affect only the current repository. It is useful when projects have co
 
 **Absolute Paths:**
 
-Only an absolute path works for `github.copilot.chat.codeGeneration.instructions.file` in global `settings.json`.
+Only an absolute path works for in global `settings.json`.
 
 **Synchronization:**
 
@@ -143,13 +139,13 @@ If VS Code is synchronizing settings across devices, make sure this file is pres
 
 If the path is not valid there will be no effect. It is harmless.
 
-**Updating:**
+**Updates:**
 
 Replace your copy of this file periodically to receive updated configurations.
 
 **Customization:**
 
-Put your changes in a separate file. The default location of separate projects is `.github/copilot-instructions.md`.
+Put your changes in a separate file. The default repo location is `.github/copilot-instructions.md`.
 
 **Usage:**
 
