@@ -14,47 +14,63 @@ The `.github` directory contains:
 
 ## Installation - Single Repository
 
+This will affect only the current repository.
+
 1. **Download the upstream instructions to your repository:**
-    ```bash
-    mkdir -p .github
-    curl -Lo .github/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
-    ```
 
-2. **Configure VS Code to use the instructions:**  
-   You can do this manually **or** programmatically:
+   Make sure to commit this file to your repository.
 
-    - **Manual method:**  
-      Add the following to your VS Code Workspace settings (`.vscode/settings.json`):
+   ```bash
+   mkdir -p .github
+   curl -Lo .github/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
+   ```
 
-      ```jsonc
-      {
-          "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-          "github.copilot.chat.codeGeneration.instructions": [
-              {
-                  "file": ".github/copilot-upstream.md"
-              }
-          ]
-      }
-      ```
+2. **Configure VS Code to use the instructions:**
 
-    - **Programmatic method:**  
-      Use `jq` to add or update the Copilot instruction settings:
+   Configure VS Code Workspace settings (`.vscode/settings.json`) manually **or** programmatically:
 
-      ```bash
-      # Ensure .vscode/settings.json exists and is valid JSON
-      mkdir -p .vscode
-      [ -s .vscode/settings.json ] || echo '{}' > .vscode/settings.json
+   - **Manual method (Linux, macOS):**
 
-      # Add or update Copilot instruction settings using jq
-      jq '. 
-        + {"github.copilot.chat.codeGeneration.useInstructionFiles": true}
-        + {"github.copilot.chat.codeGeneration.instructions": [{"file": ".github/copilot-upstream.md"}]}
-      ' .vscode/settings.json > .vscode/settings.tmp && mv .vscode/settings.tmp .vscode/settings.json
-      ```
+     ```jsonc
+     {
+       "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+       "github.copilot.chat.codeGeneration.instructions": [
+         {
+           "file": ".github/copilot-upstream.md"
+         }
+       ]
+     }
+     ```
 
-**Choose either the manual or programmatic method for step 2.**
+   - **Manual method (Windows):**
 
-## Installation - Across All Workspaces (User Level)
+     ```jsonc
+     {
+       "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+       "github.copilot.chat.codeGeneration.instructions": [
+         {
+           "file": ".git\\copilot-upstream.md"
+         }
+       ]
+     }
+     ```
+
+   - **Programmatic method (Linux, macOS):**
+     Use `jq` to add or update the Copilot instruction settings:
+
+     ```bash
+     # Ensure .vscode/settings.json exists and is valid JSON
+     mkdir -p .vscode
+     [ -s .vscode/settings.json ] || echo '{}' > .vscode/settings.json
+
+     # Add or update Copilot instruction settings using jq
+     jq '.
+       + {"github.copilot.chat.codeGeneration.useInstructionFiles": true}
+       + {"github.copilot.chat.codeGeneration.instructions": [{"file": ".github/copilot-upstream.md"}]}
+     ' .vscode/settings.json > .vscode/settings.tmp && mv .vscode/settings.tmp .vscode/settings.json
+     ```
+
+## Installation - All Workspaces (User Level)
 
 If you want to use the same upstream Copilot instructions for all your projects, you can reference the file by absolute path in your **VS Code user settings**. This way, you don’t need to copy `.github/copilot-upstream.md` into every repository.
 
@@ -62,72 +78,77 @@ If you want to use the same upstream Copilot instructions for all your projects,
 
 1. **Download or update the upstream instructions centrally (e.g. home directory):**
 
-    ```bash
-    mkdir -p ~/.git
-    curl -Lo ~/.git/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
-    ```
+   ```bash
+   mkdir -p ~/.git
+   curl -Lo ~/.git/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
+   ```
 
-2. **Configure VS Code to use the instructions:**  
-    
-    File locations:
+2. **Configure VS Code to use the instructions:**
 
-    - Linux: `~/.config/Code/User/settings.json`
-    - macOS: `~/Library/Application Support/Code/User/settings.json`
-    - Windows: `%APPDATA%\Code\User\settings.json`
+   File locations:
 
-    Add (or update) the following settings, using the **absolute path** to your central file:
+   - Linux: `~/.config/Code/User/settings.json`
+   - macOS: `~/Library/Application Support/Code/User/settings.json`
+   - Windows: `%APPDATA%\Code\User\settings.json`
 
-    **Linux/macOS:**  
+   Add (or update) the following settings, using the **absolute path** to your central file:
 
-    ```jsonc
-    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-    "github.copilot.chat.codeGeneration.instructions": [
-        {
-            "file": "/home/youruser/.git/copilot-upstream.md"
-        }
-    ]
-    ```
+   - **Manual method (Linux/macOS):**
 
-    **Windows:**  
-    Edit your settings file manually and use double backslashes in the path, for example:
+     ```jsonc
+     {
+       "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+       "github.copilot.chat.codeGeneration.instructions": [
+         {
+           "file": "/home/youruser/.git/copilot-upstream.md"
+         }
+       ]
+     }
+     ```
 
-    ```jsonc
-    "github.copilot.chat.codeGeneration.instructions": [
-        {
-            "file": "C:\\Users\\youruser\\.git\\copilot-upstream.md"
-        }
-    ]
-    ```
+   - **Manual method (Windows):**
+     Edit your settings file manually and use double backslashes in the path, for example:
 
-    Or, set this programmatically with `jq` (Linux/macOS):
+     ```jsonc
+     {
+       "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+       "github.copilot.chat.codeGeneration.instructions": [
+         {
+           "file": "C:\\Users\\youruser\\.git\\copilot-upstream.md"
+         }
+       ]
+     }
+     ```
 
-    ```bash
-    # Ensure your user settings file exists and is valid JSON
-    SETTINGS="$HOME/.config/Code/User/settings.json"
-    mkdir -p "$(dirname "$SETTINGS")"
-    [ -s "$SETTINGS" ] || echo '{}' > "$SETTINGS"
+   - **Programmatic method (Linux, macOS):**
 
-    # Add or update Copilot instruction settings using jq with absolute path
-    jq --arg file "$HOME/.git/copilot-upstream.md" '
-        . + {
-            "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-            "github.copilot.chat.codeGeneration.instructions": [ { "file": $file } ]
-        }
-    ' "$SETTINGS" > "$SETTINGS.tmp" && mv "$SETTINGS.tmp" "$SETTINGS"
-    ```
+     ```bash
+     # Ensure your user settings file exists and is valid JSON
+     SETTINGS="$HOME/.config/Code/User/settings.json"
+     mkdir -p "$(dirname "$SETTINGS")"
+     [ -s "$SETTINGS" ] || echo '{}' > "$SETTINGS"
 
-    **Note: this will fail if there are any JSON misconfigurations, like a trailing comma. **
+     # Add or update Copilot instruction settings using jq with absolute path
+     jq --arg file "$HOME/.git/copilot-upstream.md" '
+       . + {
+         "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+         "github.copilot.chat.codeGeneration.instructions": [ { "file": $file } ]
+       }
+     ' "$SETTINGS" > "$SETTINGS.tmp" && mv "$SETTINGS.tmp" "$SETTINGS"
+     ```
 
-    **Choose either the manual or programmatic method for step 3.**
-    
+     **Note: this will fail if there are any non-standard JSON misconfigurations, like a trailing comma.**
+
+     **Choose either the manual or programmatic method for step 3.**
+
 **Caveats:**
 
 - Only an absolute path can be used successfully.
 - The absolute path must exist and be accessible from your machine.
 - If you sync your VS Code settings across devices, ensure the path is valid on each device.
-- If the path is not valid there will be no effect.  It is harmless, but useless.
+- If the path is not valid there will be no effect. It is harmless, but useless.
 
-**Result:**  
+**Result:**
 
 - Copilot will use your central `.github/copilot-upstream.md` instructions for every workspace you open in VS Code.
 
