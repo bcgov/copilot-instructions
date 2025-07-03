@@ -8,7 +8,7 @@ This will affect only the current repository.
 
 1. **Download the upstream instructions to your repository:**
 
-  Make sure to commit this file to your repository.
+  Copy `.github/copilot-upstream.md` manually or use the commands below (Linux, macOS).  Make sure to commit this file to your repository.
 
   ```bash
   mkdir -p .github
@@ -60,13 +60,15 @@ This will affect only the current repository.
     ' .vscode/settings.json > .vscode/settings.tmp && mv .vscode/settings.tmp .vscode/settings.json
     ```
 
-## Installation - All Workspaces (User Level)
+## Installation - All Workspaces (Recommended)
 
-If you want to use the same upstream Copilot instructions for all your projects, you can reference the file by absolute path in your **VS Code user settings**. This way, you don’t need to copy `.github/copilot-upstream.md` into every repository.
+This configuration applies the upstream Copilot instructions globally across all VS Code workspaces. Separate `.github/copilot-upstream.md` files would not be required.
 
 **Steps:**
 
 1. **Download or update the upstream instructions centrally (e.g. home directory):**
+
+  Copy `.github/copilot-upstream.md` to your home directory manually or using the commands below (Linux, macOS):
 
   ```bash
   mkdir -p ~/.git
@@ -129,8 +131,6 @@ If you want to use the same upstream Copilot instructions for all your projects,
 
     **Note: this will fail if there are any non-standard JSON misconfigurations, like a trailing comma.**
 
-    **Choose either the manual or programmatic method for step 2.**
-
 **Caveats:**
 
 - Only an absolute path can be used successfully.
@@ -144,9 +144,9 @@ If you want to use the same upstream Copilot instructions for all your projects,
 
 ## Usage
 
-1. For most projects, the default setup works well out of the box
-2. Put your changes in `.github/copilot-instructions.md`
-3. Recommend upstream changes at https://github.com/bcgov/copilot-instructions
+1. For most projects, the default setup works well out of the box.
+2. Put your custom changes in `.github/copilot-instructions.md`.
+3. Recommend upstream changes at https://github.com/bcgov/copilot-instructions.
 
 ## Additional Resources
 
