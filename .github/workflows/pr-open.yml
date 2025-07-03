@@ -3,6 +3,8 @@ name: PR Open
 on:
   pull_request:
 
+permissions: {}
+
 jobs:
   validate-content:
     name: Validate Content
