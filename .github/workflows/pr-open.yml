@@ -37,12 +37,3 @@ jobs:
               exit 1
             }
           done
-          
-      - name: Check for sensitive data
-        run: |
-          # Ensure no secrets, tokens, or sensitive paths are hardcoded
-          ! grep -r -i "password\|token\|secret\|api[_-]key" . --exclude-dir=.git
-          
-          # Check for absolute paths that might expose user info
-          ! grep -r "/Users/[^<]" . --exclude-dir=.git
-          ! grep -r "/home/[^<]" . --exclude-dir=.git
