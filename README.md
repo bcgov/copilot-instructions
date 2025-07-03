@@ -129,7 +129,7 @@ This will affect only the current repository. It is useful when projects have co
 
 **Absolute Paths:**
 
-Only an absolute path works for in global `settings.json`.
+Only absolute paths work in global `settings.json`.
 
 **Synchronization:**
 
