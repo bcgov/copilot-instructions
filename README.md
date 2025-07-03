@@ -2,16 +2,6 @@
 
 Shared VS Code configuration intended to accelerate and guide the use of GitHub Copilot (AI coding assistant).
 
-## Structure
-
-The `.github` directory contains:
-- `copilot-upstream.md` - 🔒 **Managed guidelines**
-  - Maintained and versioned upstream
-  - Non-default, needs to be referenced in VS Code settings
-- `copilot-instructions.md` - ✏️ **Template only**
-  - Basic structure for your team's customizations
-  - Standard location recognized by Copilot
-
 ## Installation - Single Repository
 
 This will affect only the current repository.
@@ -93,7 +83,7 @@ If you want to use the same upstream Copilot instructions for all your projects,
 
    Add (or update) the following settings, using the **absolute path** to your central file:
 
-   - **Manual method (Linux/macOS):**
+   - **Manual method (Linux, macOS):**
 
      ```jsonc
      {
