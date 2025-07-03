@@ -137,7 +137,7 @@ If VS Code is synchronizing settings across devices, make sure this file is pres
 
 **Safety/Reliability:**
 
-If the path is not valid there will be no effect. It is harmless.
+If the path is not valid, there will be no effect. It is harmless.
 
 **Updates:**
 
