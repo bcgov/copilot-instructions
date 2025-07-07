@@ -51,7 +51,7 @@ This configuration applies the upstream Copilot instructions globally across all
      }
      ```
 
-   - **Programmatic method (Linux, macOS)**
+   - **Programmatic method (Linux)**
 
      This only works for properly formatted JSON in `settings.json`. VS Code allows inconsistencies, while `jq` does not.
 
@@ -67,6 +67,23 @@ This configuration applies the upstream Copilot instructions globally across all
        }
      ' "$SETTINGS" > "$SETTINGS.tmp" && mv "$SETTINGS.tmp" "$SETTINGS"
      ```
+
+   - **Programmatic method (macOS)**
+
+     ```bash
+     SETTINGS="$HOME/Library/Application\ Support/Code/User/settings.json"
+     mkdir -p "$(dirname "$SETTINGS")"
+     [ -s "$SETTINGS" ] || echo '{}' > "$SETTINGS"
+
+     jq --arg file "$HOME/.config/copilot-upstream.md" '
+       . + {
+         "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+         "github.copilot.chat.codeGeneration.instructions": [ { "file": $file } ]
+       }
+     ' "$SETTINGS" > "$SETTINGS.tmp" && mv "$SETTINGS.tmp" "$SETTINGS"
+     ```
+
+   **Note: Programmatic methods on only work for properly formatted JSON in `settings.json`. VS Code allows inconsistencies, while `jq` does not.**
 
 ### Single Repository
 
