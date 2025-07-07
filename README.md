@@ -81,7 +81,7 @@ This configuration applies the upstream Copilot instructions globally across all
      ' "$SETTINGS" > "$SETTINGS.tmp" && mv "$SETTINGS.tmp" "$SETTINGS"
      ```
 
-   **Note: Programmatic methods on only work for properly formatted JSON in `settings.json`. VS Code allows inconsistencies, while `jq` does not.**
+   **Note: Programmatic methods only work for properly formatted JSON in `settings.json`. VS Code allows inconsistencies, while `jq` does not.**
 
 ### Single Repository
 
