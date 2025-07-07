@@ -53,8 +53,6 @@ This configuration applies the upstream Copilot instructions globally across all
 
    - **Programmatic method (Linux)**
 
-     This only works for properly formatted JSON in `settings.json`. VS Code allows inconsistencies, while `jq` does not.
-
      ```bash
      SETTINGS="$HOME/.config/Code/User/settings.json"
      mkdir -p "$(dirname "$SETTINGS")"
