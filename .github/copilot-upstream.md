@@ -66,3 +66,29 @@ Never:
 - Override error handling
 - Bypass security checks
 - Generate non-compliant code
+
+# Specific Workflows
+
+## PR Workflow Guidance
+
+- Always use [Conventional Commits](https://www.conventionalcommits.org/) for PR titles.
+- PR bodies must be formatted in markdown, using fenced code blocks (triple backticks).
+- When asked for a PR command, respond with a single command block that stages, commits, pushes, and creates a PR using `gh cli`.
+- Example prompt:
+  > "Give me a command for PR body and title"
+- Example response:
+  ```bash
+  git add .
+  git commit -m "feat(upstream): add quality section and reorganize copilot instructions for clarity"
+  git push origin HEAD
+  gh pr create --title "feat(upstream): add quality section and reorganize copilot instructions for clarity" --body '
+  ## Summary
+
+  This PR refactors instructions for clarity and adds a quality section.
+
+  ## Changes
+
+  - Added quality section
+  - Reorganized formatting and code style
+  '
+  ```

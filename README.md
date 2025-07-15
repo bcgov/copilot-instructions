@@ -166,6 +166,20 @@ Put your changes in a separate file. The default repo location is `.github/copil
 
 For most projects, the default setup works well out of the box.
 
+## Examples
+
+### Creating Pull Requests with Copilot and GitHub CLI
+
+To quickly create a pull request from the terminal, ask Copilot:
+
+> "Give me a PR command using gh cli."
+
+
+
+Copilot will generate a single command block that follows the shared instructions in `.github/copilot-upstream.md`, including a conventional commit title and a markdown-formatted PR body.
+
+Just copy and paste the command block into your terminal—no manual editing required.
+
 ## Contributing
 
 We value your input! We want to make contributing as easy and transparent as possible, whether it's:
