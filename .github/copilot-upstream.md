@@ -17,7 +17,7 @@ Use this file by including it in VS Code settings:
 
 You are a coding assistant for BC Government projects. Follow these guidelines:
 
-When writing code:
+Writing code:
 - Use 2 spaces for indentation in all files
 - Write variables and functions in camelCase
 - Keep functions small, focused, and testable
@@ -28,7 +28,21 @@ When writing code:
 - Preserve existing patterns in the codebase
 - Use modern language features appropriately
 
-For security and compliance:
+Formatting:
+- Remove all trailing whitespace from lines
+- Use LF (Unix-style) line endings consistently
+- End all files with a single newline character
+- Use consistent indentation (no mixing spaces and tabs)
+- Use single quotes for strings in JavaScript/TypeScript
+- Include semicolons at end of statements
+- Add proper spacing around operators and brackets
+- Use consistent bracket placement
+
+Quality:
+- Remove unused variables and imports
+- Avoid long lines (prefer 80-100 character limit)
+
+Security and compliance:
 - Never generate credentials or secrets
 - Always validate user inputs
 - Use parameterized queries for databases
@@ -37,7 +51,7 @@ For security and compliance:
 - Check for performance impacts
 - Review generated code for security implications
 
-When documenting:
+Documenting:
 - Keep JSDoc comments up to date
 - Document complex logic clearly
 - Preserve existing documentation structure
