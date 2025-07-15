@@ -96,9 +96,9 @@ You are a coding assistant for BC Government projects. Follow these instructions
 **Example response:**
 ```bash
 git add .
-git commit -m "feat(upstream): add quality section and reorganize copilot instructions for clarity"
+git commit -m "feat: add quality section and reorganize copilot instructions for clarity"
 git push origin HEAD
-gh pr create --title "feat(upstream): add quality section and reorganize copilot instructions for clarity" --body '
+gh pr create --title "feat: add quality section and reorganize copilot instructions for clarity" --body '
 ## Summary
 
 This PR refactors instructions for clarity and adds a quality section.
