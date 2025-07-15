@@ -50,7 +50,6 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Provide PR bodies or any markdown in a fenced code block (triple backticks) so it can be easily copied and pasted
 
 ## Linting and Automation
-
 - Use appropriate linters and formatters to enforce the formatting and code quality rules defined above.
 - Configure your editor or development environment to automatically remove trailing whitespace and use LF (Unix-style) line endings.
 - For multi-language projects, consider adding a `.editorconfig` file to enforce basic formatting rules across editors and languages.
@@ -73,7 +72,6 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Add change logs or release notes (use your project's designated changelog or release process instead)
 
 ## Workflow: Pull Requests
-
 - Always use [Conventional Commits](https://www.conventionalcommits.org/) for PR titles.
 - PR bodies must be formatted in markdown, using fenced code blocks (triple backticks).
 - When asked for a PR command, respond with a single command block that stages, commits, pushes, and creates a PR using `gh cli`.
@@ -90,3 +88,10 @@ gh pr create --title "feat(upstream): add quality section and reorganize copilot
 ## Summary
 
 This PR refactors instructions for clarity and adds a quality section.
+
+## Changes
+
+- Added quality section
+- Reorganized formatting and code style
+'
+```
