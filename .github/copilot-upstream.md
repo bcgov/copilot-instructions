@@ -55,6 +55,7 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Override error handling
 - Bypass security checks
 - Generate non-compliant code
+- Add change logs or release notes (use your project's designated changelog or release process instead)
 
 ## Workflow: Pull Requests
 
