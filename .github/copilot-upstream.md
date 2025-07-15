@@ -24,7 +24,7 @@ Formatting:
 - End all files with a single newline character
 - Use consistent indentation (no mixing spaces and tabs)
 - Use single quotes for strings in JavaScript/TypeScript
-- Include semicolons at end of statements
+- Include semicolons at the end of statements
 - Add proper spacing around operators and brackets
 - Use consistent bracket placement
 
@@ -57,6 +57,8 @@ Documentation:
 - Preserve existing documentation structure
 - Include usage examples for APIs
 - Use consistent Markdown formatting
+- For PR titles, use [Conventional Commits](https://www.conventionalcommits.org/) format (e.g., feat:, fix:, docs:, chore:, etc.).
+- For PR bodies or any markdown, provide it in a fenced code block (triple backticks) so it can be easily copied and pasted.
 
 Never:
 - Create duplicate files
