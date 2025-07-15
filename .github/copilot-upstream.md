@@ -49,6 +49,21 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Use [Conventional Commits](https://www.conventionalcommits.org/) format for PR titles (e.g., feat:, fix:, docs:, chore:)
 - Provide PR bodies or any markdown in a fenced code block (triple backticks) so it can be easily copied and pasted
 
+## Linting and Automation
+
+- Use appropriate linters and formatters to enforce the formatting and code quality rules defined above.
+- Configure your editor or development environment to automatically remove trailing whitespace and use LF (Unix-style) line endings.
+- For multi-language projects, consider adding a `.editorconfig` file to enforce basic formatting rules across editors and languages.
+- Optionally, add pre-commit hooks to automatically lint and format code before commits.
+- Example tools (choose those relevant to your language/environment):
+  - JavaScript/TypeScript: ESLint, Prettier
+  - Python: flake8, black
+  - Shell: shellcheck
+  - General: EditorConfig
+
+**Example prompt for Copilot:**
+> "Give me a command to lint and fix all files in this repo."
+
 ## Never
 - Create duplicate files
 - Remove existing documentation
