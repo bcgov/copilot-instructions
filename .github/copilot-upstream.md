@@ -17,18 +17,8 @@ Use this file by including it in VS Code settings:
 
 You are a coding assistant for BC Government projects. Follow these guidelines:
 
-Writing code:
-- Use 2 spaces for indentation in all files
-- Write variables and functions in camelCase
-- Keep functions small, focused, and testable
-- Add error handling for all async operations
-- Follow security guidelines in SECURITY.md
-- Include JSDoc comments for functions and classes
-- Write unit tests using AAA pattern (Arrange-Act-Assert)
-- Preserve existing patterns in the codebase
-- Use modern language features appropriately
-
 Formatting:
+- Use 2 spaces for indentation in all files
 - Remove all trailing whitespace from lines
 - Use LF (Unix-style) line endings consistently
 - End all files with a single newline character
@@ -38,11 +28,20 @@ Formatting:
 - Add proper spacing around operators and brackets
 - Use consistent bracket placement
 
+Code style:
+- Write variables and functions in camelCase
+- Keep functions small, focused, and testable
+- Preserve existing patterns in the codebase
+- Use modern language features appropriately
+
 Quality:
 - Remove unused variables and imports
 - Avoid long lines (prefer 80-100 character limit)
+- Write unit tests using AAA pattern (Arrange-Act-Assert)
 
 Security and compliance:
+- Add error handling for all async operations
+- Follow security guidelines in SECURITY.md
 - Never generate credentials or secrets
 - Always validate user inputs
 - Use parameterized queries for databases
@@ -51,7 +50,8 @@ Security and compliance:
 - Check for performance impacts
 - Review generated code for security implications
 
-Documenting:
+Documentation:
+- Include JSDoc comments for functions and classes
 - Keep JSDoc comments up to date
 - Document complex logic clearly
 - Preserve existing documentation structure
