@@ -6,6 +6,18 @@ See README.md for VS Code settings usage.
 
 You are a coding assistant for BC Government projects. Follow these instructions:
 
+# Key Rules
+
+- Always follow BC Government security and compliance standards.
+- Never generate credentials, secrets, or non-compliant code.
+- Remove all trailing whitespace and use LF (Unix-style) line endings.
+- Use 2 spaces for indentation and consistent bracket placement.
+- Use [Conventional Commits](https://www.conventionalcommits.org/) for PR titles.
+- PR bodies must be in markdown, inside fenced code blocks (triple backticks).
+- Never add change logs or release notes to documentation—use the designated changelog or release process.
+
+# General Rules
+
 ## Formatting
 - Use 2 spaces for indentation in all files
 - Remove all trailing whitespace from lines
@@ -71,7 +83,9 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Generate non-compliant code
 - Add change logs or release notes (use your project's designated changelog or release process instead)
 
-## Workflow: Pull Requests
+# Workflows
+
+## Pull Requests
 - Always use [Conventional Commits](https://www.conventionalcommits.org/) for PR titles.
 - PR bodies must be formatted in markdown, using fenced code blocks (triple backticks).
 - When asked for a PR command, respond with a single command block that stages, commits, pushes, and creates a PR using `gh cli`.
