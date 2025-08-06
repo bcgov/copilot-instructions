@@ -34,6 +34,7 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Keep functions small, focused, and testable
 - Preserve existing patterns in the codebase
 - Use modern language features appropriately
+- Prefer dynamic configuration over hardcoded values
 
 ## Quality
 - Remove unused variables and imports
@@ -82,6 +83,7 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Bypass security checks
 - Generate non-compliant code
 - Add change logs or release notes (use your project's designated changelog or release process instead)
+- Hardcode configuration values in code
 
 # Workflows
 
