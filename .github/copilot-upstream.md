@@ -1,5 +1,5 @@
 <!--
-🔒 UPSTREAM MANAGED - DO NOT MODIFY
+�� UPSTREAM MANAGED - DO NOT MODIFY
 ⚙️ Standard instructions for GitHub Copilot (AI coding assistant)
 See README.md for VS Code settings usage.
 -->
@@ -78,7 +78,7 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Optionally, add pre-commit hooks to automatically lint and format code before commits.
 - Example tools (choose those relevant to your language/environment):
   - JavaScript/TypeScript: ESLint, Prettier
-  - Python: flake8, blackc
+  - Python: flake8, black
   - Shell: shellcheck
   - General: EditorConfig
 
