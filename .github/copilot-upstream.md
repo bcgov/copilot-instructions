@@ -179,8 +179,8 @@ When Copilot provides feedback on PRs, consider implementing automatic feedback 
 - **Best practices**: Linting, formatting, unused variables
 - **Security issues**: Dependencies, configuration (review required)
 
-### **Template Location**
-Copy `.github/workflows/pr-feedback-template.yml` from copilot-instructions repository
+### **Implementation**
+Create a GitHub Actions workflow that triggers on PR comments and applies mechanical fixes automatically.
 
 Perfect! Now all projects and Copilot will receive these project stability instructions. The key additions are:
 
