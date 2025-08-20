@@ -1,5 +1,5 @@
 <!--
-🔒 UPSTREAM MANAGED - DO NOT MODIFY
+�� UPSTREAM MANAGED - DO NOT MODIFY
 ⚙️ Standard instructions for GitHub Copilot (AI coding assistant)
 See README.md for VS Code settings usage.
 -->
@@ -41,6 +41,15 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Avoid long lines (prefer 80-100 character limit)
 - Write unit tests using AAA pattern (Arrange-Act-Assert)
 
+## Project Stability
+- **Prove Before Polish**: Implement core functionality first, test with real data before adding features
+- **Complexity Budget**: Each new abstraction must solve a proven problem; remove complexity before adding more
+- **Debug-Ready Code**: Add logging before adding features; error messages should point to solutions
+- **Environment Parity**: Test local changes in CI environment early; document environment differences explicitly
+- **Incremental Fixes**: Fix one issue at a time; avoid large refactoring without clear benefits
+- **User-Driven Simplification**: Recognize over-engineering and revert; focus on core functionality
+- **Stable Foundation**: Keep core functionality intact; avoid breaking working features for "improvements"
+
 ## Security and Compliance
 - Add error handling for all async operations
 - Follow security guidelines in SECURITY.md
@@ -69,7 +78,7 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Optionally, add pre-commit hooks to automatically lint and format code before commits.
 - Example tools (choose those relevant to your language/environment):
   - JavaScript/TypeScript: ESLint, Prettier
-  - Python: flake8, black
+  - Python: flake8, blackc
   - Shell: shellcheck
   - General: EditorConfig
 
@@ -111,3 +120,77 @@ This PR refactors instructions for clarity and adds a quality section.
 - Reorganized formatting and code style
 '
 ```
+```
+
+## Collaboration Guardrails
+
+- Never push directly to `main`. Always:
+  - create a feature branch,
+  - commit locally,
+  - open a PR targeting `main`,
+  - wait for review and merge.
+- Never add or modify git hooks, repo settings, or branch protection via automation/instructions unless explicitly requested.
+- Before any push/PR, verify a clean working tree and what will be pushed:
+  - `git status --porcelain` is empty
+  - `git branch --show-current` shows the feature branch
+  - `git log --oneline @{u}..` lists the exact commits about to push
+- Create PRs with a body file (avoid inline multi-line bodies that the shell can misinterpret):
+
+```bash
+BODY=$(mktemp)
+cat >"$BODY" <<'EOF'
+## Summary
+
+<one-liner>
+
+## Changes
+- <bullets>
+EOF
+
+gh pr create --base main --head "$BRANCH" \
+  --title "feat: <short title>" \
+  --body-file "$BODY"
+rm -f "$BODY"
+```
+
+## Never (Collaboration)
+- Push directly to `main`
+- Add/modify git hooks or branch protection
+- Change repository-wide settings without explicit approval
+
+## PR Feedback Automation
+When Copilot provides feedback on PRs, consider implementing automatic feedback processing:
+
+### **Implementation Pattern**
+- Use GitHub Actions workflows that trigger on PR comments
+- Apply mechanical fixes automatically (syntax, formatting, deprecations)
+- Commit with conventional commit messages
+- Always inform users what feedback can be dismissed after auto-fixes
+
+### **Safety Guidelines**
+- Focus on low-risk, mechanical fixes only
+- Never auto-fix logic changes or security-related feedback without review
+- Use standard GITHUB_TOKEN (no external secrets required)
+- Test fixes in isolated environment first
+
+### **Common Feedback Types**
+- **Syntax errors**: JSON, YAML, code formatting
+- **Deprecation warnings**: Tool updates, API changes
+- **Best practices**: Linting, formatting, unused variables
+- **Security issues**: Dependencies, configuration (review required)
+
+### **Template Location**
+Copy `.github/workflows/pr-feedback-template.yml` from copilot-instructions repository
+
+Perfect! Now all projects and Copilot will receive these project stability instructions. The key additions are:
+
+## Project Stability Rules Added:
+- **Prove Before Polish**: Test core functionality before adding features
+- **Complexity Budget**: Remove complexity before adding more
+- **Debug-Ready Code**: Add logging before features, clear error messages
+- **Environment Parity**: Test local changes in CI early
+- **Incremental Fixes**: One issue at a time, avoid large refactoring
+- **User-Driven Simplification**: Recognize over-engineering and revert
+- **Stable Foundation**: Keep working features intact
+
+These rules will help prevent the over-engineering issues we encountered in the project board sync across all future projects!

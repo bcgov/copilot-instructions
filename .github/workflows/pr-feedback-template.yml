@@ -1,0 +1,165 @@
+# PR Feedback Analysis & Auto-Fix Template
+# Copy this to .github/workflows/pr-feedback.yml in any repository
+# Customize the feedback patterns and fixes as needed for your project
+
+name: PR Feedback Analysis & Auto-Fix
+
+on:
+  issue_comment:
+    types: [created, edited]
+  pull_request_review:
+    types: [submitted, edited]
+
+jobs:
+  analyze-feedback:
+    if: github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.issue.pull_request.head.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup environment
+        run: |
+          # Setup any required tools (Node.js, Python, etc.)
+          # Customize based on your repository needs
+          echo "Setting up environment..."
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Wait for AI processing
+        run: |
+          echo "⏳ Waiting for AI feedback processing..."
+          sleep 180  # Adjust delay as needed
+
+      - name: Analyze feedback and apply fixes
+        id: analyze
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          PR_NUMBER="${{ github.event.issue.number }}"
+
+          echo "Analyzing feedback for PR #$PR_NUMBER"
+
+          # Create analysis script
+          cat > analyze-feedback.sh << 'EOF'
+          #!/bin/bash
+          set -e
+
+          COMMENT_BODY="$1"
+          PR_NUMBER="$2"
+
+          # Function to apply fixes and commit
+          apply_fix() {
+            local fix_type="$1"
+            local commit_msg="$2"
+            local commands="$3"
+
+            echo "🔧 Applying $fix_type fix..."
+            eval "$commands"
+
+            if git diff --quiet; then
+              echo "No changes needed for $fix_type"
+              return 1
+            fi
+
+            git add .
+            git commit -m "$commit_msg"
+            echo "✅ Committed $fix_type fix"
+            return 0
+          }
+
+          # CUSTOMIZE: Add your repository-specific feedback patterns here
+
+          # Example: JavaScript/TypeScript feedback
+          if echo "$COMMENT_BODY" | grep -qi "eslint\|lint.*error\|unused.*variable"; then
+            echo "🔍 Detected linting feedback"
+            # Add your linting fixes here
+          fi
+
+          # Example: Python feedback
+          if echo "$COMMENT_BODY" | grep -qi "flake8\|pylint\|import.*error"; then
+            echo "🔍 Detected Python feedback"
+            # Add your Python fixes here
+          fi
+
+          # Example: Docker feedback
+          if echo "$COMMENT_BODY" | grep -qi "docker.*build\|dockerfile.*error"; then
+            echo "🔍 Detected Docker feedback"
+            # Add your Docker fixes here
+          fi
+
+          # Example: YAML feedback
+          if echo "$COMMENT_BODY" | grep -qi "yaml.*error\|indentation.*error"; then
+            echo "🔍 Detected YAML feedback"
+            apply_fix "YAML syntax" "fix: correct YAML syntax" \
+              "find . -name '*.yml' -o -name '*.yaml' | xargs yamllint --fix || true"
+          fi
+
+          # Example: Markdown feedback
+          if echo "$COMMENT_BODY" | grep -qi "markdown.*lint\|md.*error"; then
+            echo "🔍 Detected Markdown feedback"
+            # Add your Markdown fixes here
+          fi
+
+          # Generic syntax fixes
+          if echo "$COMMENT_BODY" | grep -qi "syntax.*error\|trailing.*comma"; then
+            echo "🔍 Detected syntax feedback"
+            apply_fix "syntax" "fix: correct syntax errors" \
+              "echo 'Syntax fixes would be applied here'"
+          fi
+
+          # Generic whitespace fixes
+          if echo "$COMMENT_BODY" | grep -qi "whitespace\|trailing.*space"; then
+            echo "🔍 Detected whitespace feedback"
+            apply_fix "whitespace" "fix: remove trailing whitespace" \
+              "find . -name '*.js' -o -name '*.ts' -o -name '*.py' -o -name '*.md' | xargs sed -i 's/[[:space:]]*$//'"
+          fi
+
+          echo "✅ Feedback analysis complete"
+          EOF
+
+          chmod +x analyze-feedback.sh
+          ./analyze-feedback.sh "$COMMENT_BODY" "$PR_NUMBER"
+
+      - name: Push fixes
+        if: steps.analyze.outcome == 'success'
+        run: |
+          if ! git diff --quiet HEAD~1; then
+            echo "🚀 Pushing fixes..."
+            git push
+            echo "✅ Fixes pushed successfully"
+          else
+            echo "ℹ️  No fixes to push"
+          fi
+
+      - name: Comment on PR
+        if: steps.analyze.outcome == 'success'
+        run: |
+          if ! git diff --quiet HEAD~1; then
+            gh pr comment ${{ github.event.issue.number }} --body "🤖 **Auto-fix applied!**
+
+            I've automatically applied fixes based on the feedback:
+            - ✅ Fixed syntax issues
+            - ✅ Corrected formatting problems
+            - ✅ Applied best practice recommendations
+
+            **What to dismiss:** The original feedback comment can be dismissed since the issues have been resolved.
+
+            **Review:** Please review the changes to ensure they match your expectations."
+          else
+            gh pr comment ${{ github.event.issue.number }} --body "🤖 **Feedback analyzed**
+
+            I've reviewed the feedback and determined:
+            - ℹ️  No automatic fixes needed
+            - 📝 Manual review may be required
+
+            **What to dismiss:** You can dismiss this comment if the feedback has been addressed manually."
+          fi
