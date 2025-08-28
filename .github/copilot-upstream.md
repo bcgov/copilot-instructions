@@ -268,3 +268,32 @@ Perfect! Now all projects and Copilot will receive these project stability instr
 - **Stable Foundation**: Keep working features intact
 
 These rules will help prevent the over-engineering issues we encountered in the project board sync across all future projects!
+
+## Repository-Specific Considerations
+
+### For GitHub Actions Repositories (action-*)
+When working on GitHub Actions:
+- Include comprehensive workflow testing in `.github/workflows/`
+- Test action in multiple scenarios (success, failure, edge cases)
+- Follow GitHub Action naming conventions and marketplace best practices
+- Never log sensitive information (tokens, passwords, etc.)
+- Validate all inputs thoroughly to prevent injection attacks
+- Support both required and optional inputs with sensible defaults
+
+### For Natural Resources Repositories (nr-*)
+When working on Natural Resources domain applications:
+- Follow BC data sovereignty requirements for environmental data
+- Use standardized environmental data formats and coordinate systems
+- Consider Indigenous data sovereignty principles (OCAP)
+- Design for integration with existing NR databases and GIS systems
+- Support both metric and imperial units with clear conversion standards
+- Plan for offline/field usage scenarios with sync capabilities
+
+### For Quickstart Templates (quickstart-*)
+When working on template repositories:
+- Ensure all example files are functional and up-to-date
+- Include comprehensive setup instructions assuming no prior knowledge
+- Provide working examples that teams can run immediately after cloning
+- Include both minimal and advanced configuration options
+- Test template regularly with latest dependencies
+- Include "next steps" guidance for teams after initial setup
