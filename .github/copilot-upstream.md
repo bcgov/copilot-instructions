@@ -145,7 +145,7 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Generate non-compliant code
 - Add change logs or release notes (use your project's designated changelog or release process instead)
 - Hardcode configuration values in code
-- Use `~` expansion in file paths in contexts where shell expansion is not performed (use absolute paths like `/home/user/` instead to avoid creating literal `~` directories)
+- Use `~` expansion in file paths in contexts where shell expansion is not performed (use `$HOME` or full absolute paths instead to avoid creating literal `~` directories)
 - Create duplicate files or scripts (avoid redundancy)
 - Use environment variables for user configuration (be explicit)
 - Work on high-risk projects without proper validation
