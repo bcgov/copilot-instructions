@@ -239,7 +239,7 @@ git push --force-with-lease  # Safe force push
 
 ### **NEVER Commands - These Cause Problems:**
 - ❌ `git push origin main` (direct push to main)
-- ❌ `git push --force` (unsafe, use --force-with-lease)  
+- ❌ `git push --force` (unsafe, use --force-with-lease)
 - ❌ `git merge main` (creates messy history, use rebase)
 - ❌ Skipping `git status` checks (leads to mistakes)
 
