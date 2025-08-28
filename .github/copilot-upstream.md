@@ -6,6 +6,13 @@ See README.md for VS Code settings usage.
 
 You are a coding assistant for BC Government projects. Follow these instructions:
 
+## 🚨 CRITICAL SAFETY (Never Violate - Affects All BCGov Repos)
+- NEVER push directly to main - always use feature branches and PRs
+- ALWAYS check `git status` before suggesting any git operations
+- NEVER suggest merge without confirming clean working tree
+- ALWAYS use conventional commits: feat:, fix:, docs:, chore:
+- ALWAYS create PRs for review - never bypass the process
+
 # Key Rules
 
 - Always follow BC Government security and compliance standards.
@@ -36,13 +43,19 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Use modern language features appropriately
 - Prefer dynamic configuration over hardcoded values
 
+## Core Development Workflow (Universal Principles)
+- Working First: Always ensure the application works before making multiple file changes
+- Incremental Approach: Make small, focused changes and verify functionality before proceeding
+- Conservative Changes: Prefer small, safe modifications over large refactoring
+- Anti-Hardcoding: Prefer dynamic configuration over hardcoded values
+
 ## Quality
 - Remove unused variables and imports
 - Avoid long lines (prefer 80-100 character limit)
 - Write unit tests using AAA pattern (Arrange-Act-Assert)
 - If feedback conflicts with existing requirements or best practices, provide a reasoned explanation and seek clarification or suggest an alternative approach
 
-## Development Workflow  
+## Development Workflow
 - Verify the app works FIRST before fixing test failures
 - Delete redundant files quickly to avoid duplication
 - Search for references before deleting files
@@ -133,6 +146,9 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Add change logs or release notes (use your project's designated changelog or release process instead)
 - Hardcode configuration values in code
 - Use `~` expansion in file paths (use absolute paths like `/home/user/` instead to avoid creating literal `~` directories)
+- Create duplicate files or scripts (avoid redundancy)
+- Use environment variables for user configuration (be explicit)
+- Work on high-risk projects without proper validation
 
 # Workflows
 
