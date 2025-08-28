@@ -361,14 +361,14 @@ One clear sentence describing the change.
 
 ### **AI Response Requirements:**
 - **ALWAYS** include the full command sequence, never shortcut
-- **ALWAYS** show safety checks before any git operations  
+- **ALWAYS** show safety checks before any git operations
 - **ALWAYS** explain WHY certain commands are required
 - **NEVER** assume user is on correct branch or has clean state
 
 ### **Before Suggesting PR Review - MANDATORY Checks:**
 ```bash
 # ALWAYS run these before suggesting PR is ready for review
-git status                    # MUST show "nothing to commit, working tree clean"  
+git status                    # MUST show "nothing to commit, working tree clean"
 git branch --show-current     # MUST show feature branch (not main)
 git log --oneline main..HEAD  # Show what commits will be in PR
 ```
