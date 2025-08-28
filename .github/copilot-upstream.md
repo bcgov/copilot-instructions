@@ -40,6 +40,7 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Remove unused variables and imports
 - Avoid long lines (prefer 80-100 character limit)
 - Write unit tests using AAA pattern (Arrange-Act-Assert)
+- If feedback conflicts with existing requirements or best practices, provide a reasoned explanation and seek clarification or suggest an alternative approach
 
 ## Project Stability
 - **Prove Before Polish**: Implement core functionality first, test with real data before adding features
@@ -82,6 +83,33 @@ You are a coding assistant for BC Government projects. Follow these instructions
   - Shell: shellcheck
   - General: EditorConfig
 
+## Version Management
+- **Always use latest stable versions** for all tools, languages, and dependencies when possible.
+- **Prioritize security updates** - outdated versions are security risks.
+- **Technical debt vs features** - balance new features with keeping environments current.
+- **Funding justification** - security and maintenance are valid budget priorities.
+
+## Git Workflow Best Practices
+- **Always set upstream** when creating new branches: `git push --set-upstream origin branch-name`
+- **Regular branch synchronization**: Before starting work, sync with main: `git fetch origin && git rebase main`
+- **Before creating PRs**: Ensure branch is current: `git rebase main && git push --force-with-lease`
+- **When PR shows "out of date"**: Standard fix: `git fetch origin && git rebase main && git push --force-with-lease`
+- **Proactive updates**: Keep branches current to avoid merge conflicts and stale PRs
+- **Clean history**: Prefer rebasing over merging to maintain linear commit history
+
+### **Recommended Latest Versions:**
+- **Node.js**: Latest LTS (currently 22)
+- **Python**: Latest stable (3.12+)
+- **Docker**: Latest stable releases
+- **GitHub Actions**: Latest stable versions (v5, v6)
+- **Dependencies**: Regular updates to latest stable
+
+### **When Upgrades Are Blocked:**
+- **Document the risk** - outdated versions are security vulnerabilities
+- **Plan the upgrade** - create tickets for future sprints
+- **Justify funding** - security and maintenance are essential, not optional
+- **Incremental approach** - upgrade in phases if needed
+
 **Example prompt for Copilot:**
 > "Give me a command to lint and fix all files in this repo."
 
@@ -93,6 +121,7 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Generate non-compliant code
 - Add change logs or release notes (use your project's designated changelog or release process instead)
 - Hardcode configuration values in code
+- Use `~` expansion in file paths (use absolute paths like `/home/user/` instead to avoid creating literal `~` directories)
 
 # Workflows
 
@@ -157,6 +186,24 @@ rm -f "$BODY"
 - Push directly to `main`
 - Add/modify git hooks or branch protection
 - Change repository-wide settings without explicit approval
+
+## Critical Operations Requiring Explicit Permission
+
+### Releases and Versioning
+- **NEVER create releases, tags, or trigger release workflows without explicit user permission**
+- **NEVER update version tags (v1, v2, etc.) without explicit user approval**
+- **ALWAYS ask before running any workflow that could affect downstream teams**
+- **ALWAYS discuss release strategy and timing before proceeding**
+
+### Repository Management
+- **NEVER force-push to main branch**
+- **NEVER delete tags without explicit permission**
+- **ALWAYS ask before making changes that could break downstream repositories**
+
+### Workflow and CI/CD
+- **NEVER trigger workflows that could affect production or downstream teams without permission**
+- **ALWAYS test changes locally first when possible**
+- **ALWAYS validate that changes won't break existing functionality**
 
 ## PR Feedback Automation
 When Copilot provides feedback on PRs, consider implementing automatic feedback processing:
