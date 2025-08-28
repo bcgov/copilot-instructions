@@ -51,7 +51,7 @@ if [ $# -eq 2 ]; then
         headers2=$(grep -c '^##' "$file2")
         decisions1=$(grep -c 'IF\|NEVER\|ALWAYS' "$file1")
         decisions2=$(grep -c 'IF\|NEVER\|ALWAYS' "$file2")
-        
+
         if [ "$lines1" -eq 0 ]; then
             echo "Lines: N/A (file1 has zero lines)"
         else

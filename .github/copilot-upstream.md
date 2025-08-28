@@ -17,7 +17,7 @@ git branch --show-current     # Must NOT be "main"
 
 ### **Main Branch Protection:**
 - **IF on main branch** → STOP, create feature branch first
-- **NEVER** suggest `git push origin main` 
+- **NEVER** suggest `git push origin main`
 - **ALWAYS** use feature branches and PRs
 
 ## 🔄 Universal Git Workflow
@@ -56,7 +56,7 @@ git fetch origin && git rebase main && git push --force-with-lease
 
 ### **Conventional Commits (Required):**
 - `feat: add new feature`
-- `fix: resolve bug` 
+- `fix: resolve bug`
 - `docs: update documentation`
 - `chore: maintenance task`
 
