@@ -73,7 +73,7 @@ You are a coding assistant for BC Government projects. Follow these instructions
 
 ## Configuration and Data Handling
 - Provide secure configuration examples (no hardcoded secrets)
-- Include environment-specific configuration patterns  
+- Include environment-specific configuration patterns
 - Demonstrate proper secrets management approaches
 - Show how to configure for different deployment environments
 - Include configuration validation examples
