@@ -12,14 +12,14 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Need full history to check commits
-        
+
     - name: Check for uncommitted changes indicator
       run: |
         echo "Checking if PR description mentions uncommitted changes..."
-        
+
         # Get PR body
         PR_BODY="${{ github.event.pull_request.body }}"
-        
+
         # Check for common indicators of uncommitted changes
         if echo "$PR_BODY" | grep -i "uncommitted\|changes not staged\|working tree\|git status"; then
           echo "⚠️  PR description mentions uncommitted changes"
@@ -33,7 +33,7 @@ jobs:
     - name: Check commit message format
       run: |
         echo "Checking commit message format..."
-        
+
         # Get list of commits in this PR
         git log --format="%s" origin/main..HEAD | while read commit_msg; do
           # Check conventional commit format
@@ -50,7 +50,7 @@ jobs:
     - name: Check for large file additions
       run: |
         echo "Checking for large file additions..."
-        
+
         # Check for files > 1MB
         git diff --name-only origin/main..HEAD | while read file; do
           if [ -f "$file" ] && [ $(stat --format="%s" "$file" 2>/dev/null || echo 0) -gt 1048576 ]; then

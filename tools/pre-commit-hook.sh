@@ -1,6 +1,6 @@
 #!/bin/bash
 # Pre-commit hook to prevent common consistency issues
-# 
+#
 # Installation:
 #   cp tools/pre-commit-hook.sh .git/hooks/pre-commit
 #   chmod +x .git/hooks/pre-commit

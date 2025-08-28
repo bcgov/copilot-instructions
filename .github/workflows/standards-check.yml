@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-      
+
     - name: Check for trailing whitespace
       run: |
         echo "Checking for trailing whitespace..."
@@ -60,40 +60,40 @@ jobs:
     - name: Check for consistent markdown formatting
       run: |
         echo "Checking markdown formatting consistency..."
-        
+
         # Check for consistent header spacing
         if find . -name "*.md" -exec grep -l "^##[^ ]" {} \; | head -1; then
           echo "❌ Found headers without space after ##"
           echo "Fix: ensure space after ## in headers"
           exit 1
         fi
-        
-        # Check for consistent list formatting  
+
+        # Check for consistent list formatting
         if find . -name "*.md" -exec grep -l "^-[^ ]" {} \; | head -1; then
           echo "❌ Found lists without space after -"
           echo "Fix: ensure space after - in lists"
           exit 1
         fi
-        
+
         echo "✅ Markdown formatting is consistent"
 
     - name: Check copilot-upstream.md completeness
       run: |
         echo "Checking copilot-upstream.md has required sections..."
         required_sections=(
-          "CRITICAL SAFETY" 
+          "CRITICAL SAFETY"
           "Key Rules"
           "Never"
           "Pull Requests"
         )
-        
+
         missing_sections=()
         for section in "${required_sections[@]}"; do
           if ! grep -q "$section" .github/copilot-upstream.md; then
             missing_sections+=("$section")
           fi
         done
-        
+
         if [ ${#missing_sections[@]} -ne 0 ]; then
           echo "❌ Missing required sections in copilot-upstream.md:"
           printf '%s\n' "${missing_sections[@]}"

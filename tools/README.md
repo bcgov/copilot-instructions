@@ -34,13 +34,13 @@ The repository includes GitHub Actions workflows for consistency:
 ### `standards-check.yml`
 Runs on every PR to validate:
 - Trailing whitespace
-- Line endings consistency  
+- Line endings consistency
 - YAML syntax validation
 - Hardcoded personal paths
 - Markdown formatting
 - Required sections in copilot-upstream.md
 
-### `pr-quality-check.yml` 
+### `pr-quality-check.yml`
 Runs on PR creation to check:
 - Conventional commit message format
 - Indicators of uncommitted changes in PR description
@@ -59,7 +59,7 @@ Runs monthly to:
 These tools embody the **"prevent problems before they happen"** approach:
 
 1. **Pre-commit hook** catches issues before they're committed
-2. **CI workflows** catch issues before they're merged  
+2. **CI workflows** catch issues before they're merged
 3. **Maintenance workflows** catch issues before they become systemic
 
 The goal is to automate away the consistency problems that cause friction and rework.
