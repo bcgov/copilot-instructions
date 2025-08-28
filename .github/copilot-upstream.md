@@ -1,5 +1,5 @@
 <!--
-🚧 UPSTREAM MANAGED - DO NOT MODIFY
+⚙️ UPSTREAM MANAGED - DO NOT MODIFY
 ⚙️ Standard instructions for GitHub Copilot (AI coding assistant)
 See README.md for VS Code settings usage.
 -->
