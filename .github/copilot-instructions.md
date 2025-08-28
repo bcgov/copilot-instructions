@@ -14,7 +14,6 @@ This is a template/standards repository that distributes `copilot-upstream.md` t
 - Universal coding standards → `copilot-upstream.md`
 - Repository documentation → `README.md`
 - Automation workflows → `.github/workflows/`
-- Personal/Derek-specific → `~/Documents/1-Personal/Linux/cursorrules`
 
 ## Standards Evolution
 - Keep `copilot-upstream.md` focused on universal principles
