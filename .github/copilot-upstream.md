@@ -42,6 +42,17 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Write unit tests using AAA pattern (Arrange-Act-Assert)
 - If feedback conflicts with existing requirements or best practices, provide a reasoned explanation and seek clarification or suggest an alternative approach
 
+## Development Workflow  
+- Verify the app works FIRST before fixing test failures
+- Delete redundant files quickly to avoid duplication
+- Search for references before deleting files
+- Never use local .env files for configuration
+
+## Testing Strategy
+- Verify the app works FIRST before fixing test failures (if app is broken, tests may fail for wrong reasons)
+- Prefer real data with dry runs over excessive mocking
+- Use appropriate testing frameworks for the language/environment
+
 ## Project Stability
 - **Prove Before Polish**: Implement core functionality first, test with real data before adding features
 - **Complexity Budget**: Each new abstraction must solve a proven problem; remove complexity before adding more
