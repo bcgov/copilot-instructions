@@ -221,9 +221,7 @@ git commit -m "feat: descriptive message"
 git status                    # Confirm clean working tree
 git branch --show-current     # Confirm on feature branch (not main!)
 git fetch origin && git rebase main  # Sync with latest main
-# Get current branch name (requires Git 2.22+, fallback for older versions)
-BRANCH=$(git branch --show-current 2>/dev/null || git rev-parse --abbrev-ref HEAD)
-git push --set-upstream origin "$BRANCH"
+git push --set-upstream origin $(git branch --show-current)
 
 # Create PR
 gh pr create --title "feat: descriptive title" --body "## Summary
@@ -246,6 +244,7 @@ git push --force-with-lease  # Safe force push
 - ❌ Skipping `git status` checks (leads to mistakes)
 
 ### **Recommended Latest Versions:**
+- **Git**: 2.22+ required (for --show-current), 2.40+ recommended
 - **Node.js**: Latest LTS (currently 22)
 - **Python**: Latest stable (3.12+)
 - **Docker**: Latest stable releases
@@ -413,6 +412,18 @@ git remote -v               # Verify HTTPS vs SSH
 # Quick fixes:
 gh auth login               # Re-authenticate
 git remote set-url origin https://github.com/OWNER/REPO.git  # Switch to HTTPS
+```
+
+### **"Git Command Not Found" - Version Issues:**
+```bash
+# Check Git version
+git --version
+
+# If < 2.22: Upgrade required
+# macOS: brew update && brew upgrade git
+# Ubuntu/Debian: apt update && apt upgrade git
+# Windows: Download from https://git-scm.com/
+echo "Git 2.22+ required for --show-current flag. Please upgrade."
 ```
 
 ## Collaboration Guardrails
