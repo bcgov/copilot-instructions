@@ -239,9 +239,17 @@ git push --force-with-lease  # Safe force push
 
 ### **NEVER Commands - These Cause Problems:**
 - ❌ `git push origin main` (direct push to main)
-- ❌ `git push --force` (unsafe, use --force-with-lease)
+- ❌ `git push --force` (unsafe, use --force-with-lease)  
 - ❌ `git merge main` (creates messy history, use rebase)
 - ❌ Skipping `git status` checks (leads to mistakes)
+
+### **Modern Git Commands - Replace Deprecated Patterns:**
+- ❌ `git checkout -- .` → ✅ `git restore .` (discard changes)
+- ❌ `git checkout -- filename` → ✅ `git restore filename` (restore single file)
+- ❌ `git checkout HEAD -- .` → ✅ `git restore --source=HEAD .` (restore from HEAD)
+- ❌ `git checkout branch` → ✅ `git switch branch` (switch branches)
+- ❌ `git checkout -b newbranch` → ✅ `git switch -c newbranch` (create+switch)
+- **Always suggest modern alternatives when deprecated commands are used**
 
 ### **Recommended Latest Versions:**
 - **Git**: 2.22+ required (for --show-current), 2.40+ recommended
