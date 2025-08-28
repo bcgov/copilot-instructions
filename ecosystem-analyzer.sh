@@ -11,11 +11,11 @@ analyze_layer() {
     local layer_name="$1"
     local file_path="$2"
     local description="$3"
-    
+
     echo "## $layer_name"
     echo "Path: $file_path"
     echo "Purpose: $description"
-    
+
     if [ -f "$file_path" ]; then
         echo "Status: ✅ EXISTS"
         lines=$(wc -l < "$file_path")
@@ -23,7 +23,7 @@ analyze_layer() {
         headers=$(grep -c '^##' "$file_path" 2>/dev/null || echo "0")
         decisions=$(grep -c 'IF\|NEVER\|ALWAYS' "$file_path" 2>/dev/null || echo "0")
         echo "Lines: $lines"
-        echo "Words: $words" 
+        echo "Words: $words"
         echo "Headers: $headers"
         echo "Decision Points: $decisions"
     else
@@ -34,7 +34,7 @@ analyze_layer() {
         decisions=0
     fi
     echo ""
-    
+
     # Return values for totaling
     echo "$lines $words $headers $decisions"
 }
@@ -59,7 +59,7 @@ echo ""
 
 # Calculate totals (this is complex in bash, but doable)
 total_lines=0
-total_words=0 
+total_words=0
 total_headers=0
 total_decisions=0
 
@@ -76,7 +76,7 @@ done
 echo "TOTAL INSTRUCTION COMPLEXITY:"
 echo "Lines: $total_lines"
 echo "Words: $total_words"
-echo "Headers: $total_headers" 
+echo "Headers: $total_headers"
 echo "Decision Points: $total_decisions"
 echo ""
 
