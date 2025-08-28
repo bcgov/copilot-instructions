@@ -23,7 +23,7 @@ This is a Natural Resources domain application handling sensitive environmental,
 
 ### Integration with NR Systems
 - Design for integration with existing NR databases and systems
-- Follow established NR API standards and authentication patterns  
+- Follow established NR API standards and authentication patterns
 - Support common NR data exchange formats (GIS, scientific data formats)
 - Consider offline/field usage scenarios with sync capabilities
 - Plan for integration with mapping and geospatial systems
@@ -59,7 +59,7 @@ This is a Natural Resources domain application handling sensitive environmental,
 ### Geographic Information Systems (GIS)
 - Integrate properly with BC geographic data standards
 - Support common GIS workflows and data formats
-- Provide accurate mapping and spatial analysis capabilities  
+- Provide accurate mapping and spatial analysis capabilities
 - Follow established coordinate system standards for BC
 - Enable proper spatial query and analysis functions
 

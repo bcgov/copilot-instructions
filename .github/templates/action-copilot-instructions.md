@@ -13,7 +13,7 @@ This is a GitHub Action that may be used by multiple teams across BCGov. Code qu
 - Use realistic test data that mirrors actual usage patterns
 - Include both unit tests and integration tests with actual GitHub API
 
-### Action Marketplace Considerations  
+### Action Marketplace Considerations
 - Follow GitHub Action naming conventions and best practices
 - Include comprehensive README with usage examples
 - Provide clear input/output documentation
@@ -29,7 +29,7 @@ This is a GitHub Action that may be used by multiple teams across BCGov. Code qu
 
 ### Security for Actions
 - Never log sensitive information (tokens, passwords, etc.)
-- Validate all inputs thoroughly to prevent injection attacks  
+- Validate all inputs thoroughly to prevent injection attacks
 - Use minimal required permissions in action.yml
 - Follow principle of least privilege for API access
 - Consider security implications since actions run in other people's workflows

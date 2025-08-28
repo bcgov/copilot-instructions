@@ -7,11 +7,11 @@ These templates provide starting points for repository-specific AI coding instru
 ### 📋 **action-copilot-instructions.md**
 For GitHub Actions repositories (`action-*` pattern)
 - Workflow testing practices
-- Action marketplace considerations  
+- Action marketplace considerations
 - Security for actions
 - Integration patterns
 
-### 🌲 **nr-copilot-instructions.md**  
+### 🌲 **nr-copilot-instructions.md**
 For Natural Resources domain repositories (`nr-*` pattern)
 - Data sovereignty & privacy requirements
 - Environmental data standards
@@ -19,7 +19,7 @@ For Natural Resources domain repositories (`nr-*` pattern)
 - GIS integration patterns
 
 ### 🚀 **quickstart-copilot-instructions.md**
-For template repositories (`quickstart-*` pattern)  
+For template repositories (`quickstart-*` pattern)
 - Template completeness standards
 - Documentation excellence
 - Example code quality

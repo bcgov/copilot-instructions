@@ -21,7 +21,7 @@ This is a template repository (quickstart-*) designed to help BCGov teams bootst
 - Include troubleshooting section for common setup issues
 - Document all configuration options with examples and defaults
 
-### Example Code Standards  
+### Example Code Standards
 - All example code should follow current BCGov coding standards
 - Include comprehensive error handling in examples
 - Demonstrate security best practices in sample code
@@ -44,7 +44,7 @@ This is a template repository (quickstart-*) designed to help BCGov teams bootst
 
 ### Dependency Management
 - Keep dependencies current and security-patched
-- Include dependency update automation where appropriate  
+- Include dependency update automation where appropriate
 - Document dependency choices and alternatives
 - Provide guidance on when to update vs. pin versions
 - Include security scanning for vulnerabilities
@@ -65,7 +65,7 @@ This is a template repository (quickstart-*) designed to help BCGov teams bootst
 
 ### Multi-Platform Considerations
 - Support development on different operating systems where possible
-- Include Docker configurations for consistent development environments  
+- Include Docker configurations for consistent development environments
 - Provide cloud deployment examples (OpenShift, AWS, Azure as relevant)
 - Consider different team sizes and experience levels
 - Include accessibility and internationalization examples where relevant

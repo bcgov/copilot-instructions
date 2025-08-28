@@ -1,0 +1,114 @@
+name: Maintenance & Updates
+
+on:
+  schedule:
+    # Run monthly on the 1st at 9 AM UTC  
+    - cron: '0 9 1 * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  dependency-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check GitHub Actions versions
+      run: |
+        echo "Checking for GitHub Actions updates..."
+        
+        # Find all workflow files
+        find .github/workflows -name "*.yml" -o -name "*.yaml" | while read workflow; do
+          echo "Checking $workflow"
+          
+          # Look for action versions that might be outdated
+          grep -n "uses:" "$workflow" | while IFS=: read line_num line_content; do
+            if echo "$line_content" | grep -E "@v[0-9]+$"; then
+              action=$(echo "$line_content" | sed 's/.*uses: *//' | sed 's/@.*//')
+              version=$(echo "$line_content" | sed 's/.*@//')
+              echo "  Line $line_num: $action@$version"
+              
+              # Check if it's a major version (good) vs specific version (might be outdated)
+              if echo "$version" | grep -E "^v[0-9]+$"; then
+                echo "    ✅ Using major version (recommended)"
+              else
+                echo "    ⚠️  Using specific version - consider if update needed"
+              fi
+            fi
+          done
+        done
+
+    - name: Check for template improvements
+      run: |
+        echo "Checking template completeness..."
+        
+        template_files=(.github/templates/*.md)
+        
+        for template in "${template_files[@]}"; do
+          if [ -f "$template" ]; then
+            echo "Checking $template"
+            
+            # Check for required sections
+            required_sections=("Repository Context" "Example" "Remember")
+            for section in "${required_sections[@]}"; do
+              if ! grep -q "$section" "$template"; then
+                echo "  ⚠️  Missing recommended section: $section"
+              fi
+            done
+            
+            # Check for outdated references
+            if grep -q "action/checkout@v[123]" "$template"; then
+              echo "  ⚠️  Contains outdated checkout action reference"
+            fi
+          fi
+        done
+
+    - name: Generate maintenance report
+      run: |
+        echo "# Monthly Maintenance Report" > maintenance-report.md
+        echo "" >> maintenance-report.md
+        echo "Generated on: $(date)" >> maintenance-report.md
+        echo "" >> maintenance-report.md
+        
+        echo "## Repository Statistics" >> maintenance-report.md
+        echo "- Total markdown files: $(find . -name '*.md' | wc -l)" >> maintenance-report.md
+        echo "- Total workflow files: $(find .github/workflows -name '*.yml' -o -name '*.yaml' | wc -l)" >> maintenance-report.md
+        echo "- Total template files: $(find .github/templates -name '*.md' 2>/dev/null | wc -l || echo 0)" >> maintenance-report.md
+        echo "" >> maintenance-report.md
+        
+        echo "## Recent Changes" >> maintenance-report.md
+        echo "Last 10 commits:" >> maintenance-report.md
+        git log --oneline -10 >> maintenance-report.md
+        
+        # Display report
+        cat maintenance-report.md
+
+  standards-evolution:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Need history for analysis
+        
+    - name: Analyze standards growth
+      run: |
+        echo "Analyzing standards evolution..."
+        
+        echo "## copilot-upstream.md size over time:"
+        git log --oneline --follow .github/copilot-upstream.md | head -10 | while read commit message; do
+          lines=$(git show $commit:.github/copilot-upstream.md 2>/dev/null | wc -l || echo "N/A")
+          echo "$commit: $lines lines - $message"
+        done
+
+    - name: Check for content drift
+      run: |
+        echo "Checking for potential content drift..."
+        
+        # Look for very long lines that might need breaking up
+        if find . -name "*.md" -exec awk 'length > 120 {print FILENAME":"NR":"$0}' {} \; | head -5; then
+          echo "Found lines > 120 characters (consider breaking up for readability)"
+        fi
+        
+        # Check for repeated phrases that might indicate redundancy
+        echo ""
+        echo "Most common phrases (potential redundancy indicators):"
+        cat .github/copilot-upstream.md | tr '[:upper:]' '[:lower:]' | grep -o '\w\{3,\}' | sort | uniq -c | sort -nr | head -10
