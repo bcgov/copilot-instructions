@@ -43,6 +43,16 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Use modern language features appropriately
 - Prefer dynamic configuration over hardcoded values
 
+## Architecture Principles
+- Keep logic focused and single-purpose
+- Separate complex logic into testable functions
+- Handle errors gracefully with helpful error messages
+- Support both required and optional inputs with sensible defaults
+- Log important steps for debugging and monitoring
+- Consider backwards compatibility when updating interfaces
+- Design for integration with existing systems and standards
+- Plan for different deployment environments and configurations
+
 ## Core Development Workflow (Universal Principles)
 - Working First: Always ensure the application works before making multiple file changes
 - Incremental Approach: Make small, focused changes and verify functionality before proceeding
@@ -61,10 +71,33 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Search for references before deleting files
 - Never use local .env files for configuration
 
+## Configuration and Data Handling
+- Provide secure configuration examples (no hardcoded secrets)
+- Include environment-specific configuration patterns  
+- Demonstrate proper secrets management approaches
+- Show how to configure for different deployment environments
+- Include configuration validation examples
+- Implement proper data validation for measurements and inputs
+- Support statistical analysis and research requirements where applicable
+- Maintain data lineage and methodology documentation
+- Follow scientific data management best practices where applicable
+- Enable data export in research-friendly formats when needed
+- All data processing must comply with BC data sovereignty requirements
+- Sensitive location data requires special handling and access controls
+- Follow BCGov privacy guidelines for environmental and sensitive data
+- Implement proper data classification and handling procedures
+
 ## Testing Strategy
 - Verify the app works FIRST before fixing test failures (if app is broken, tests may fail for wrong reasons)
 - Prefer real data with dry runs over excessive mocking
 - Use appropriate testing frameworks for the language/environment
+- Include comprehensive testing in multiple scenarios (success, failure, edge cases)
+- Use realistic test data that mirrors actual usage patterns
+- Include both unit tests and integration tests where applicable
+- Test with actual APIs/services when possible, not just mocks
+- Include performance testing examples where relevant
+- Demonstrate proper error handling and validation patterns in tests
+- Show monitoring and observability setup examples
 
 ## Project Stability
 - **Prove Before Polish**: Implement core functionality first, test with real data before adding features
@@ -79,14 +112,19 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Add error handling for all async operations
 - Follow security guidelines in SECURITY.md
 - Never generate credentials or secrets
-- Always validate user inputs
+- Always validate user inputs thoroughly to prevent injection attacks
 - Use parameterized queries for databases
 - Follow BC Government compliance standards
 - Add input validation on public endpoints
 - Check for performance impacts
 - Review generated code for security implications
+- Never log sensitive information (tokens, passwords, personal data)
+- Use minimal required permissions (principle of least privilege)
+- Implement proper data classification and handling procedures
+- Consider security implications when code will be used by other teams
+- Validate all inputs thoroughly, especially in public-facing components
 
-## Documentation
+## Documentation Standards
 - Include JSDoc comments for functions and classes
 - Keep JSDoc comments up to date
 - Document complex logic clearly
@@ -95,6 +133,16 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Use consistent Markdown styling
 - Use [Conventional Commits](https://www.conventionalcommits.org/) format for PR titles (e.g., feat:, fix:, docs:, chore:)
 - Provide PR bodies or any markdown in a fenced code block (triple backticks) so it can be easily copied and pasted
+- README must be comprehensive and beginner-friendly
+- Include step-by-step setup instructions that assume no prior knowledge
+- Provide clear explanations of what each file/directory does
+- Include troubleshooting section for common setup issues
+- Document all configuration options with examples and defaults
+- Include usage examples for common scenarios
+- Document all inputs, outputs, and environment variables
+- Provide troubleshooting section for common issues
+- Document any breaking changes clearly in releases
+- Include learning resources and links to relevant documentation
 
 ## Linting and Automation
 - Use appropriate linters and formatters to enforce the formatting and code quality rules defined above.
@@ -112,6 +160,20 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - **Prioritize security updates** - outdated versions are security risks.
 - **Technical debt vs features** - balance new features with keeping environments current.
 - **Funding justification** - security and maintenance are valid budget priorities.
+
+## CI/CD and Dependency Management
+- Include working GitHub Actions workflows appropriate for the project type
+- Provide examples for testing, security scanning, and deployment
+- Include both basic and advanced pipeline configurations
+- Demonstrate proper secret management in CI/CD
+- Show integration with BCGov standard tools and processes
+- Keep dependencies current and security-patched
+- Include dependency update automation where appropriate
+- Document dependency choices and alternatives
+- Provide guidance on when to update vs. pin versions
+- Include security scanning for vulnerabilities
+- Test changes locally first when possible
+- Always validate that changes won't break existing functionality
 
 ## Git Workflow Best Practices
 - **Always set upstream** when creating new branches: `git push --set-upstream origin branch-name`
