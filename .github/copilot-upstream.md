@@ -26,7 +26,7 @@ git remote show origin        # Confirm correct repo
 
 ### **Main Branch Protection - ABSOLUTE RULES:**
 - **IF `git branch --show-current` returns `main`** → STOP immediately, create feature branch
-- **IF user asks to push to main** → REFUSE, explain feature branch requirement  
+- **IF user asks to push to main** → REFUSE, explain feature branch requirement
 - **IF suggestion includes `origin main`** → ERROR, must be feature branch
 
 # Key Rules
@@ -196,6 +196,7 @@ git remote show origin        # Confirm correct repo
 ### **Pattern 1: Starting New Work (ALWAYS use this sequence)**
 ```bash
 # MANDATORY - Always start with these commands in this order
+git fetch origin              # Ensure local main branch exists and is current
 git checkout main
 git pull origin main
 git checkout -b feat/descriptive-name
@@ -210,7 +211,7 @@ git branch --show-current     # Double-check branch name
 
 # Make your changes, then:
 git add .                     # or specific files
-git status                    # Review what's being committed  
+git status                    # Review what's being committed
 git commit -m "feat: descriptive message"
 ```
 
@@ -220,7 +221,9 @@ git commit -m "feat: descriptive message"
 git status                    # Confirm clean working tree
 git branch --show-current     # Confirm on feature branch (not main!)
 git fetch origin && git rebase main  # Sync with latest main
-git push --set-upstream origin $(git branch --show-current)
+# Get current branch name (requires Git 2.22+, fallback for older versions)
+BRANCH=$(git branch --show-current 2>/dev/null || git rev-parse --abbrev-ref HEAD)
+git push --set-upstream origin "$BRANCH"
 
 # Create PR
 gh pr create --title "feat: descriptive title" --body "## Summary
@@ -232,13 +235,13 @@ Brief description of changes
 ```bash
 # When PR shows out of date - use this exact sequence
 git fetch origin
-git rebase main              # If conflicts, resolve then: git rebase --continue  
+git rebase main              # If conflicts, resolve then: git rebase --continue
 git push --force-with-lease  # Safe force push
 ```
 
 ### **NEVER Commands - These Cause Problems:**
 - ❌ `git push origin main` (direct push to main)
-- ❌ `git push --force` (unsafe, use --force-with-lease)  
+- ❌ `git push --force` (unsafe, use --force-with-lease)
 - ❌ `git merge main` (creates messy history, use rebase)
 - ❌ Skipping `git status` checks (leads to mistakes)
 
@@ -273,7 +276,7 @@ git push --force-with-lease  # Safe force push
 
 # Workflows
 
-## 🚀 CONSISTENT Pull Request Patterns 
+## 🚀 CONSISTENT Pull Request Patterns
 
 ### **When User Asks: "Create a PR" - ALWAYS Use This Pattern:**
 
@@ -290,7 +293,7 @@ git log --oneline main..HEAD  # Show commits to be included
 git add .
 git commit -m "feat: descriptive conventional commit message"
 
-# Sync and push  
+# Sync and push
 git fetch origin && git rebase main
 git push --set-upstream origin $(git branch --show-current)
 
@@ -309,7 +312,7 @@ Brief description of what this PR does.
 
 ### **PR Title Rules - ALWAYS Follow:**
 - ✅ `feat: add new feature description`
-- ✅ `fix: resolve specific issue description` 
+- ✅ `fix: resolve specific issue description`
 - ✅ `docs: update documentation for X`
 - ✅ `chore: routine maintenance task`
 - ❌ Never use vague titles like "updates" or "changes"
@@ -320,9 +323,9 @@ Brief description of what this PR does.
 ## Summary
 One clear sentence describing the change.
 
-## Changes  
+## Changes
 - Specific change 1
-- Specific change 2  
+- Specific change 2
 - Any breaking changes noted
 
 ## Testing
@@ -331,7 +334,7 @@ One clear sentence describing the change.
 ```
 
 ### **AI Consistency Rules:**
-- **ALWAYS** suggest the full sequence above when user says "create PR"  
+- **ALWAYS** suggest the full sequence above when user says "create PR"
 - **NEVER** skip the pre-checks (git status, branch check)
 - **ALWAYS** include conventional commit format in title
 - **NEVER** create PR while on main branch
@@ -351,7 +354,7 @@ One clear sentence describing the change.
 
 ### **AI Response Requirements:**
 - **ALWAYS** include the full command sequence, never shortcut
-- **ALWAYS** show safety checks before any git operations  
+- **ALWAYS** show safety checks before any git operations
 - **ALWAYS** explain WHY certain commands are required
 - **NEVER** assume user is on correct branch or has clean state
 
@@ -382,7 +385,7 @@ git diff                     # Review changes
 # Options (choose based on what you see):
 git add . && git commit -m "fix: address uncommitted changes"  # Keep changes
 git stash                    # Temporarily save changes
-git checkout -- .           # DANGER: Discard all changes (ask first!)
+git restore .                # DANGER: Discard all changes (ask first!)
 ```
 
 ### **"Branch is Behind/Ahead" - Standard Recovery:**
