@@ -7,11 +7,27 @@ See README.md for VS Code settings usage.
 You are a coding assistant for BC Government projects. Follow these instructions:
 
 ## 🚨 CRITICAL SAFETY (Never Violate - Affects All BCGov Repos)
-- NEVER push directly to main - always use feature branches and PRs
-- ALWAYS check `git status` before suggesting any git operations
-- NEVER suggest merge without confirming clean working tree
-- ALWAYS use conventional commits: feat:, fix:, docs:, chore:
-- ALWAYS create PRs for review - never bypass the process
+
+### **MANDATORY Git Safety Protocol - ALWAYS Follow This Exact Order:**
+1. **ALWAYS** run `git status` first - confirm you're not on main branch
+2. **NEVER EVER** suggest `git push origin main` or `git commit` while on main
+3. **ALWAYS** create feature branch: `git checkout -b feat/description`
+4. **ALWAYS** check `git branch --show-current` shows your feature branch
+5. **ALWAYS** use conventional commits: `feat:`, `fix:`, `docs:`, `chore:`
+6. **ALWAYS** create PRs targeting main, never direct push
+
+### **Before ANY Git Operation - Run These Checks:**
+```bash
+# MANDATORY safety checks - run every time
+git status                    # Confirm clean state
+git branch --show-current     # Confirm not on main
+git remote show origin        # Confirm correct repo
+```
+
+### **Main Branch Protection - ABSOLUTE RULES:**
+- **IF `git branch --show-current` returns `main`** → STOP immediately, create feature branch
+- **IF user asks to push to main** → REFUSE, explain feature branch requirement  
+- **IF suggestion includes `origin main`** → ERROR, must be feature branch
 
 # Key Rules
 
@@ -175,13 +191,56 @@ You are a coding assistant for BC Government projects. Follow these instructions
 - Test changes locally first when possible
 - Always validate that changes won't break existing functionality
 
-## Git Workflow Best Practices
-- **Always set upstream** when creating new branches: `git push --set-upstream origin branch-name`
-- **Regular branch synchronization**: Before starting work, sync with main: `git fetch origin && git rebase main`
-- **Before creating PRs**: Ensure branch is current: `git rebase main && git push --force-with-lease`
-- **When PR shows "out of date"**: Standard fix: `git fetch origin && git rebase main && git push --force-with-lease`
-- **Proactive updates**: Keep branches current to avoid merge conflicts and stale PRs
-- **Clean history**: Prefer rebasing over merging to maintain linear commit history
+## 🔄 FOOLPROOF Git Workflows - Use These Exact Patterns
+
+### **Pattern 1: Starting New Work (ALWAYS use this sequence)**
+```bash
+# MANDATORY - Always start with these commands in this order
+git checkout main
+git pull origin main
+git checkout -b feat/descriptive-name
+git status                    # Confirm clean, on feature branch
+```
+
+### **Pattern 2: Making Changes (Standard sequence)**
+```bash
+# MANDATORY checks before any changes
+git status                    # Confirm on feature branch, not main
+git branch --show-current     # Double-check branch name
+
+# Make your changes, then:
+git add .                     # or specific files
+git status                    # Review what's being committed  
+git commit -m "feat: descriptive message"
+```
+
+### **Pattern 3: Creating PR (Use this exact sequence)**
+```bash
+# MANDATORY pre-PR checks
+git status                    # Confirm clean working tree
+git branch --show-current     # Confirm on feature branch (not main!)
+git fetch origin && git rebase main  # Sync with latest main
+git push --set-upstream origin $(git branch --show-current)
+
+# Create PR
+gh pr create --title "feat: descriptive title" --body "## Summary
+Brief description of changes
+"
+```
+
+### **Pattern 4: Fixing "Out of Date" PR (Reliable recovery)**
+```bash
+# When PR shows out of date - use this exact sequence
+git fetch origin
+git rebase main              # If conflicts, resolve then: git rebase --continue  
+git push --force-with-lease  # Safe force push
+```
+
+### **NEVER Commands - These Cause Problems:**
+- ❌ `git push origin main` (direct push to main)
+- ❌ `git push --force` (unsafe, use --force-with-lease)  
+- ❌ `git merge main` (creates messy history, use rebase)
+- ❌ Skipping `git status` checks (leads to mistakes)
 
 ### **Recommended Latest Versions:**
 - **Node.js**: Latest LTS (currently 22)
@@ -214,30 +273,143 @@ You are a coding assistant for BC Government projects. Follow these instructions
 
 # Workflows
 
-## Pull Requests
-- Always use [Conventional Commits](https://www.conventionalcommits.org/) for PR titles.
-- PR bodies must be formatted in markdown, using fenced code blocks (triple backticks).
-- When asked for a PR command, respond with a single command block that stages, commits, pushes, and creates a PR using `gh cli`.
+## 🚀 CONSISTENT Pull Request Patterns 
 
-**Example prompt:**
-> "Give me a command for PR body and title"
+### **When User Asks: "Create a PR" - ALWAYS Use This Pattern:**
 
-**Example response:**
+**MANDATORY Pre-checks:**
 ```bash
-git add .
-git commit -m "feat: add quality section and reorganize copilot instructions for clarity"
-git push origin HEAD
-gh pr create --title "feat: add quality section and reorganize copilot instructions for clarity" --body '
-## Summary
+git status                    # Must be clean, on feature branch
+git branch --show-current     # Must NOT be main
+git log --oneline main..HEAD  # Show commits to be included
+```
 
-This PR refactors instructions for clarity and adds a quality section.
+**Standard PR Creation Sequence:**
+```bash
+# Stage and commit (if needed)
+git add .
+git commit -m "feat: descriptive conventional commit message"
+
+# Sync and push  
+git fetch origin && git rebase main
+git push --set-upstream origin $(git branch --show-current)
+
+# Create PR with proper format
+gh pr create \
+  --title "feat: short descriptive title" \
+  --body "## Summary
+
+Brief description of what this PR does.
 
 ## Changes
-
-- Added quality section
-- Reorganized formatting and code style
-'
+- Bullet point of key changes
+- Another important change
+"
 ```
+
+### **PR Title Rules - ALWAYS Follow:**
+- ✅ `feat: add new feature description`
+- ✅ `fix: resolve specific issue description` 
+- ✅ `docs: update documentation for X`
+- ✅ `chore: routine maintenance task`
+- ❌ Never use vague titles like "updates" or "changes"
+- ❌ Never exceed 72 characters
+
+### **PR Body Template - Use This Format:**
+```markdown
+## Summary
+One clear sentence describing the change.
+
+## Changes  
+- Specific change 1
+- Specific change 2  
+- Any breaking changes noted
+
+## Testing
+- How this was tested
+- Any manual verification steps
+```
+
+### **AI Consistency Rules:**
+- **ALWAYS** suggest the full sequence above when user says "create PR"  
+- **NEVER** skip the pre-checks (git status, branch check)
+- **ALWAYS** include conventional commit format in title
+- **NEVER** create PR while on main branch
+
+## 🧠 AI Prompting for Consistency
+
+### **Effective User Prompts - Use These Patterns:**
+- ✅ **"Create a PR for this feature"** → Triggers full PR creation sequence
+- ✅ **"Give me the git commands to push this"** → Triggers safety checks + push
+- ✅ **"Start working on new feature X"** → Triggers new branch creation pattern
+- ✅ **"My PR is out of date, fix it"** → Triggers rebase pattern
+
+### **Prompts That Cause Problems:**
+- ❌ **"Just push this"** → Vague, may skip safety checks
+- ❌ **"Commit and push"** → May not create feature branch first
+- ❌ **"Quick PR"** → May skip quality checks
+
+### **AI Response Requirements:**
+- **ALWAYS** include the full command sequence, never shortcut
+- **ALWAYS** show safety checks before any git operations  
+- **ALWAYS** explain WHY certain commands are required
+- **NEVER** assume user is on correct branch or has clean state
+
+## 🔧 Failure Recovery Patterns - When Things Go Wrong
+
+### **"PR Creation Failed" - Recovery Steps:**
+```bash
+# Check current state
+git status
+git branch --show-current
+
+# Common fixes:
+git remote -v                 # Verify correct remote
+gh auth status               # Check GitHub CLI auth
+git push --set-upstream origin $(git branch --show-current) # Set upstream first
+
+# If still failing, create PR manually via GitHub web UI
+echo "PR creation failed - use GitHub web interface"
+echo "Navigate to: https://github.com/OWNER/REPO/compare/main...$(git branch --show-current)"
+```
+
+### **"Uncommitted Changes" - Safe Recovery:**
+```bash
+# DON'T panic, check what's uncommitted
+git status                   # See what changed
+git diff                     # Review changes
+
+# Options (choose based on what you see):
+git add . && git commit -m "fix: address uncommitted changes"  # Keep changes
+git stash                    # Temporarily save changes
+git checkout -- .           # DANGER: Discard all changes (ask first!)
+```
+
+### **"Branch is Behind/Ahead" - Standard Recovery:**
+```bash
+# Always check first
+git status
+git log --oneline --graph main..HEAD
+
+# Standard fix (works 95% of time):
+git fetch origin
+git rebase main
+git push --force-with-lease
+
+# If rebase fails:
+git rebase --abort          # Start over
+# Then ask user how to proceed
+```
+
+### **"Permission Denied" - Auth Issues:**
+```bash
+# Check authentication
+gh auth status
+git remote -v               # Verify HTTPS vs SSH
+
+# Quick fixes:
+gh auth login               # Re-authenticate
+git remote set-url origin https://github.com/OWNER/REPO.git  # Switch to HTTPS
 ```
 
 ## Collaboration Guardrails
