@@ -15,7 +15,7 @@
 
 **Before optimization:**
 - Personal rules: 151 lines
-- Included BCGov rules: 243 lines  
+- Included BCGov rules: 243 lines
 - **Total: 394 lines of instructions**
 - Result: Inconsistent behavior, safety violations
 
@@ -41,7 +41,7 @@
 ```
 Global Rules (always loaded):
 ├── Critical safety (universal)
-├── Personal preferences  
+├── Personal preferences
 └── @include shared standards
 
 Repository Rules (when present):
@@ -69,7 +69,7 @@ Based on analysis of 80+ repositories:
 - Marketplace considerations
 - Action-specific patterns
 
-### Natural Resources (`nr-*`) 
+### Natural Resources (`nr-*`)
 - Domain-specific compliance
 - Data sovereignty requirements
 - Integration patterns
@@ -84,7 +84,7 @@ Based on analysis of 80+ repositories:
 ### For Individual Users
 ```markdown
 # ~/.cursorrules or similar
-## 🚨 CRITICAL SAFETY 
+## 🚨 CRITICAL SAFETY
 [Your non-negotiable safety rules]
 
 ## Core Workflow
