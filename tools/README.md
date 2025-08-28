@@ -8,6 +8,44 @@ This directory contains tools to help maintain consistency and quality in the BC
 
 A pre-commit hook that prevents common consistency issues from being committed.
 
+## PR Creation Tools
+
+### `safe-pr.sh`
+
+A robust PR creation tool that handles common failure scenarios.
+
+**Usage:**
+```bash
+tools/safe-pr.sh "feat: add new feature" "Description of changes"
+```
+
+**What it handles:**
+- ❌ Creating PR from main branch
+- ❌ No commits ahead of main  
+- ⚠️  Uncommitted changes warnings
+- ❌ Remote branch doesn't exist
+- ❌ Non-conventional commit titles
+- ❌ GitHub CLI authentication issues
+- ❌ API rate limiting
+- 🔧 Provides manual fallbacks when automation fails
+
+### `pr-templates.sh`
+
+Generates consistent PR titles and bodies following conventional commit format.
+
+**Usage:**
+```bash
+tools/pr-templates.sh feature "add user authentication"
+tools/pr-templates.sh bugfix "fix memory leak in data processing"  
+tools/pr-templates.sh docs "improve setup instructions"
+```
+
+**Benefits:**
+- Consistent PR format across all repositories
+- Conventional commit compliance  
+- Built-in checklists and templates
+- Integration with safe-pr.sh for one-command PR creation
+
 **Installation:**
 ```bash
 cp tools/pre-commit-hook.sh .git/hooks/pre-commit
@@ -40,12 +78,19 @@ Runs on every PR to validate:
 - Markdown formatting
 - Required sections in copilot-upstream.md
 
-### `pr-quality-check.yml`
+### `pr-quality-check.yml` 
 Runs on PR creation to check:
 - Conventional commit message format
 - Indicators of uncommitted changes in PR description
 - Large file additions
 - Provides helpful next steps
+
+### `pr-creation-helper.yml`
+Manual workflow to create PRs when local tools fail:
+- Triggered via GitHub Actions web interface
+- Generates proper conventional commit titles and template bodies
+- Attempts automated PR creation with fallbacks
+- Provides manual alternatives when automation fails
 
 ### `maintenance.yml`
 Runs monthly to:

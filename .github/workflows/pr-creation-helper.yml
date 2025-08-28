@@ -1,0 +1,128 @@
+name: PR Creation Helper
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr_type:
+        description: 'Type of PR (feature/bugfix/docs/chore/refactor/ci)'
+        required: true
+        type: choice
+        options:
+        - feature
+        - bugfix  
+        - docs
+        - chore
+        - refactor
+        - ci
+      description:
+        description: 'Brief description of changes'
+        required: true
+        type: string
+      branch_name:
+        description: 'Feature branch name (without origin/)'
+        required: true
+        type: string
+
+jobs:
+  create-pr-template:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      
+    - name: Generate PR content
+      id: generate
+      run: |
+        PR_TYPE="${{ github.event.inputs.pr_type }}"
+        DESCRIPTION="${{ github.event.inputs.description }}"
+        BRANCH="${{ github.event.inputs.branch_name }}"
+        
+        # Generate title
+        case "$PR_TYPE" in
+          "feature") TITLE="feat: $DESCRIPTION" ;;
+          "bugfix") TITLE="fix: $DESCRIPTION" ;;
+          "docs") TITLE="docs: $DESCRIPTION" ;;
+          "chore") TITLE="chore: $DESCRIPTION" ;;
+          "refactor") TITLE="refactor: $DESCRIPTION" ;;
+          "ci") TITLE="ci: $DESCRIPTION" ;;
+        esac
+        
+        echo "title=$TITLE" >> $GITHUB_OUTPUT
+        
+        # Generate body
+        cat >> pr_body.md << 'EOF'
+        ## Summary
+        
+        ${{ github.event.inputs.description }}
+        
+        ## What This Changes
+        
+        - TODO: List specific changes made
+        - TODO: Mention any new features or capabilities  
+        - TODO: Note any breaking changes
+        
+        ## How to Test
+        
+        - TODO: Describe how to test these changes
+        - TODO: Include any setup requirements
+        - TODO: Mention test cases covered
+        
+        ## Checklist
+        
+        - [ ] Code follows project standards
+        - [ ] Tests added/updated where appropriate
+        - [ ] Documentation updated if needed
+        - [ ] No hardcoded personal paths or secrets
+        - [ ] Conventional commit format used
+        
+        ## Additional Notes
+        
+        TODO: Add any additional context for reviewers
+        EOF
+        
+    - name: Attempt PR creation
+      continue-on-error: true
+      id: create_pr
+      run: |
+        TITLE="${{ steps.generate.outputs.title }}"
+        BRANCH="${{ github.event.inputs.branch_name }}"
+        
+        echo "Attempting to create PR..."
+        echo "Title: $TITLE"
+        echo "Branch: $BRANCH"
+        
+        # Check if branch exists
+        if ! gh pr view "$BRANCH" >/dev/null 2>&1; then
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "$TITLE" \
+            --body-file pr_body.md \
+            --assignee DerekRoberts
+          
+          echo "✅ PR created successfully!"
+          echo "pr_created=true" >> $GITHUB_OUTPUT
+        else
+          echo "PR already exists for this branch"
+          echo "pr_created=false" >> $GITHUB_OUTPUT
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Provide fallback if creation failed
+      if: steps.create_pr.outcome == 'failure'
+      run: |
+        echo "❌ Automated PR creation failed"
+        echo ""
+        echo "🔧 Manual alternatives:"
+        echo ""
+        echo "1. Create PR manually:"
+        echo "   https://github.com/${{ github.repository }}/compare/main...${{ github.event.inputs.branch_name }}"
+        echo ""
+        echo "2. Use safe-pr tool locally:"
+        echo '   tools/safe-pr.sh "${{ steps.generate.outputs.title }}" "$(cat pr_body.md)"'
+        echo ""
+        echo "3. PR Title:"
+        echo "   ${{ steps.generate.outputs.title }}"
+        echo ""
+        echo "4. PR Body:"
+        cat pr_body.md
