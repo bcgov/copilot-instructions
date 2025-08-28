@@ -180,6 +180,24 @@ Copilot will generate a single command block that follows the shared instruction
 
 Just copy and paste the command block into your terminal—no manual editing required.
 
+## Optimization Tips
+
+If you experience inconsistent AI behavior, consider these common issues:
+
+### Instruction Overload Symptoms
+- Steps not followed reliably
+- Critical safety rules ignored (e.g., accidental pushes to main)
+- Previously working commands suddenly failing
+- AI decision paralysis with conflicting rules
+
+### Solutions
+- **Safety rules first**: Put critical rules (like git workflow protections) at the top of your instructions
+- **Hierarchical organization**: Use global rules + project-specific additions rather than duplicating everything
+- **Keep it focused**: Aim for under 300 total lines of instructions per session
+- **Move complexity to docs**: Put detailed workflows in documentation, keep instructions concise
+
+The shared instructions in this repository follow these principles with safety-critical rules prioritized first.
+
 ## Contributing
 
 We value your input! We want to make contributing as easy and transparent as possible, whether it's:
