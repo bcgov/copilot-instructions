@@ -21,5 +21,8 @@ This is a template/standards repository that distributes `copilot-upstream.md` t
 - Use GitHub Actions to enforce consistency across BCGov repos
 - Regular review to prevent instruction bloat and maintain effectiveness
 
+## Copilot Configuration
+This repository uses `.github/copilot-upstream.md` as the primary instruction source for AI coding assistance.
+
 ## Remember
 Changes to `copilot-upstream.md` impact all BCGov developers - prioritize clarity, safety, and universal applicability.
