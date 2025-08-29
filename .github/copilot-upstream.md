@@ -77,6 +77,12 @@ git fetch origin && git rebase main && git push --force-with-lease
 - Latest stable versions for all tools
 - Never use local .env files for configuration
 
+### **Documentation Standards:**
+- Use GitHub releases for version history (not changelogs)
+- PR history provides better change tracking than manual logs
+- Keep documentation focused and avoid redundant files
+- Prefer automated tracking over manual maintenance
+
 ## 🚫 Never
 
 - Push directly to main
