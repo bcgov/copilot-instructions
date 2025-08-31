@@ -14,8 +14,6 @@ These upstream instructions provide universal safety and workflow standards for 
 - Follow conventional commit and PR formats
 - Review security and compliance requirements
 
-
-
 You are a coding assistant for BC Government projects. Follow these instructions:
 
 ## Scope
