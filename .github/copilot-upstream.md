@@ -1,50 +1,71 @@
+
 <!--
 ⚙️ UPSTREAM MANAGED - DO NOT MODIFY
 ⚙️ Standard instructions for GitHub Copilot (AI coding assistant)
 See README.md for VS Code settings usage.
 -->
 
+## Layering Guidance
+These upstream instructions provide universal safety and workflow standards for BCGov projects. Teams should add project-specific rules in `.github/copilot-instructions.md`, which will complement (not override) these shared standards.
+
+## Onboarding Checklist
+- Confirm branch protection is enabled
+- Use feature branches and pull requests for all changes
+- Follow conventional commit and PR formats
+- Review security and compliance requirements
+
 You are a coding assistant for BC Government projects. Follow these instructions:
 
-## 🚨 CRITICAL SAFETY - Always Follow
+## Scope
+Upstream instructions cover:
+- Git safety and workflow
+- Formatting and code style
+- Security and compliance
+- Documentation standards
+Project-specific instructions should cover:
+- Build/test/debug commands
+- Integration points and external dependencies
+- Stack-specific rules and patterns
+
+## Integration Points
+- GitHub Actions for CI/CD automation
+- SonarCloud, Trivy, CodeQL for code analysis and security
+- Renovate for automated dependency updates
+
+## References
+No external links required for standard onboarding and workflow. See your project README or ask your team for additional resources if needed.
+
+## Documentation and References
+- Only include links to documentation or resources that have been verified to exist. Never add unverified, broken, or placeholder links.
+
+## Feedback and Iteration
+Teams are encouraged to propose improvements to this upstream file via issues or pull requests.
+- Specify integration with external APIs or services
+- Document any unique patterns or conventions
 
 ### **Git Safety Protocol:**
-```bash
-# ALWAYS run before any git operation
-git status                    # Confirm clean state, not on main
-git branch --show-current     # Must NOT be "main"
 ```
 
-### **Main Branch Protection:**
-- **IF on main branch** → STOP, create feature branch first
-- **NEVER** suggest `git push origin main`
-- **ALWAYS** use feature branches and PRs
 
 ## 🔄 Universal Git Workflow
-
-### **Start Work:**
-```bash
-git fetch origin && git checkout main && git pull origin main
 git switch -c feat/description
 git status  # Confirm on feature branch
 ```
-
-### **Commit Changes:**
-```bash
-git status  # Review changes
-git add .
-git commit -m "feat: descriptive message"  # Use conventional commits
 ```
 
 ### **Create PR:**
 ```bash
 git status  # Must be clean
 git fetch origin && git rebase main
+# REQUIRED: Set and verify upstream before PR creation
 git push --set-upstream origin $(git branch --show-current)
+git branch -vv  # MUST show origin/feature-branch as upstream
 gh pr create --title "feat: descriptive title" --body "## Summary
 
 Brief description
-"
+- Always run `git push --set-upstream origin $(git branch --show-current)` after creating or rebasing a feature branch.
+- Run `git branch -vv` and confirm your branch is tracked by origin before creating a PR or pushing further changes.
+- If upstream is not set, repeat the push command until it is.
 ```
 
 ### **Fix Out-of-Date PR:**
@@ -67,7 +88,7 @@ git fetch origin && git rebase main && git push --force-with-lease
 
 ### **Formatting:**
 - 2 spaces for indentation
-- Remove trailing whitespace
+- Remove trailing whitespace and unnecessary blank lines
 - LF line endings
 - Conventional commit format for PR titles
 
