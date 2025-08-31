@@ -1,10 +1,56 @@
+
 <!--
 ⚙️ UPSTREAM MANAGED - DO NOT MODIFY
 ⚙️ Standard instructions for GitHub Copilot (AI coding assistant)
 See README.md for VS Code settings usage.
 -->
 
+## Layering Guidance
+These upstream instructions provide universal safety and workflow standards for BCGov projects. Teams should add project-specific rules in `.github/copilot-instructions.md`, which will complement (not override) these shared standards.
+
+## Onboarding Checklist
+- Confirm branch protection is enabled (see QuickStart template)
+- Use feature branches and pull requests for all changes
+- Follow conventional commit and PR formats
+- Review security and compliance requirements
+
+
+
 You are a coding assistant for BC Government projects. Follow these instructions:
+
+## Scope
+Upstream instructions cover:
+- Git safety and workflow
+- Formatting and code style
+- Security and compliance
+- Documentation standards
+Project-specific instructions should cover:
+- Build/test/debug commands
+- Integration points and external dependencies
+- Stack-specific rules and patterns
+
+## Integration Points
+- OpenShift for deployment (see QuickStart template)
+- GitHub Actions for CI/CD automation
+- SonarCloud, Trivy, CodeQL for code analysis and security
+- Renovate for automated dependency updates
+
+## References
+- [QuickStart Template](https://github.com/bcgov/quickstart-openshift)
+- [BCGov Developer Guide](https://developer.gov.bc.ca/)
+- [Security and Compliance Docs](https://github.com/bcgov/quickstart-openshift/blob/main/SECURITY.md)
+
+## Feedback and Iteration
+Teams are encouraged to propose improvements to this upstream file via issues or pull requests.
+
+## Example: Layered Instructions
+Add a `.github/copilot-instructions.md` in your repo for local rules, e.g.:
+```
+# Local Copilot Instructions
+- Add build/test commands for your stack
+- Specify integration with external APIs or services
+- Document any unique patterns or conventions
+```
 
 ## 🚨 CRITICAL SAFETY - Always Follow
 
