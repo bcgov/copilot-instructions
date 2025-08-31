@@ -41,9 +41,7 @@ Project-specific instructions should cover:
 ## Feedback and Iteration
 Teams are encouraged to propose improvements to this upstream file via issues or pull requests.
 
-## Example: Layered Instructions
-Add a `.github/copilot-instructions.md` in your repo for local rules, e.g.:
-```
+```markdown
 # Local Copilot Instructions
 - Add build/test commands for your stack
 - Specify integration with external APIs or services
