@@ -40,57 +40,32 @@ No external links required for standard onboarding and workflow. See your projec
 
 ## Feedback and Iteration
 Teams are encouraged to propose improvements to this upstream file via issues or pull requests.
-
-```markdown
-# Local Copilot Instructions
-- Add build/test commands for your stack
 - Specify integration with external APIs or services
 - Document any unique patterns or conventions
-```
-
-## 🚨 CRITICAL SAFETY - Always Follow
 
 ### **Git Safety Protocol:**
-```bash
-# ALWAYS run before any git operation
-git status                    # Confirm clean state, not on main
-git branch --show-current     # Must NOT be "main"
 ```
 
-### **Main Branch Protection:**
-- **IF on main branch** → STOP, create feature branch first
-- **NEVER** suggest `git push origin main`
-- **ALWAYS** use feature branches and PRs
 
 ## 🔄 Universal Git Workflow
-
-### **Start Work:**
-```bash
-git fetch origin && git checkout main && git pull origin main
 git switch -c feat/description
 git status  # Confirm on feature branch
 ```
-
-### **Commit Changes:**
-```bash
-git status  # Review changes
-git add .
-git commit -m "feat: descriptive message"  # Use conventional commits
 ```
 
 ### **Create PR:**
 ```bash
 git status  # Must be clean
 git fetch origin && git rebase main
+# REQUIRED: Set and verify upstream before PR creation
 git push --set-upstream origin $(git branch --show-current)
+git branch -vv  # MUST show origin/feature-branch as upstream
 gh pr create --title "feat: descriptive title" --body "## Summary
 
 Brief description
-"
-**Checklist: Before creating a PR**
-- Always run `git push --set-upstream origin $(git branch --show-current)` if the branch is not already tracked upstream.
-- Confirm upstream is set with `git branch -vv` (look for `origin/branch-name` in the output).
-- If unsure, check with `git status` and repeat the upstream command as needed.
+- Always run `git push --set-upstream origin $(git branch --show-current)` after creating or rebasing a feature branch.
+- Run `git branch -vv` and confirm your branch is tracked by origin before creating a PR or pushing further changes.
+- If upstream is not set, repeat the push command until it is.
 ```
 
 ### **Fix Out-of-Date PR:**
