@@ -87,7 +87,10 @@ gh pr create --title "feat: descriptive title" --body "## Summary
 
 Brief description
 "
-> Use double quotes for the PR body and include line breaks directly for Markdown formatting. Properly escape special characters (e.g., use \" for quotes, \\ for backslashes) to ensure correct rendering and command execution.
+**Checklist: Before creating a PR**
+- Always run `git push --set-upstream origin $(git branch --show-current)` if the branch is not already tracked upstream.
+- Confirm upstream is set with `git branch -vv` (look for `origin/branch-name` in the output).
+- If unsure, check with `git status` and repeat the upstream command as needed.
 ```
 
 ### **Fix Out-of-Date PR:**
