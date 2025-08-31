@@ -9,7 +9,7 @@ See README.md for VS Code settings usage.
 These upstream instructions provide universal safety and workflow standards for BCGov projects. Teams should add project-specific rules in `.github/copilot-instructions.md`, which will complement (not override) these shared standards.
 
 ## Onboarding Checklist
-- Confirm branch protection is enabled (see QuickStart template)
+- Confirm branch protection is enabled
 - Use feature branches and pull requests for all changes
 - Follow conventional commit and PR formats
 - Review security and compliance requirements
@@ -28,15 +28,15 @@ Project-specific instructions should cover:
 - Stack-specific rules and patterns
 
 ## Integration Points
-- OpenShift for deployment (see QuickStart template)
 - GitHub Actions for CI/CD automation
 - SonarCloud, Trivy, CodeQL for code analysis and security
 - Renovate for automated dependency updates
 
 ## References
-- [QuickStart Template](https://github.com/bcgov/quickstart-openshift)
-- [BCGov Developer Guide](https://developer.gov.bc.ca/)
-- [Security and Compliance Docs](https://github.com/bcgov/quickstart-openshift/blob/main/SECURITY.md)
+No external links required for standard onboarding and workflow. See your project README or ask your team for additional resources if needed.
+
+## Documentation and References
+- Only include links to documentation or resources that have been verified to exist. Never add unverified, broken, or placeholder links.
 
 ## Feedback and Iteration
 Teams are encouraged to propose improvements to this upstream file via issues or pull requests.
@@ -87,6 +87,7 @@ gh pr create --title "feat: descriptive title" --body "## Summary
 
 Brief description
 "
+> Use double quotes for the PR body and include line breaks directly for Markdown formatting. Properly escape special characters (e.g., use \" for quotes, \\ for backslashes) to ensure correct rendering and command execution.
 ```
 
 ### **Fix Out-of-Date PR:**
@@ -109,7 +110,7 @@ git fetch origin && git rebase main && git push --force-with-lease
 
 ### **Formatting:**
 - 2 spaces for indentation
-- Remove trailing whitespace
+- Remove trailing whitespace and unnecessary blank lines
 - LF line endings
 - Conventional commit format for PR titles
 
