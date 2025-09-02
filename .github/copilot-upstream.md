@@ -32,10 +32,8 @@ Project-specific instructions should cover:
 - SonarCloud, Trivy, CodeQL for code analysis and security
 - Renovate for automated dependency updates
 
-## References
-No external links required for standard onboarding and workflow. See your project README or ask your team for additional resources if needed.
-
 ## Documentation and References
+- No external links required for standard onboarding and workflow. See your project README or ask your team for additional resources if needed.
 - Only include links to documentation or resources that have been verified to exist. Never add unverified, broken, or placeholder links.
 
 ## Feedback and Iteration
