@@ -127,7 +127,7 @@ This will affect only the current repository. It is useful when projects have co
      ```
 
    - **Programmatic method (Linux, macOS)**
-   
+
      Use `jq` to add or update the Copilot instruction settings:
 
      ```bash
@@ -248,9 +248,11 @@ This repository includes a metrics tool (`metrics-tracker.sh`) that analyzes AI 
 # Analyze instruction complexity
 ./metrics-tracker.sh .github/copilot-upstream.md
 
-# Get actionable insights and recommendations
-# Tool provides warnings for excessive complexity
-# Helps maintain instruction quality and effectiveness
+# The tool provides:
+# - Line count analysis with warnings for excessive length
+# - Section count assessment for organization quality
+# - Decision point analysis for rule complexity
+# - Actionable recommendations for improvement
 ```
 
 ## Additional Resources
