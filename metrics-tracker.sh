@@ -1,76 +1,107 @@
 #!/bin/bash
-# AI Instruction Complexity Metrics Tracker
+# AI Instruction Complexity Analyzer
+# Simple, focused analysis with actionable insights
 
-analyze_file() {
+set -euo pipefail
+
+# Analysis thresholds
+readonly WARNING_LINES=200
+readonly EXCESSIVE_LINES=300
+readonly WARNING_HEADERS=15
+readonly EXCESSIVE_HEADERS=25
+
+analyze_instructions() {
     local file="$1"
-    echo "=== $file ==="
-    echo "Lines: $(wc -l < "$file")"
-    echo "Words: $(wc -w < "$file")"
-    echo "Characters: $(wc -c < "$file")"
-    echo "Headers (sections): $(grep -c '^##' "$file")"
-    local code_block_ticks
-    code_block_ticks=$(grep -c '```' "$file")
-    if (( code_block_ticks % 2 == 0 )); then
-        echo "Code blocks: $((code_block_ticks / 2))"
-    else
-        echo "Code blocks: $((code_block_ticks / 2)) (Warning: Odd number of triple backticks, possible unclosed code block)"
+
+    if [[ ! -f "$file" ]]; then
+        echo "❌ File not found: $file"
+        return 1
     fi
-    echo "Decision points (IF/NEVER/ALWAYS): $(grep -c 'IF\|NEVER\|ALWAYS' "$file")"
-    echo "Workflow patterns: $(grep -c 'Pattern\|Sequence\|Template' "$file")"
+
+    echo "📊 AI INSTRUCTION ANALYSIS: $file"
+    echo "Generated: $(date)"
+    echo ""
+
+    # Get basic metrics
+    local lines words headers
+    lines=$(wc -l < "$file")
+    words=$(wc -w < "$file")
+    headers=$(grep -c '^##' "$file" 2>/dev/null || echo "0")
+
+    # Display metrics
+    echo "=== METRICS ==="
+    echo "Lines: $lines"
+    echo "Words: $words"
+    echo "Sections: $headers"
+    echo ""
+
+    # Provide actionable insights
+    echo "=== INSIGHTS ==="
+
+    # Line count analysis
+    if [[ "$lines" -gt "$EXCESSIVE_LINES" ]]; then
+        echo "🚨 EXCESSIVE: $lines lines exceeds recommended limit of $EXCESSIVE_LINES"
+        echo "   Consider breaking into smaller, focused instruction files"
+    elif [[ "$lines" -gt "$WARNING_LINES" ]]; then
+        echo "⚠️  WARNING: $lines lines approaching limit of $EXCESSIVE_LINES"
+        echo "   Review for unnecessary content or consider reorganization"
+    else
+        echo "✅ GOOD: $lines lines is within recommended range"
+    fi
+
+    # Header analysis
+    if [[ "$headers" -gt "$EXCESSIVE_HEADERS" ]]; then
+        echo "🚨 EXCESSIVE: $headers sections may indicate over-organization"
+        echo "   Consider consolidating related sections"
+    elif [[ "$headers" -gt "$WARNING_HEADERS" ]]; then
+        echo "⚠️  WARNING: $headers sections - review organization"
+    else
+        echo "✅ GOOD: $headers sections provides clear structure"
+    fi
+
+    # Decision complexity
+    local decisions
+    decisions=$(grep -c 'IF\|NEVER\|ALWAYS' "$file" 2>/dev/null || echo "0")
+    # Clean up any newlines or extra output
+    decisions=$(echo "$decisions" | tr -d '\n' | tr -d ' ')
+    if [[ "$decisions" -gt 10 ]]; then
+        echo "⚠️  WARNING: $decisions decision points may create rigid constraints"
+        echo "   Consider if all rules are necessary"
+    elif [[ "$decisions" -gt 0 ]]; then
+        echo "✅ GOOD: $decisions decision points provide clear guidance"
+    else
+        echo "ℹ️  INFO: No hard decision points - flexible guidance"
+    fi
+
+    echo ""
+    echo "=== RECOMMENDATIONS ==="
+
+    if [[ "$lines" -gt "$WARNING_LINES" ]]; then
+        echo "• Break large files into focused, topic-specific instructions"
+        echo "• Remove outdated or redundant content"
+        echo "• Consider if all sections are actively used"
+    fi
+
+    if [[ "$headers" -gt "$WARNING_HEADERS" ]]; then
+        echo "• Consolidate related sections under broader categories"
+        echo "• Use subsections (###) for detailed breakdowns"
+        echo "• Ensure each section has clear, distinct purpose"
+    fi
+
+    if [[ "$decisions" -gt 5 ]]; then
+        echo "• Review if all rules are still necessary"
+        echo "• Consider converting rigid rules to flexible guidance"
+        echo "• Focus on principles rather than specific constraints"
+    fi
+
     echo ""
 }
 
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <file1> [file2] [file3]..."
+# Main execution
+if [[ $# -eq 0 ]]; then
+    echo "Usage: $0 <instruction-file>"
+    echo "Example: $0 .github/copilot-upstream.md"
     exit 1
 fi
 
-echo "📏 AI INSTRUCTION COMPLEXITY METRICS"
-echo "Generated: $(date)"
-echo ""
-
-for file in "$@"; do
-    if [ -f "$file" ]; then
-        analyze_file "$file"
-    else
-        echo "File not found: $file"
-    fi
-done
-
-# If comparing two files, show reduction percentages
-if [ $# -eq 2 ]; then
-    file1="$1"
-    file2="$2"
-    if [ -f "$file1" ] && [ -f "$file2" ]; then
-        echo "=== REDUCTION ANALYSIS ($file1 → $file2) ==="
-        lines1=$(wc -l < "$file1")
-        lines2=$(wc -l < "$file2")
-        words1=$(wc -w < "$file1")
-        words2=$(wc -w < "$file2")
-        headers1=$(grep -c '^##' "$file1")
-        headers2=$(grep -c '^##' "$file2")
-        decisions1=$(grep -c 'IF\|NEVER\|ALWAYS' "$file1")
-        decisions2=$(grep -c 'IF\|NEVER\|ALWAYS' "$file2")
-
-        if [ "$lines1" -eq 0 ]; then
-            echo "Lines: N/A (file1 has zero lines)"
-        else
-            echo "Lines: $(echo "scale=1; ($lines1 - $lines2) / $lines1 * 100" | bc)%"
-        fi
-        if [ "$words1" -eq 0 ]; then
-            echo "Words: N/A (file1 has zero words)"
-        else
-            echo "Words: $(echo "scale=1; ($words1 - $words2) / $words1 * 100" | bc)%"
-        fi
-        if [ "$headers1" -eq 0 ]; then
-            echo "Headers: N/A (file1 has zero headers)"
-        else
-            echo "Headers: $(echo "scale=1; ($headers1 - $headers2) / $headers1 * 100" | bc)%"
-        fi
-        if [ "$decisions1" -eq 0 ]; then
-            echo "Decision Points: N/A (file1 has zero decision points)"
-        else
-            echo "Decision Points: $(echo "scale=1; ($decisions1 - $decisions2) / $decisions1 * 100" | bc)%"
-        fi
-    fi
-fi
+analyze_instructions "$1"
