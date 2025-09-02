@@ -51,8 +51,6 @@ shared_stats=$(analyze_layer "2. SHARED LAYER" ".github/copilot-upstream.md" "BC
 # Layer 3: Repository-specific (this repo)
 repo_stats=$(analyze_layer "3. REPOSITORY LAYER" ".github/copilot-instructions.md" "Repository-specific guidance")
 
-# Layer 4: Mystery AI folder
-mystery_stats=$(analyze_layer "4. MYSTERY LAYER" "$HOME/Documents/AI" "Unknown purpose folder")
 
 echo "=== ECOSYSTEM TOTALS ==="
 echo ""
@@ -63,7 +61,7 @@ total_words=0
 total_headers=0
 total_decisions=0
 
-for stats in "$personal_stats" "$shared_stats" "$repo_stats" "$mystery_stats"; do
+for stats in "$personal_stats" "$shared_stats" "$repo_stats"; do
     if [ -n "$stats" ]; then
         read lines words headers decisions <<< "$stats"
         total_lines=$((total_lines + lines))
@@ -96,16 +94,4 @@ elif [ $total_decisions -lt 25 ]; then
     echo "⚠️  CAUTION: Moderate decision complexity"
 else
     echo "🚨 OVERLOAD: High decision complexity, AI confusion likely"
-fi
-
-echo ""
-echo "=== MYSTERY FOLDER ANALYSIS ==="
-if [ -d "$HOME/Documents/AI" ]; then
-    echo "📁 ~/Documents/AI folder contents:"
-    find "$HOME/Documents/AI" -name "*.md" 2>/dev/null | head -10
-    echo ""
-    echo "Total .md files: $(find "$HOME/Documents/AI" -name "*.md" 2>/dev/null | wc -l)"
-    echo "Total files: $(find "$HOME/Documents/AI" -type f 2>/dev/null | wc -l)"
-else
-    echo "❓ ~/Documents/AI folder not found or not accessible"
 fi
