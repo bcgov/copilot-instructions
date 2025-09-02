@@ -1,6 +1,8 @@
 #!/bin/bash
 # AI Instruction Complexity Metrics Tracker
 
+set -euo pipefail  # Strict error handling for better reliability
+
 analyze_file() {
     local file="$1"
     echo "=== $file ==="
