@@ -1,214 +1,51 @@
-# Shared Copilot Instructions
+# AI Instruction Standards Repository
 
-Shared VS Code configuration to accelerate and guide the use of GitHub Copilot, an AI coding assistant.
+This repository contains standardized AI instruction sets for BC Government projects, ensuring consistency, security, and best practices across development teams.
 
-## Installation
+## Purpose
 
-### All Workspaces (Recommended)
+- **Centralized Standards**: Single source of truth for AI coding assistant instructions
+- **BCGov Compliance**: Built-in security and compliance requirements
+- **Team Efficiency**: Reduced onboarding time and improved code quality
+- **Consistency**: Uniform AI behavior across all projects
 
-This configuration applies the upstream Copilot instructions globally across all VS Code workspaces.
+## Structure
 
-1. **Download or update the upstream instructions centrally**
+- `.github/copilot-upstream.md` - Universal safety and workflow standards
+- `.github/copilot-instructions.md` - Project-specific guidance
+- Scripts for analyzing instruction complexity and performance
 
-   Copy `.github/copilot-upstream.md` to your home directory manually or using the commands below (Linux, macOS).
+## AI Instruction Standards
 
-   ```bash
-   mkdir -p ~/.config
-   curl -Lo ~/.config/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
-   ```
+### Core Principles
+- **Verify app works FIRST** before making multiple changes
+- **Small, focused changes** over large refactoring
+- **Incremental improvements** with verification at each step
+- **Never use local .env files** for configuration
 
-2. **Configure VS Code to use the instructions**
+### Git Workflow Standards
+- Use feature branches and pull requests for all changes
+- Follow conventional commit format: `feat:`, `fix:`, `docs:`, `chore:`
+- Use modern Git commands: `git switch -c`, `git restore`
+- Set upstream before PR creation: `git push --set-upstream origin $(git branch --show-current)`
 
-   Create or update `settings.json`, using an **absolute path** to your file.
+### Performance Standards
+- Monitor instruction complexity to prevent bloat
+- Use metrics tracking for optimization decisions
+- Implement caching and parallel processing where appropriate
+- Maintain readability and maintainability
 
-   - **Manual method (Linux, macOS)**
+## Usage
 
-     Suggested location: `~/.config/Code/User/settings.json`
-
-     ```jsonc
-     {
-       "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-       "github.copilot.chat.codeGeneration.instructions": [
-         {
-           "file": "/home/<YOUR_USER_NAME>/.config/copilot-upstream.md"
-         }
-       ]
-     }
-     ```
-
-   - **Manual method (Windows)**
-
-     Suggested location: `%APPDATA%\Code\User\settings.json`
-
-     ```jsonc
-     {
-       "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-       "github.copilot.chat.codeGeneration.instructions": [
-         {
-           "file": "C:\\Users\\<YOUR_USER_NAME>\\.config\\copilot-upstream.md"
-         }
-       ]
-     }
-     ```
-
-   - **Programmatic method (Linux)**
-
-     ```bash
-     SETTINGS="$HOME/.config/Code/User/settings.json"
-     mkdir -p "$(dirname "$SETTINGS")"
-     [ -s "$SETTINGS" ] || echo '{}' > "$SETTINGS"
-
-     jq --arg file "$HOME/.config/copilot-upstream.md" '
-       . + {
-         "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-         "github.copilot.chat.codeGeneration.instructions": [ { "file": $file } ]
-       }
-     ' "$SETTINGS" > "$SETTINGS.tmp" && mv "$SETTINGS.tmp" "$SETTINGS"
-     ```
-
-   - **Programmatic method (macOS)**
-
-     ```bash
-     SETTINGS="$HOME/Library/Application\ Support/Code/User/settings.json"
-     mkdir -p "$(dirname "$SETTINGS")"
-     [ -s "$SETTINGS" ] || echo '{}' > "$SETTINGS"
-
-     jq --arg file "$HOME/.config/copilot-upstream.md" '
-       . + {
-         "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-         "github.copilot.chat.codeGeneration.instructions": [ { "file": $file } ]
-       }
-     ' "$SETTINGS" > "$SETTINGS.tmp" && mv "$SETTINGS.tmp" "$SETTINGS"
-     ```
-
-   **Note: Programmatic methods only work for properly formatted JSON in `settings.json`. VS Code allows inconsistencies, while `jq` does not.**
-
-### Single Repository
-
-This will affect only the current repository. It is useful when projects have conflicting or incompatible requirements.
-
-1. **Download the upstream instructions to your repository**
-
-   Copy `.github/copilot-upstream.md` manually or use the commands below (Linux, macOS). Make sure to commit this file to your repository.
-
-   ```bash
-   mkdir -p .github
-   curl -Lo .github/copilot-upstream.md https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-upstream.md
-   ```
-
-2. **Configure VS Code to use the instructions**
-
-   Configure VS Code Workspace settings (`.vscode/settings.json`) manually **or** programmatically:
-
-   - **Manual method (Linux, macOS)**
-
-     ```jsonc
-     {
-       "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-       "github.copilot.chat.codeGeneration.instructions": [
-         {
-           "file": ".github/copilot-upstream.md"
-         }
-       ]
-     }
-     ```
-
-   - **Manual method (Windows)**
-
-     ```jsonc
-     {
-       "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-       "github.copilot.chat.codeGeneration.instructions": [
-         {
-           "file": ".github\\copilot-upstream.md"
-         }
-       ]
-     }
-     ```
-
-   - **Programmatic method (Linux, macOS)**
-   
-     Use `jq` to add or update the Copilot instruction settings:
-
-     ```bash
-     mkdir -p .vscode
-     [ -s .vscode/settings.json ] || echo '{}' > .vscode/settings.json
-
-     jq '.
-       + {"github.copilot.chat.codeGeneration.useInstructionFiles": true}
-       + {"github.copilot.chat.codeGeneration.instructions": [{"file": ".github/copilot-upstream.md"}]}
-     ' .vscode/settings.json > .vscode/settings.tmp && mv .vscode/settings.tmp .vscode/settings.json
-     ```
-
-### Notes
-
-**Absolute Paths:**
-
-Only absolute paths work in global `settings.json`.
-
-**Synchronization:**
-
-If VS Code is synchronizing settings across devices, make sure this file is present on those devices.
-
-**Safety/Reliability:**
-
-If the path is not valid, there will be no effect. It is harmless.
-
-**Updates:**
-
-Replace your copy of this file periodically to receive updated configurations.
-
-**Customization:**
-
-Put your changes in a separate file. The default repo location is `.github/copilot-instructions.md`.
-
-**Usage:**
-
-For most projects, the default setup works well out of the box.
-
-## Examples
-
-### Creating Pull Requests with Copilot and GitHub CLI
-
-To quickly create a pull request from the terminal, ask Copilot:
-
-> "Give me a PR command using gh cli."
-
-
-
-Copilot will generate a single command block that follows the shared instructions in `.github/copilot-upstream.md`, including a conventional commit title and a markdown-formatted PR body.
-
-Just copy and paste the command block into your terminal—no manual editing required.
-
-## Optimization Tips
-
-If you experience inconsistent AI behavior, consider these common issues:
-
-### Instruction Overload Symptoms
-- Steps not followed reliably
-- Critical safety rules ignored (e.g., accidental pushes to main)
-- Previously working commands suddenly failing
-- AI decision paralysis with conflicting rules
-
-### Solutions
-- **Safety rules first**: Put critical rules (like git workflow protections) at the top of your instructions
-- **Hierarchical organization**: Use global rules + project-specific additions rather than duplicating everything
-- **Keep it focused**: Aim for under 300 total lines of instructions per session
-- **Move complexity to docs**: Put detailed workflows in documentation, keep instructions concise
-
-The shared instructions in this repository follow these principles with safety-critical rules prioritized first.
+1. **Clone this repository** to your local development environment
+2. **Reference the standards** in your AI coding assistant configuration
+3. **Follow the workflow** for all code changes
+4. **Contribute improvements** via pull requests following the established standards
 
 ## Contributing
 
-We value your input! We want to make contributing as easy and transparent as possible, whether it's:
+See `.github/copilot-upstream.md` for detailed contribution guidelines and workflow standards.
 
-- Reporting a bug
-- Discussing the current state of the guidelines
-- Submitting a feature or fix
-- Proposing new features
-- Becoming a maintainer
+---
 
-## Additional Resources
-
-- [VS Code Copilot Documentation](https://code.visualstudio.com/docs/copilot/overview)
-- [Customizing Copilot](https://code.visualstudio.com/docs/copilot/copilot-customization)
+*This repository serves as the foundation for consistent AI-assisted development across BC Government projects.*
