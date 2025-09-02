@@ -1,6 +1,7 @@
 #!/bin/bash
 # AI Instruction Complexity Analyzer
 # Simple, focused analysis with actionable insights
+# Demonstrates rule compliance and documentation standards
 
 set -euo pipefail
 
