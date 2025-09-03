@@ -202,58 +202,148 @@ The shared instructions in this repository follow these principles with safety-c
 
 We value your input! We want to make contributing as easy and transparent as possible, whether it's:
 
-- Reporting a bug
-- Discussing the current state of the guidelines
-- Submitting a feature or fix
-- Proposing new features
-- Becoming a maintainer
+* Reporting a bug
+* Discussing the current state of the guidelines
+* Submitting a feature or fix
+* Proposing new features
+* Becoming a maintainer
 
-## AI Instruction Complexity Analysis
+## AI Safety and Git Protection
 
-This repository includes a metrics tool (`metrics-tracker.sh`) that analyzes AI instruction complexity based on research-backed principles.
+**For BCGov AI Test Group Teams Only**
 
-### Research Basis for Metrics
+As AI coding assistants become more common in government development, protecting against accidental repository damage becomes critical. This section documents a git safety solution specifically designed for government DevOps teams working with AI.
 
-#### Line Count Thresholds (200/300 lines)
-- **Cognitive Load Management**: Research shows humans can effectively process ~7±2 chunks of information at once
-- **Instruction Maintenance**: Longer files become harder to maintain and update effectively
-- **AI Processing**: Large instruction sets can overwhelm AI context windows and reduce effectiveness
+### The Problem
 
-#### Section Count Thresholds (15/25 sections)
-- **Information Architecture**: Cognitive science research indicates optimal organization limits
-- **Navigation Efficiency**: Too many sections can make instructions hard to navigate and reference
-- **Maintenance Burden**: Over-organization increases update complexity without proportional benefits
+AI coding assistants (GitHub Copilot, Cursor, etc.) operate with your credentials and can:
+- **Push directly to main branches** (bypassing PR requirements)
+- **Force push** to any branch (potentially losing work)
+- **Delete branches** without understanding the consequences
+- **Override branch protection rules** using your admin access
 
-#### Decision Point Thresholds (5/10 rules)
-- **AI Flexibility**: Too many rigid rules can reduce AI adaptability and creativity
-- **Human Comprehension**: Complex rule sets become harder for teams to understand and maintain
-- **Instruction Effectiveness**: Research shows focused, principle-based guidance outperforms rigid constraints
+Traditional solutions like git hooks are impractical for teams managing 80+ repositories across multiple organizations.
 
-### Academic Sources
+### The Solution: Git Safety Function
 
-- **Prompt Engineering Research**: Studies on LLM instruction effectiveness and complexity management
-- **Cognitive Load Theory**: Research on human information processing and organization
-- **AI-Human Interaction**: Studies on effective communication between humans and AI systems
-- **Software Engineering**: Research on documentation complexity and maintainability
+A bash function that intercepts dangerous git operations while maintaining full functionality for normal development work.
 
-### Industry Standards
+#### Features
 
-- **Microsoft Copilot Research**: Studies on effective AI coding assistance
-- **GitHub AI Guidelines**: Best practices for AI instruction management
-- **Prompt Engineering Frameworks**: Industry standards for AI instruction design
+- **Dynamic default branch detection** - works on `main`, `master`, `develop`, or any naming convention
+- **Lazy performance optimization** - only checks when needed (push operations)
+- **Portable across repos** - no per-repository configuration required
+- **Admin override available** - emergency access when needed
 
-### Using the Metrics Tool
+#### Implementation
+
+Add this to your `~/.bashrc` or centralized bash configuration:
 
 ```bash
-# Analyze instruction complexity
-./metrics-tracker.sh .github/copilot-upstream.md
+# Git Safety Function - Prevents dangerous operations by AI
+git() {
+    local args="$*"
 
-# The tool provides:
-# - Line count analysis with warnings for excessive length
-# - Section count assessment for organization quality
-# - Decision point analysis for rule complexity
-# - Actionable recommendations for improvement
+    # Only detect default branch for push operations (lazy detection)
+    if [[ "$args" == *"push"* ]]; then
+        local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+
+        # Block pushing to default branch (any method)
+        if [[ "$args" == *"push"*"$default_branch"* ]] || ([[ "$args" == "push" ]] && [[ "$(command git branch --show-current 2>/dev/null)" = "$default_branch" ]]); then
+            echo "🚨 BLOCKED: Never push to default branch ($default_branch)! Use feature branches and PRs."
+            return 1
+        fi
+    fi
+
+    # Block deleting main branch (keep this simple for now)
+    if [[ "$args" == *"branch"*"-d"*"main"* ]] || [[ "$args" == *"branch"*"-D"*"main"* ]]; then
+        echo "🚨 BLOCKED: Never delete main branch!"
+        return 1
+    fi
+
+    # If we get here, run the normal git command
+    $(command which git) "$@"
+}
 ```
+
+#### How It Works
+
+1. **Intercepts all `git` commands** via function override
+2. **Detects default branch dynamically** only when needed (push operations)
+3. **Blocks dangerous operations** with clear error messages
+4. **Allows safe operations** to pass through normally
+5. **Uses `$(command which git)`** to call the real git binary
+
+#### Admin Override: The `command` Workaround
+
+When you need to perform admin operations (push to main, force push, etc.), use the `command` prefix:
+
+```bash
+# Normal git command (gets blocked)
+git push origin main
+# → 🚨 BLOCKED: Never push to default branch (main)! Use feature branches and PRs.
+
+# Admin override (bypasses protection)
+command git push origin main
+# → Executes normally
+```
+
+**Why This Works:**
+- **`command`** bypasses shell functions and aliases
+- **`command git`** calls the real git binary directly
+- **Your function never runs** when using `command`
+- **Full admin access** when you need it
+
+#### Installation
+
+1. **Add the function** to your bashrc or centralized bash configuration
+2. **Reload your shell** or source the file
+3. **Test the protection** with `git push origin main` (should be blocked)
+4. **Test admin override** with `command git push origin main` (should work)
+
+#### Benefits for Government Teams
+
+- **No per-repo configuration** - works immediately on all repositories
+- **Performance optimized** - minimal overhead for normal operations
+- **Portable** - works on any Linux/macOS system
+- **Secure** - prevents AI from using your credentials destructively
+- **Maintainable** - single function handles all protection logic
+
+#### When to Use
+
+- **AI coding assistants** (GitHub Copilot, Cursor, etc.)
+- **Large repository portfolios** (50+ repos)
+- **Cross-organizational development** (BCGov, multiple teams)
+- **DevOps automation** (scripts, CI/CD, etc.)
+
+#### Security Notes
+
+- **This is credential-level protection** - prevents AI from bypassing your access
+- **Not a replacement for branch protection rules** - use both for defense in depth
+- **Personal use only** - don't share credentials with AI tools
+- **Regular review** - periodically check what AI tools have access to
+
+### Example Usage
+
+```bash
+# Setup
+source ~/.bashrc  # or wherever you store the function
+
+# Test protection
+git push origin main
+# → 🚨 BLOCKED: Never push to default branch (main)! Use feature branches and PRs.
+
+# Test admin override
+command git push origin main
+# → Executes normally
+
+# Normal development
+git status          # → Works normally
+git checkout -b feature  # → Works normally
+git commit -m "feat: new feature"  # → Works normally
+```
+
+This solution provides the safety needed for AI-assisted development while maintaining the flexibility required for government DevOps operations.
 
 ## Additional Resources
 
