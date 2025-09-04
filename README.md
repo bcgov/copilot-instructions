@@ -274,17 +274,6 @@ git() {
 4. **Allows safe operations** to pass through normally
 5. **Uses `$(command which git)`** to call the real git binary
 
-#### System-wide Protection with `/etc/profile.d/`
-
-When placed in `/etc/profile.d/`, the git safety function becomes available to **every bash session on the system**:
-
-- **Automatic sourcing** - every shell automatically loads the protection
-- **AI assistant coverage** - fresh shells (including AI tools) get protection
-- **Universal protection** - works in personal terminals, IDEs, SSH, etc.
-- **No configuration needed** - protection is always active
-
-**Think of `/etc/profile.d/` as "system-wide bashrc includes"** - every bash session automatically gets your git safety rules!
-
 #### Admin Override: The `command` Workaround
 
 When you need to perform admin operations (push to main, force push, etc.), use the `command` prefix:
@@ -307,69 +296,10 @@ command git push origin main
 
 #### Installation
 
-##### Option 1: Personal Protection (bashrc)
-1. **Add the function** to your `~/.bashrc` or centralized bash configuration
+1. **Add the function** to your bashrc or centralized bash configuration
 2. **Reload your shell** or source the file
 3. **Test the protection** with `git push origin main` (should be blocked)
 4. **Test admin override** with `command git push origin main` (should work)
-
-##### Option 2: System-wide Protection (Recommended)
-For maximum protection across all users and AI assistants:
-
-1. **Create system-wide git safety file:**
-   ```bash
-   sudo mkdir -p /etc/profile.d
-   sudo tee /etc/profile.d/git-safety.sh > /dev/null << 'EOF'
-   #!/bin/bash
-
-   # Git Safety Function - Prevents dangerous operations by AI and all users
-   git() {
-       local args="$*"
-
-       # Only detect default branch for push operations (lazy detection)
-       if [[ "$args" == *"push"* ]]; then
-           local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
-
-           # Block pushing to default branch (any method)
-           if [[ "$args" == *"push"*"$default_branch"* ]] || ([[ "$args" == "push" ]] && [[ "$(command git branch --show-current 2>/dev/null)" = "$default_branch" ]]); then
-               echo "🚨 BLOCKED: Never push to default branch ($default_branch)! Use feature branches and PRs."
-               return 1
-           fi
-       fi
-
-       # Block deleting main branch (keep this simple for now)
-       if [[ "$args" == *"branch"*"-d"*"main"* ]] || [[ "$args" == *"branch"*"-D"*"main"* ]]; then
-           echo "🚨 BLOCKED: Never delete main branch!"
-           return 1
-       fi
-
-       # If we get here, run the normal git command
-       $(command which git) "$@"
-   }
-
-   # Export the function so it's available in subshells
-   export -f git
-   EOF
-   ```
-
-2. **Make it executable:**
-   ```bash
-   sudo chmod +x /etc/profile.d/git-safety.sh
-   ```
-
-3. **Test system-wide protection:**
-   ```bash
-   # Test that it's working
-   git push origin main
-   # → 🚨 BLOCKED: Never push to default branch (main)! Use feature branches and PRs.
-   ```
-
-**Why System-wide is Better:**
-- **Protects ALL users** on the system automatically
-- **Protects AI assistants** (GitHub Copilot, Cursor, etc.) regardless of shell context
-- **Works in any terminal** (personal, IDE, SSH, etc.)
-- **No per-user setup** required
-- **Bulletproof protection** against accidental main pushes
 
 #### Benefits for Government Teams
 
