@@ -174,8 +174,6 @@ To quickly create a pull request from the terminal, ask Copilot:
 
 > "Give me a PR command using gh cli."
 
-
-
 Copilot will generate a single command block that follows the shared instructions in `.github/copilot-upstream.md`, including a conventional commit title and a markdown-formatted PR body.
 
 Just copy and paste the command block into your terminal—no manual editing required.
@@ -254,6 +252,36 @@ This repository includes a metrics tool (`metrics-tracker.sh`) that analyzes AI 
 # - Decision point analysis for rule complexity
 # - Actionable recommendations for improvement
 ```
+
+#### System-wide Protection (Recommended)
+
+AI coding assistants get fresh shells without your personal bashrc, so they can accidentally push to main and break your projects. This solution prevents that by placing git safety in `/etc/profile.d/`, making protection available to every shell on the system automatically:
+
+```bash
+sudo mkdir -p /etc/profile.d
+sudo tee /etc/profile.d/git-safety.sh > /dev/null << 'EOF'
+#!/bin/bash
+git() {
+    local args="$*"
+    if [[ "$args" == *"push"* ]]; then
+        local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+        if [[ "$args" == *"push"*"$default_branch"* ]] || ([[ "$args" == "push" ]] && [[ "$(command git branch --show-current 2>/dev/null)" = "$default_branch" ]]); then
+            echo "🚨 BLOCKED: Never push to default branch ($default_branch)! Use feature branches and PRs."
+            return 1
+        fi
+    fi
+    if [[ "$args" == *"branch"*"-d"*"main"* ]] || [[ "$args" == *"branch"*"-D"*"main"* ]]; then
+        echo "🚨 BLOCKED: Never delete main branch!"
+        return 1
+    fi
+    $(command which git) "$@"
+}
+export -f git
+EOF
+sudo chmod +x /etc/profile.d/git-safety.sh
+```
+
+**Result:** Every shell (including AI assistants) gets automatic protection against main branch destruction.
 
 ## Additional Resources
 
