@@ -132,3 +132,23 @@ git log --oneline main..HEAD  # Show PR contents
 ```
 
 **If ANY problems, fix them FIRST before declaring ready**
+
+### Cursor operational guardrails (org-wide)
+
+- Confirm before any write to external repos; show exact commands.
+- Avoid chained one-liners; use short, atomic steps; stop on first error.
+- Shell defaults during edit sessions: `set -e` only (no `-u`/`pipefail`).
+- Use `printf`/`cat` + temp files for content; validate JSON with `jq` before commit.
+- No auto-merge or force-push without explicit approval.
+- Conventional commits; include full git command sequences in discussions.
+- Never use local .env files.
+- Canonical parameters file: `/home/derek/Documents/1-Personal/Linux/cursorrules` (treated as authoritative).
+
+### Renovate testing protocol
+
+- Local validation before any commit:
+  - `npx --yes -p renovate renovate-config-validator renovate.json`
+- When testing upstream presets:
+  - Use explicit file+branch: `github>bcgov/renovate-config:default.json#test/regex-managers-migration`
+  - After test, revert to `#v1` or pin a commit SHA.
+- No per-repo fixes across 80+ repos; rely on upstream preset changes to migrate downstream.
