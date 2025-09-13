@@ -58,7 +58,7 @@ git status                    # Confirm on feature branch
 
 **NEVER create branches without first:**
 - Confirming current branch is main
-- Confirming main is up to date  
+- Confirming main is up to date
 - Confirming no uncommitted changes
 ```
 ```
@@ -133,7 +133,7 @@ git log --oneline main..HEAD  # Show PR contents
 
 **If ANY problems, fix them FIRST before declaring ready**
 
-### Cursor operational guardrails (org-wide)
+### AI assistant operational guardrails (org-wide)
 
 - Confirm before any write to external repos; show exact commands.
 - Avoid chained one-liners; use short, atomic steps; stop on first error.
@@ -142,7 +142,7 @@ git log --oneline main..HEAD  # Show PR contents
 - No auto-merge or force-push without explicit approval.
 - Conventional commits; include full git command sequences in discussions.
 - Never use local .env files.
-- Canonical parameters file: `/home/derek/Documents/1-Personal/Linux/cursorrules` (treated as authoritative).
+- Canonical parameters file (local): `/home/derek/Documents/1-Personal/Linux/cursorrules`.
 
 ### Renovate testing protocol
 
