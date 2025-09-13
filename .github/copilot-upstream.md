@@ -135,6 +135,8 @@ git log --oneline main..HEAD  # Show PR contents
 
 ### AI assistant operational guardrails (org-wide)
 
+These guardrails are tool-agnostic and apply across AI coding assistants used at work. Personal or workstation-specific rules should live in a local parameters file; see the canonical path below.
+
 - Confirm before any write to external repos; show exact commands.
 - Avoid chained one-liners; use short, atomic steps; stop on first error.
 - Shell defaults during edit sessions: `set -e` only (no `-u`/`pipefail`).
