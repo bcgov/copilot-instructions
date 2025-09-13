@@ -216,7 +216,7 @@ As AI coding assistants become more common in government development, protecting
 
 ### The Problem
 
-AI coding assistants (GitHub Copilot, Cursor, etc.) operate with your credentials and can:
+AI coding assistants (GitHub Copilot and similar tools) operate with your credentials and can:
 - **Push directly to main branches** (bypassing PR requirements)
 - **Force push** to any branch (potentially losing work)
 - **Delete branches** without understanding the consequences
@@ -311,7 +311,7 @@ command git push origin main
 
 #### When to Use
 
-- **AI coding assistants** (GitHub Copilot, Cursor, etc.)
+- **AI coding assistants** (GitHub Copilot and similar tools)
 - **Large repository portfolios** (50+ repos)
 - **Cross-organizational development** (BCGov, multiple teams)
 - **DevOps automation** (scripts, CI/CD, etc.)

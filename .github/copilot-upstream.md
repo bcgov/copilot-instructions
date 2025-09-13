@@ -58,7 +58,7 @@ git status                    # Confirm on feature branch
 
 **NEVER create branches without first:**
 - Confirming current branch is main
-- Confirming main is up to date  
+- Confirming main is up to date
 - Confirming no uncommitted changes
 ```
 ```
@@ -132,3 +132,18 @@ git log --oneline main..HEAD  # Show PR contents
 ```
 
 **If ANY problems, fix them FIRST before declaring ready**
+
+### AI assistant operational guardrails
+
+These guardrails are tool-agnostic and apply across AI coding assistants used in projects. Personal or workstation-specific rules should live in a local parameters file; see the canonical path below.
+
+- Confirm before any write to external repos; show exact commands.
+- Avoid chained one-liners; use short, atomic steps; stop on first error.
+- Shell defaults during edit sessions: `set -e` only (no `-u`/`pipefail`).
+- Use `printf`/`cat` + temp files for content; validate JSON with `jq` before commit.
+- No auto-merge or force-push without explicit approval.
+- Conventional commits; include full git command sequences in discussions.
+- Never use local .env files.
+- Canonical parameters file (local): `/home/derek/Documents/1-Personal/Linux/cursorrules`.
+
+<!-- Project-specific Renovate testing guidance should live in each repo's `.github/copilot-instructions.md`. -->
