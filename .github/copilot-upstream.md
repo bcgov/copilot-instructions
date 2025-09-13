@@ -133,9 +133,9 @@ git log --oneline main..HEAD  # Show PR contents
 
 **If ANY problems, fix them FIRST before declaring ready**
 
-### AI assistant operational guardrails (org-wide)
+### AI assistant operational guardrails
 
-These guardrails are tool-agnostic and apply across AI coding assistants used at work. Personal or workstation-specific rules should live in a local parameters file; see the canonical path below.
+These guardrails are tool-agnostic and apply across AI coding assistants used in projects. Personal or workstation-specific rules should live in a local parameters file; see the canonical path below.
 
 - Confirm before any write to external repos; show exact commands.
 - Avoid chained one-liners; use short, atomic steps; stop on first error.
