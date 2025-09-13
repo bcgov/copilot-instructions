@@ -46,8 +46,20 @@ Teams are encouraged to propose improvements to this upstream file via issues or
 
 
 ## 🔄 Universal Git Workflow
+
+### **Create Feature Branch (CRITICAL - Follow This Order):**
+```bash
+git status                    # MUST show clean working tree
+git branch                    # MUST show you're on main
+git pull                      # MUST update main to latest
 git switch -c feat/description
-git status  # Confirm on feature branch
+git status                    # Confirm on feature branch
+```
+
+**NEVER create branches without first:**
+- Confirming current branch is main
+- Confirming main is up to date  
+- Confirming no uncommitted changes
 ```
 ```
 
