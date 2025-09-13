@@ -146,9 +146,13 @@ git log --oneline main..HEAD  # Show PR contents
 
 ### Renovate testing protocol
 
-- Local validation before any commit:
+- Use `renovate-config-validator` before committing; test upstream presets via `github>bcgov/renovate-config:default.json#test/regex-managers-migration`. For commands and full guidance, see Appendix A.
+
+## Appendix A: Renovate testing protocol details
+
+- Validate locally before any commit:
   - `npx --yes -p renovate renovate-config-validator renovate.json`
 - When testing upstream presets:
   - Use explicit file+branch: `github>bcgov/renovate-config:default.json#test/regex-managers-migration`
-  - After test, revert to `#v1` or pin a commit SHA.
-- No per-repo fixes across 80+ repos; rely on upstream preset changes to migrate downstream.
+  - After test, revert to `#v1` or pin a commit SHA for stability.
+- Avoid per-repo churn across many repos; prefer upstream preset changes to drive migrations.
