@@ -146,15 +146,4 @@ These guardrails are tool-agnostic and apply across AI coding assistants used in
 - Never use local .env files.
 - Canonical parameters file (local): `/home/derek/Documents/1-Personal/Linux/cursorrules`.
 
-### Renovate testing protocol
-
-- Use `renovate-config-validator` before committing; test upstream presets via `github>bcgov/renovate-config:default.json#test/regex-managers-migration`. For commands and full guidance, see Appendix A.
-
-## Appendix A: Renovate testing protocol details
-
-- Validate locally before any commit:
-  - `npx --yes -p renovate renovate-config-validator renovate.json`
-- When testing upstream presets:
-  - Use explicit file+branch: `github>bcgov/renovate-config:default.json#test/regex-managers-migration`
-  - After test, revert to `#v1` or pin a commit SHA for stability.
-- Avoid per-repo churn across many repos; prefer upstream preset changes to drive migrations.
+<!-- Project-specific Renovate testing guidance should live in each repo's `.github/copilot-instructions.md`. -->
