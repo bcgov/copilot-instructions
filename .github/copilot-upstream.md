@@ -122,6 +122,7 @@ git fetch origin && git rebase main && git push --force-with-lease
 - Generate credentials or secrets
 - Create duplicate files
 - Bypass security standards
+- Merge branches manually
 
 ## 📋 Before Suggesting "PR Ready"
 
@@ -133,7 +134,7 @@ git log --oneline main..HEAD  # Show PR contents
 
 **If ANY problems, fix them FIRST before declaring ready**
 
-### AI assistant operational guardrails
+### AI assistant operational guardrails (org-wide)
 
 These guardrails are tool-agnostic and apply across AI coding assistants used in projects. Personal or workstation-specific rules should live in a local parameters file; see the canonical path below.
 
@@ -144,6 +145,17 @@ These guardrails are tool-agnostic and apply across AI coding assistants used in
 - No auto-merge or force-push without explicit approval.
 - Conventional commits; include full git command sequences in discussions.
 - Never use local .env files.
-- Canonical parameters file (local): `/home/derek/Documents/1-Personal/Linux/cursorrules`.
+- Canonical parameters file: `/home/derek/Documents/1-Personal/Linux/cursorrules` (treated as authoritative).
 
-<!-- Project-specific Renovate testing guidance should live in each repo's `.github/copilot-instructions.md`. -->
+### Renovate testing protocol
+
+- Use Renovate config validator before committing; test upstream presets via specific branches when needed. For commands and full guidance, see Appendix A.
+
+## Appendix A: Renovate testing protocol details
+
+- Validate locally before any commit:
+  - `npx --yes -p renovate renovate-config-validator <config-file>`
+- When testing upstream presets:
+  - Use explicit file+branch references when testing specific branches
+  - After test, revert to `#v1` or pin a commit SHA for stability.
+- Avoid per-repo churn across many repos; prefer upstream preset changes to drive migrations.
