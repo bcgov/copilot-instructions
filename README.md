@@ -221,32 +221,33 @@ Create the file `/etc/profile.d/git-safety.sh` and make it executable with `chmo
 ```bash
 #!/bin/bash
 
+# Git Safety Function - Prevents dangerous operations by AI and all users
+# This file is automatically sourced by all bash sessions on the system
+
 git() {
     local args="$*"
     local current_branch=$(command git branch --show-current 2>/dev/null)
 
+    # Only apply restrictions when on main branch
     if [[ "$current_branch" = "main" ]]; then
         local first_cmd=$(echo "$args" | awk '{print $1}')
-        local allowed_commands="branch checkout config diff fetch help log pull restore show status switch version"
 
-        case "$first_cmd" in
-            "checkout")
-                echo "⚠️  DEPRECATED: 'git checkout' is deprecated. Use 'git switch' or 'git restore' instead!"
-                ;;
-            "branch")
-                echo "⚠️  DEPRECATED: 'git branch' is deprecated. Use 'git switch' instead!"
-                ;;
-        esac
+        # Define allowed commands on main branch (includes deprecated ones)
+        local allowed_commands="branch checkout config diff fetch help log pull restore show status switch"
 
+        # Check if command is in allowlist
         if [[ " $allowed_commands " != *" $first_cmd "* ]]; then
             echo "🚨 BLOCKED: '$first_cmd' not allowed on main branch! Use feature branches."
+            echo "💡 Try: git switch -c feat/your-feature"
             return 1
         fi
     fi
 
+    # Run the normal git command
     $(command which git) "$@"
 }
 
+# Export the function so it's available in subshells
 export -f git
 ```
 
@@ -254,7 +255,6 @@ export -f git
 
 - **Only restricts operations on main branch** - other branches work normally
 - **Uses allowlist approach** - only explicitly allowed commands work on main
-- **Shows deprecation warnings** for old commands while still allowing them
 - **Blocks dangerous operations** like `commit`, `push`, `merge`
 
 ### Example Usage
