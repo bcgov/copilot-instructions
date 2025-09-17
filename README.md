@@ -214,11 +214,23 @@ Create the file `/etc/profile.d/git-safety.sh` and make it executable with `chmo
 # Git Safety Function - Prevents dangerous operations by AI and all users
 # This file is automatically sourced by all bash sessions on the system
 
+#!/bin/bash
+
+# Git Safety Function - Prevents dangerous operations by AI and all users
+# This file is automatically sourced by all bash sessions on the system
+
+#!/bin/bash
+
 git() {
     local args="$*"
-    local current_branch=$(command git branch --show-current 2>/dev/null)
 
-    # Auto-detect default branch
+    # Skip safety checks during tab completion
+    if [[ -n "$COMP_LINE" || -n "$COMP_POINT" ]]; then
+        $(command which git) "$@"
+        return
+    fi
+
+    local current_branch=$(command git branch --show-current 2>/dev/null)
     local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' 2>/dev/null || echo main)
 
     if [[ "$current_branch" = "$default_branch" ]]; then
