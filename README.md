@@ -200,7 +200,7 @@ The shared instructions in this repository follow these principles with safety-c
 
 ## AI Safety and Git Protection
 
-**CRITICAL**: AI tools can accidentally push to main branches, causing production issues. This function prevents dangerous git operations while educating users about modern git practices.
+**CRITICAL**: AI tools can accidentally push to the default branch, causing production issues. This function prevents dangerous git operations while educating users about modern git practices.
 
 ### Installation
 
@@ -246,11 +246,8 @@ export -f git
 ### Example Usage
 
 ```bash
-# On main branch - these work but show warnings
-git checkout -b feature    # → ⚠️ DEPRECATED: Use 'git switch' instead!
-
-# On main branch - these are blocked
-git commit -m "fix"        # → 🚨 BLOCKED: 'commit' not allowed on main branch!
+# On default branch - these are blocked
+git commit -m "fix"        # → 🚨 BLOCKED: 'commit' not allowed on default branch!
 
 # Admin override (when needed)
 command git push origin main  # → Bypasses all restrictions
