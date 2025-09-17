@@ -198,16 +198,6 @@ If you experience inconsistent AI behavior, consider these common issues:
 
 The shared instructions in this repository follow these principles with safety-critical rules prioritized first.
 
-## Contributing
-
-We value your input! We want to make contributing as easy and transparent as possible, whether it's:
-
-* Reporting a bug
-* Discussing the current state of the guidelines
-* Submitting a feature or fix
-* Proposing new features
-* Becoming a maintainer
-
 ## AI Safety and Git Protection
 
 **CRITICAL**: AI tools can accidentally push to main branches, causing production issues. This function prevents dangerous git operations while educating users about modern git practices.
@@ -228,33 +218,29 @@ git() {
     local args="$*"
     local current_branch=$(command git branch --show-current 2>/dev/null)
 
-    # Only apply restrictions when on main branch
-    if [[ "$current_branch" = "main" ]]; then
+    # Auto-detect default branch
+    local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' 2>/dev/null || echo main)
+
+    if [[ "$current_branch" = "$default_branch" ]]; then
         local first_cmd=$(echo "$args" | awk '{print $1}')
+        local allowed_commands="branch checkout config diff fetch help log pull restore show status switch version"
 
-        # Define allowed commands on main branch (includes deprecated ones)
-        local allowed_commands="branch checkout config diff fetch help log pull restore show status switch"
-
-        # Check if command is in allowlist
         if [[ " $allowed_commands " != *" $first_cmd "* ]]; then
-            echo "🚨 BLOCKED: '$first_cmd' not allowed on main branch! Use feature branches."
-            echo "💡 Try: git switch -c feat/your-feature"
+            echo "🚨 BLOCKED: '$first_cmd' not allowed on default branch ($default_branch)! Use feature branches."
             return 1
         fi
     fi
 
-    # Run the normal git command
     $(command which git) "$@"
 }
 
-# Export the function so it's available in subshells
 export -f git
 ```
 
 ### How It Works
 
-- **Only restricts operations on main branch** - other branches work normally
-- **Uses allowlist approach** - only explicitly allowed commands work on main
+- **Only restricts operations on default branch** - other branches work normally
+- **Uses allowlist approach** - only explicitly allowed commands work on the default branch
 - **Blocks dangerous operations** like `commit`, `push`, `merge`
 
 ### Example Usage
@@ -278,3 +264,13 @@ This solution provides comprehensive protection against AI tools pushing to main
 - [Customizing Copilot](https://code.visualstudio.com/docs/copilot/copilot-customization)
 - [Prompt Engineering Research](https://github.com/topics/prompt-engineering)
 - [AI Instruction Best Practices](https://github.com/topics/ai-instructions)
+
+## Contributing
+
+We value your input! We want to make contributing as easy and transparent as possible, whether it's:
+
+* Reporting a bug
+* Discussing the current state of the guidelines
+* Submitting a feature or fix
+* Proposing new features
+* Becoming a maintainer
