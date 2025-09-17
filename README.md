@@ -214,17 +214,10 @@ Create the file `/etc/profile.d/git-safety.sh` and make it executable with `chmo
 # Git Safety Function - Prevents dangerous operations by AI and all users
 # This file is automatically sourced by all bash sessions on the system
 
-#!/bin/bash
-
-# Git Safety Function - Prevents dangerous operations by AI and all users
-# This file is automatically sourced by all bash sessions on the system
-
-#!/bin/bash
-
 git() {
     local args="$*"
 
-    # Skip safety checks during tab completion
+    # Skip safety checks during tab completion only
     if [[ -n "$COMP_LINE" || -n "$COMP_POINT" ]]; then
         $(command which git) "$@"
         return
