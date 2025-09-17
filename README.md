@@ -206,13 +206,22 @@ The shared instructions in this repository follow these principles with safety-c
 
 **System-wide installation** (protects all users including AI tools):
 
-Create the file `/etc/profile.d/git-safety.sh` and make it executable with `chmod +x`.  Contents:
+Create the file `/etc/profile.d/git-safety.sh` and make it executable with `chmod +x`.
+
+> **Why `/etc/profile.d/` instead of `~/.bashrc`?**
+> - **AI tools** often run in non-interactive shells that don't source `~/.bashrc`
+> - **System-wide protection** ensures all users and processes are protected
+> - **Automatic sourcing** - files in `/etc/profile.d/` are sourced by all bash sessions
+> - **Root access required** - prevents accidental removal by individual users
+
+Contents:
 
 ```bash
 #!/bin/bash
 
 # Git Safety Function - Prevents dangerous operations by AI and all users
-# This file is automatically sourced by all bash sessions on the system
+# Located in /etc/profile.d/ for system-wide protection (not ~/.bashrc)
+# Automatically sourced by all bash sessions, including non-interactive AI tools
 
 git() {
     local args="$*"
@@ -223,10 +232,11 @@ git() {
         return
     fi
 
+    # Get branch and auto-detect default branch
     local current_branch=$(command git branch --show-current 2>/dev/null)
-    # Auto-detect default branch
     local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' 2>/dev/null || echo main)
 
+    # Only block when on the default branch; use an allowlist
     if [[ "$current_branch" = "$default_branch" ]]; then
         local first_cmd=$(echo "$args" | awk '{print $1}')
         local allowed_commands="branch checkout config diff fetch help log pull restore show status switch version"
