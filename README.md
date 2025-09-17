@@ -240,28 +240,39 @@ A bash function that intercepts dangerous git operations while maintaining full 
 Add this to your `~/.bashrc` or centralized bash configuration:
 
 ```bash
-# Git Safety Function - Prevents dangerous operations by AI
 git() {
     local args="$*"
+    local current_branch=$(command git branch --show-current 2>/dev/null)
 
-    # Only detect default branch for push operations (lazy detection)
-    if [[ "$args" == *"push"* ]]; then
-        local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+    # Only apply restrictions when on main branch
+    if [[ "$current_branch" = "main" ]]; then
+        local first_cmd=$(echo "$args" | awk '{print $1}')
 
-        # Block pushing to default branch (any method)
-        if [[ "$args" == *"push"*"$default_branch"* ]] || ([[ "$args" == "push" ]] && [[ "$(command git branch --show-current 2>/dev/null)" = "$default_branch" ]]); then
-            echo "🚨 BLOCKED: Never push to default branch ($default_branch)! Use feature branches and PRs."
+        # Define allowed commands on main branch
+        local allowed_commands="status log diff show switch pull help"
+
+        # Define deprecated commands with warnings
+        local deprecated_commands="checkout branch"
+
+        # Check for deprecated commands first
+        if [[ " $deprecated_commands " == *" $first_cmd "* ]]; then
+            echo "⚠️  DEPRECATED: '$first_cmd' is deprecated. Use modern alternatives:"
+            case "$first_cmd" in
+                "checkout") echo "   → Use 'git switch' instead" ;;
+                "branch") echo "   → Use 'git switch' instead" ;;
+            esac
+            echo "   Proceeding anyway, but consider updating your workflow..."
+        fi
+
+        # Check if command is in allowlist
+        if [[ " $allowed_commands " != *" $first_cmd "* ]]; then
+            echo "🚨 BLOCKED: '$first_cmd' not allowed on main branch! Use feature branches."
+            echo "💡 Try: git switch -c feat/your-feature"
             return 1
         fi
     fi
 
-    # Block deleting main branch (keep this simple for now)
-    if [[ "$args" == *"branch"*"-d"*"main"* ]] || [[ "$args" == *"branch"*"-D"*"main"* ]]; then
-        echo "🚨 BLOCKED: Never delete main branch!"
-        return 1
-    fi
-
-    # If we get here, run the normal git command
+    # Run the normal git command
     $(command which git) "$@"
 }
 ```
