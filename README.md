@@ -240,6 +240,11 @@ A bash function that intercepts dangerous git operations while maintaining full 
 Add this to your `~/.bashrc` or centralized bash configuration:
 
 ```bash
+#!/bin/bash
+
+# Git Safety Function - Prevents dangerous operations by AI and all users
+# This file is automatically sourced by all bash sessions on the system
+
 git() {
     local args="$*"
     local current_branch=$(command git branch --show-current 2>/dev/null)
@@ -248,21 +253,22 @@ git() {
     if [[ "$current_branch" = "main" ]]; then
         local first_cmd=$(echo "$args" | awk '{print $1}')
 
-        # Define allowed commands on main branch
-        local allowed_commands="status log diff show switch pull help"
+        # Define allowed commands on main branch (includes deprecated ones)
+        local allowed_commands="branch checkout config diff fetch help log pull restore show status switch"
 
-        # Define deprecated commands with warnings
-        local deprecated_commands="checkout branch"
-
-        # Check for deprecated commands first
-        if [[ " $deprecated_commands " == *" $first_cmd "* ]]; then
-            echo "⚠️  DEPRECATED: '$first_cmd' is deprecated. Use modern alternatives:"
-            case "$first_cmd" in
-                "checkout") echo "   → Use 'git switch' instead" ;;
-                "branch") echo "   → Use 'git switch' instead" ;;
-            esac
-            echo "   Proceeding anyway, but consider updating your workflow..."
-        fi
+        # Show deprecation warnings for old commands
+        case "$first_cmd" in
+            "checkout")
+                echo "⚠️  DEPRECATED: 'git checkout' is deprecated. Use 'git switch' or 'git restore' instead!"
+                echo "   → git switch -c feat/your-feature  (create new branch)"
+                echo "   → git restore .                    (revert changes)"
+                ;;
+            "branch")
+                echo "⚠️  DEPRECATED: 'git branch' is deprecated. Use 'git switch' instead!"
+                echo "   → git switch -c feat/your-feature  (create new branch)"
+                echo "   → git switch existing-branch       (switch to existing)"
+                ;;
+        esac
 
         # Check if command is in allowlist
         if [[ " $allowed_commands " != *" $first_cmd "* ]]; then
@@ -275,6 +281,10 @@ git() {
     # Run the normal git command
     $(command which git) "$@"
 }
+
+# Export the function so it's available in subshells
+export -f git
+
 ```
 
 #### How It Works
