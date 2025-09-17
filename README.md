@@ -224,6 +224,7 @@ git() {
     fi
 
     local current_branch=$(command git branch --show-current 2>/dev/null)
+    # Auto-detect default branch
     local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' 2>/dev/null || echo main)
 
     if [[ "$current_branch" = "$default_branch" ]]; then
