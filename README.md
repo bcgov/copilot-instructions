@@ -210,140 +210,67 @@ We value your input! We want to make contributing as easy and transparent as pos
 
 ## AI Safety and Git Protection
 
-**For BCGov AI Test Group Teams Only**
+**CRITICAL**: AI tools can accidentally push to main branches, causing production issues. This function prevents dangerous git operations while educating users about modern git practices.
 
-As AI coding assistants become more common in government development, protecting against accidental repository damage becomes critical. This section documents a git safety solution specifically designed for government DevOps teams working with AI.
+### Installation
 
-### The Problem
+**System-wide installation** (protects all users including AI tools):
 
-AI coding assistants (GitHub Copilot and similar tools) operate with your credentials and can:
-- **Push directly to main branches** (bypassing PR requirements)
-- **Force push** to any branch (potentially losing work)
-- **Delete branches** without understanding the consequences
-- **Override branch protection rules** using your admin access
-
-Traditional solutions like git hooks are impractical for teams managing 80+ repositories across multiple organizations.
-
-### The Solution: Git Safety Function
-
-A bash function that intercepts dangerous git operations while maintaining full functionality for normal development work.
-
-#### Features
-
-- **Dynamic default branch detection** - works on `main`, `master`, `develop`, or any naming convention
-- **Lazy performance optimization** - only checks when needed (push operations)
-- **Portable across repos** - no per-repository configuration required
-- **Admin override available** - emergency access when needed
-
-#### Implementation
-
-Add this to your `~/.bashrc` or centralized bash configuration:
+Create the file `/etc/profile.d/git-safety.sh` and make it executable with `chmod +x`.  Contents:
 
 ```bash
-# Git Safety Function - Prevents dangerous operations by AI
+#!/bin/bash
+
 git() {
     local args="$*"
+    local current_branch=$(command git branch --show-current 2>/dev/null)
 
-    # Only detect default branch for push operations (lazy detection)
-    if [[ "$args" == *"push"* ]]; then
-        local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+    if [[ "$current_branch" = "main" ]]; then
+        local first_cmd=$(echo "$args" | awk '{print $1}')
+        local allowed_commands="branch checkout config diff fetch help log pull restore show status switch version"
 
-        # Block pushing to default branch (any method)
-        if [[ "$args" == *"push"*"$default_branch"* ]] || ([[ "$args" == "push" ]] && [[ "$(command git branch --show-current 2>/dev/null)" = "$default_branch" ]]); then
-            echo "🚨 BLOCKED: Never push to default branch ($default_branch)! Use feature branches and PRs."
+        case "$first_cmd" in
+            "checkout")
+                echo "⚠️  DEPRECATED: 'git checkout' is deprecated. Use 'git switch' or 'git restore' instead!"
+                ;;
+            "branch")
+                echo "⚠️  DEPRECATED: 'git branch' is deprecated. Use 'git switch' instead!"
+                ;;
+        esac
+
+        if [[ " $allowed_commands " != *" $first_cmd "* ]]; then
+            echo "🚨 BLOCKED: '$first_cmd' not allowed on main branch! Use feature branches."
             return 1
         fi
     fi
 
-    # Block deleting main branch (keep this simple for now)
-    if [[ "$args" == *"branch"*"-d"*"main"* ]] || [[ "$args" == *"branch"*"-D"*"main"* ]]; then
-        echo "🚨 BLOCKED: Never delete main branch!"
-        return 1
-    fi
-
-    # If we get here, run the normal git command
     $(command which git) "$@"
 }
+
+export -f git
 ```
 
-#### How It Works
+### How It Works
 
-1. **Intercepts all `git` commands** via function override
-2. **Detects default branch dynamically** only when needed (push operations)
-3. **Blocks dangerous operations** with clear error messages
-4. **Allows safe operations** to pass through normally
-5. **Uses `$(command which git)`** to call the real git binary
-
-#### Admin Override: The `command` Workaround
-
-When you need to perform admin operations (push to main, force push, etc.), use the `command` prefix:
-
-```bash
-# Normal git command (gets blocked)
-git push origin main
-# → 🚨 BLOCKED: Never push to default branch (main)! Use feature branches and PRs.
-
-# Admin override (bypasses protection)
-command git push origin main
-# → Executes normally
-```
-
-**Why This Works:**
-- **`command`** bypasses shell functions and aliases
-- **`command git`** calls the real git binary directly
-- **Your function never runs** when using `command`
-- **Full admin access** when you need it
-
-#### Installation
-
-1. **Add the function** to your bashrc or centralized bash configuration
-2. **Reload your shell** or source the file
-3. **Test the protection** with `git push origin main` (should be blocked)
-4. **Test admin override** with `command git push origin main` (should work)
-
-#### Benefits for Government Teams
-
-- **No per-repo configuration** - works immediately on all repositories
-- **Performance optimized** - minimal overhead for normal operations
-- **Portable** - works on any Linux/macOS system
-- **Secure** - prevents AI from using your credentials destructively
-- **Maintainable** - single function handles all protection logic
-
-#### When to Use
-
-- **AI coding assistants** (GitHub Copilot and similar tools)
-- **Large repository portfolios** (50+ repos)
-- **Cross-organizational development** (BCGov, multiple teams)
-- **DevOps automation** (scripts, CI/CD, etc.)
-
-#### Security Notes
-
-- **This is credential-level protection** - prevents AI from bypassing your access
-- **Not a replacement for branch protection rules** - use both for defense in depth
-- **Personal use only** - don't share credentials with AI tools
-- **Regular review** - periodically check what AI tools have access to
+- **Only restricts operations on main branch** - other branches work normally
+- **Uses allowlist approach** - only explicitly allowed commands work on main
+- **Shows deprecation warnings** for old commands while still allowing them
+- **Blocks dangerous operations** like `commit`, `push`, `merge`
 
 ### Example Usage
 
 ```bash
-# Setup
-source ~/.bashrc  # or wherever you store the function
+# On main branch - these work but show warnings
+git checkout -b feature    # → ⚠️ DEPRECATED: Use 'git switch' instead!
 
-# Test protection
-git push origin main
-# → 🚨 BLOCKED: Never push to default branch (main)! Use feature branches and PRs.
+# On main branch - these are blocked
+git commit -m "fix"        # → 🚨 BLOCKED: 'commit' not allowed on main branch!
 
-# Test admin override
-command git push origin main
-# → Executes normally
-
-# Normal development
-git status          # → Works normally
-git checkout -b feature  # → Works normally
-git commit -m "feat: new feature"  # → Works normally
+# Admin override (when needed)
+command git push origin main  # → Bypasses all restrictions
 ```
 
-This solution provides the safety needed for AI-assisted development while maintaining the flexibility required for government DevOps operations.
+This solution provides comprehensive protection against AI tools pushing to main while educating users about modern git practices.
 
 ## Additional Resources
 
