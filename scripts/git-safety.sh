@@ -44,9 +44,14 @@ gh() {
     local second_cmd=$(echo "$args" | awk '{print $2}')
     local full_command="$first_cmd $second_cmd"
 
-    # Handle --version as equivalent to version
+    # Handle common safe flags
     if [[ "$second_cmd" == "--version" ]]; then
         full_command="$first_cmd version"
+    elif [[ "$second_cmd" == "--help" ]]; then
+        full_command="$first_cmd help"
+    elif [[ "$second_cmd" =~ ^--(json|jq|template)$ ]]; then
+        # Allow output formatting flags for any command
+        full_command="$first_cmd $second_cmd"
     fi
 
     # Define allowlist of safe commands
