@@ -198,6 +198,12 @@ If you experience inconsistent AI behavior, consider these common issues:
 
 The shared instructions in this repository follow these principles with safety-critical rules prioritized first.
 
+## Scripts
+
+This repository includes utility scripts in the [`scripts/`](./scripts/) folder:
+
+- **`git-safety.sh`** - Git and GitHub CLI safety functions to prevent dangerous operations
+
 ## AI Safety and Command Protection
 
 **CRITICAL**: AI tools can accidentally perform dangerous operations like pushing to the default branch or merging PRs, causing production issues. These functions prevent dangerous git and GitHub CLI operations while educating users about modern practices.
@@ -208,11 +214,11 @@ The shared instructions in this repository follow these principles with safety-c
 
 1. **Copy the safety functions** from the version-controlled file:
    ```bash
-   sudo cp git-safety.sh /etc/profile.d/git-safety.sh
+   sudo cp scripts/git-safety.sh /etc/profile.d/git-safety.sh
    sudo chmod +x /etc/profile.d/git-safety.sh
    ```
 
-2. **Or manually create** the file `/etc/profile.d/git-safety.sh` and copy the contents from [`git-safety.sh`](./git-safety.sh) in this repository.
+2. **Or manually create** the file `/etc/profile.d/git-safety.sh` and copy the contents from [`scripts/git-safety.sh`](./scripts/git-safety.sh) in this repository.
 
 > **Why `/etc/profile.d/` instead of `~/.bashrc`?**
 > - **AI tools** often run in non-interactive shells that don't source `~/.bashrc`
@@ -226,7 +232,7 @@ The shared instructions in this repository follow these principles with safety-c
 > - **Documentation** of what the functions do and why
 > - **Collaboration** on safety improvements
 
-**Latest version** (see [`git-safety.sh`](./git-safety.sh) for the most current version):
+**Latest version** (see [`scripts/git-safety.sh`](./scripts/git-safety.sh) for the most current version):
 
 ```bash
 #!/bin/bash
