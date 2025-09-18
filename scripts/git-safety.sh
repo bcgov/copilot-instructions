@@ -44,6 +44,11 @@ gh() {
     local second_cmd=$(echo "$args" | awk '{print $2}')
     local full_command="$first_cmd $second_cmd"
 
+    # Handle --version as equivalent to version
+    if [[ "$second_cmd" == "--version" ]]; then
+        full_command="$first_cmd version"
+    fi
+
     # Define allowlist of safe commands
     local allowed_commands=(
         # Safe standalone commands
