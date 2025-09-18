@@ -198,9 +198,9 @@ If you experience inconsistent AI behavior, consider these common issues:
 
 The shared instructions in this repository follow these principles with safety-critical rules prioritized first.
 
-## AI Safety and Git Protection
+## AI Safety and Command Protection
 
-**CRITICAL**: AI tools can accidentally push to the default branch, causing production issues. This function prevents dangerous git operations while educating users about modern git practices.
+**CRITICAL**: AI tools can accidentally perform dangerous operations like pushing to the default branch or merging PRs, causing production issues. These functions prevent dangerous git and GitHub CLI operations while educating users about modern practices.
 
 ### Installation
 
@@ -235,6 +235,7 @@ git() {
     # Get branch and auto-detect default branch
     local current_branch=$(command git branch --show-current 2>/dev/null)
     local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' 2>/dev/null || echo main)
+    # Only block when on the default branch; use an allowlist
 
     # Only block when on the default branch; use an allowlist
     if [[ "$current_branch" = "$default_branch" ]]; then
@@ -250,26 +251,106 @@ git() {
     $(command which git) "$@"
 }
 
-export -f git
+# GitHub CLI Safety Function - Prevents dangerous operations by AI and all users
+# Uses allowlist approach: only explicitly allowed commands are permitted
+gh() {
+    local args="$*"
+
+    # Skip safety checks during tab completion only
+    if [[ -n "$COMP_LINE" || -n "$COMP_POINT" ]]; then
+        $(command which gh) "$@"
+        return
+    fi
+
+    local first_cmd=$(echo "$args" | awk '{print $1}')
+    local second_cmd=$(echo "$args" | awk '{print $2}')
+    local full_command="$first_cmd $second_cmd"
+
+    # Define allowlist of safe commands
+    local allowed_commands=(
+        # Safe standalone commands
+        "auth"
+        "config"
+        "version"
+        "help"
+        "browse"
+        "search"
+        "status"
+        "completion"
+        "extension"
+        # Safe PR operations (close/reopen are easily reversible)
+        "pr create"
+        "pr list"
+        "pr view"
+        "pr status"
+        "pr checkout"
+        "pr diff"
+        "pr close"
+        "pr reopen"
+        # Safe issue operations (close/reopen are easily reversible)
+        "issue create"
+        "issue list"
+        "issue view"
+        "issue status"
+        "issue close"
+        "issue reopen"
+    )
+
+    # Check if command is in allowlist
+    local is_allowed=false
+    for allowed in "${allowed_commands[@]}"; do
+        if [[ "$full_command" == "$allowed" ]]; then
+            is_allowed=true
+            # Execute the command if allowed
+            $(command which gh) "$@"
+            break
+        fi
+    done
+
+    # Block if not in allowlist
+    if [[ "$is_allowed" == false ]]; then
+        echo "🚨 BLOCKED: 'gh $full_command' not in allowlist! Use GitHub UI for management."
+        return 1
+    fi
+}
+
+export -f git gh
 ```
 
 ### How It Works
 
+**Git Protection:**
 - **Only restricts operations on default branch** - other branches work normally
 - **Uses allowlist approach** - only explicitly allowed commands work on the default branch
 - **Blocks dangerous operations** like `commit`, `push`, `merge`
 
+**GitHub CLI Protection:**
+- **Allowlist approach** - only explicitly allowed commands are permitted
+- **Future-proof** - new dangerous commands are automatically blocked
+- **Blocks dangerous operations** like `gh pr merge`, `gh repo delete`, `gh secret list`
+- **Allows safe operations** like `gh pr list`, `gh issue create`, `gh browse`
+
 ### Example Usage
 
 ```bash
-# On default branch - these are blocked
+# Git - On default branch - these are blocked
 git commit -m "fix"        # → 🚨 BLOCKED: 'commit' not allowed on default branch!
+
+# GitHub CLI - These are blocked
+gh pr merge 123            # → 🚨 BLOCKED: 'gh pr merge' not in allowlist!
+gh repo delete test-repo   # → 🚨 BLOCKED: 'gh repo delete' not in allowlist!
+gh secret list             # → 🚨 BLOCKED: 'gh secret list' not in allowlist!
+
+# These are allowed
+gh pr list                 # → Works (allowed)
+gh issue create --title "Test"  # → Works (allowed)
+gh browse                  # → Works (allowed)
 
 # Admin override (when needed)
 command git push origin main  # → Bypasses all restrictions
 ```
 
-This solution provides comprehensive protection against AI tools pushing to main while educating users about modern git practices.
+This solution provides comprehensive protection against AI tools performing dangerous operations while educating users about modern practices.
 
 ## Additional Resources
 
