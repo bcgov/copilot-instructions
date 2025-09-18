@@ -203,6 +203,7 @@ The shared instructions in this repository follow these principles with safety-c
 This repository includes utility scripts in the [`scripts/`](./scripts/) folder:
 
 - **`git-safety.sh`** - Git and GitHub CLI safety functions to prevent dangerous operations
+- **`metrics-tracker.sh`** - Script for tracking and analyzing development metrics
 
 ## AI Safety and Command Protection
 
