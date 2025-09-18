@@ -206,7 +206,13 @@ The shared instructions in this repository follow these principles with safety-c
 
 **System-wide installation** (protects all users including AI tools):
 
-Create the file `/etc/profile.d/git-safety.sh` and make it executable with `chmod +x`.
+1. **Copy the safety functions** from the version-controlled file:
+   ```bash
+   sudo cp git-safety.sh /etc/profile.d/git-safety.sh
+   sudo chmod +x /etc/profile.d/git-safety.sh
+   ```
+
+2. **Or manually create** the file `/etc/profile.d/git-safety.sh` and copy the contents from [`git-safety.sh`](./git-safety.sh) in this repository.
 
 > **Why `/etc/profile.d/` instead of `~/.bashrc`?**
 > - **AI tools** often run in non-interactive shells that don't source `~/.bashrc`
@@ -214,14 +220,19 @@ Create the file `/etc/profile.d/git-safety.sh` and make it executable with `chmo
 > - **Automatic sourcing** - files in `/etc/profile.d/` are sourced by all bash sessions
 > - **Root access required** - prevents accidental removal by individual users
 
-Contents:
+> **Why version control the safety functions?**
+> - **Track changes** and improvements to the safety logic
+> - **Easy updates** when new safety features are added
+> - **Documentation** of what the functions do and why
+> - **Collaboration** on safety improvements
+
+**Latest version** (see [`git-safety.sh`](./git-safety.sh) for the most current version):
 
 ```bash
 #!/bin/bash
 
 # Git Safety Function - Prevents dangerous operations by AI and all users
-# Located in /etc/profile.d/ for system-wide protection (not ~/.bashrc)
-# Automatically sourced by all bash sessions, including non-interactive AI tools
+# This file is automatically sourced by all bash sessions on the system
 
 git() {
     local args="$*"
@@ -232,12 +243,9 @@ git() {
         return
     fi
 
-    # Get branch and auto-detect default branch
     local current_branch=$(command git branch --show-current 2>/dev/null)
     local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' 2>/dev/null || echo main)
-    # Only block when on the default branch; use an allowlist
 
-    # Only block when on the default branch; use an allowlist
     if [[ "$current_branch" = "$default_branch" ]]; then
         local first_cmd=$(echo "$args" | awk '{print $1}')
         local allowed_commands="branch checkout config diff fetch help log pull restore show status switch version"
@@ -262,6 +270,7 @@ gh() {
         return
     fi
 
+    # Parse command more robustly - only look at the first two words
     local first_cmd=$(echo "$args" | awk '{print $1}')
     local second_cmd=$(echo "$args" | awk '{print $2}')
     local full_command="$first_cmd $second_cmd"
@@ -301,14 +310,14 @@ gh() {
     for allowed in "${allowed_commands[@]}"; do
         if [[ "$full_command" == "$allowed" ]]; then
             is_allowed=true
-            # Execute the command if allowed
-            $(command which gh) "$@"
             break
         fi
     done
 
-    # Block if not in allowlist
-    if [[ "$is_allowed" == false ]]; then
+    # Execute if allowed, block if not
+    if [[ "$is_allowed" == true ]]; then
+        $(command which gh) "$@"
+    else
         echo "🚨 BLOCKED: 'gh $full_command' not in allowlist! Use GitHub UI for management."
         return 1
     fi
