@@ -39,13 +39,17 @@ gh() {
         return
     fi
 
-    # Parse command more robustly - only look at the first two words
+    # Parse command more robustly - handle both single and two-word commands
     local first_cmd=$(echo "$args" | awk '{print $1}')
     local second_cmd=$(echo "$args" | awk '{print $2}')
     local full_command="$first_cmd $second_cmd"
 
     # Handle common safe flags
-    if [[ "$second_cmd" == "--version" ]]; then
+    if [[ "$first_cmd" == "--version" ]]; then
+        full_command="version"
+    elif [[ "$first_cmd" == "--help" ]]; then
+        full_command="help"
+    elif [[ "$second_cmd" == "--version" ]]; then
         full_command="$first_cmd version"
     elif [[ "$second_cmd" == "--help" ]]; then
         full_command="$first_cmd help"
