@@ -103,7 +103,7 @@ gh() {
     if [[ "$is_allowed" == true ]]; then
         $(command which gh) "$@"
     else
-	    echo "🚨 BLOCKED: 'gh $*' not in allowlist! Use GitHub UI for management."
+        echo "🚨 BLOCKED: 'gh $*' not in allowlist! Use GitHub UI for management."
         return 1
     fi
 }
