@@ -79,6 +79,7 @@ gh() {
         "pr diff"
         "pr close"
         "pr reopen"
+        "pr edit"
         # Safe issue operations (close/reopen are easily reversible)
         "issue create"
         "issue list"
