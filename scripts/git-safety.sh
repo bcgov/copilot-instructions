@@ -62,6 +62,7 @@ gh() {
     local allowed_commands=(
         # Safe standalone commands
         "auth"
+        "auth status"
         "config"
         "version"
         "help"
