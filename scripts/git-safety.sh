@@ -39,9 +39,9 @@ gh() {
         return
     fi
 
-    # Parse command more robustly - handle both single and two-word commands
-    local first_cmd=$(echo "$args" | awk '{print $1}')
-    local second_cmd=$(echo "$args" | awk '{print $2}')
+    # Parse only the first two words, ignoring multi-line content
+    local first_cmd=$(echo "$args" | head -1 | awk '{print $1}')
+    local second_cmd=$(echo "$args" | head -1 | awk '{print $2}')
     local full_command="$first_cmd $second_cmd"
 
     # Handle common safe flags
@@ -102,7 +102,7 @@ gh() {
     if [[ "$is_allowed" == true ]]; then
         $(command which gh) "$@"
     else
-        echo "🚨 BLOCKED: 'gh $full_command' not in allowlist! Use GitHub UI for management."
+	echo "🚨 BLOCKED: 'gh $*' not in allowlist! Use GitHub UI for management."
         return 1
     fi
 }
