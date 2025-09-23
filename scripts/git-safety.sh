@@ -7,7 +7,7 @@ git() {
     local args="$*"
 
     # Skip safety checks during tab completion only
-    if [[ -n "$COMP_LINE" || -n "$COMP_POINT" ]]; then
+   if [[ -n "${COMP_LINE:-}" || -n "${COMP_POINT:-}" ]]; then
         $(command which git) "$@"
         return
     fi
@@ -34,7 +34,7 @@ gh() {
     local args="$*"
 
     # Skip safety checks during tab completion only
-    if [[ -n "$COMP_LINE" || -n "$COMP_POINT" ]]; then
+   if [[ -n "${COMP_LINE:-}" || -n "${COMP_POINT:-}" ]]; then
         $(command which gh) "$@"
         return
     fi
@@ -103,7 +103,7 @@ gh() {
     if [[ "$is_allowed" == true ]]; then
         $(command which gh) "$@"
     else
-        echo "🚨 BLOCKED: 'gh $*' not in allowlist! Use GitHub UI for management."
+	    echo "🚨 BLOCKED: 'gh $*' not in allowlist! Use GitHub UI for management."
         return 1
     fi
 }
