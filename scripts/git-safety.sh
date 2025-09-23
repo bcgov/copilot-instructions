@@ -17,7 +17,7 @@ git() {
 
     if [[ "$current_branch" = "$default_branch" ]]; then
         local first_cmd=$(echo "$args" | awk '{print $1}')
-        local allowed_commands="branch checkout config diff fetch help log pull restore show status switch version"
+        local allowed_commands="branch checkout clone config diff fetch help log pull restore show status switch version"
 
         if [[ " $allowed_commands " != *" $first_cmd "* ]]; then
             echo "🚨 BLOCKED: '$first_cmd' not allowed on default branch ($default_branch)! Use feature branches."
