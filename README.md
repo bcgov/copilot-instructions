@@ -305,6 +305,7 @@ gh() {
         "pr reopen"
         # Safe issue operations (close/reopen are easily reversible)
         "issue create"
+        "issue edit"
         "issue list"
         "issue view"
         "issue status"

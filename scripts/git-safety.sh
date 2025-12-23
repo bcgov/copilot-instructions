@@ -83,11 +83,19 @@ gh() {
         "pr edit"
         # Safe issue operations (close/reopen are easily reversible)
         "issue create"
+        "issue edit"
         "issue list"
         "issue view"
         "issue status"
         "issue close"
         "issue reopen"
+        # Safe run operations (read-only workflow debugging)
+        "run download-logs"
+        "run list"
+        "run view"
+        # Safe repo operations (read-only repository information)
+        "repo view"
+        "repo list"
     )
 
     # Check if command is in allowlist
