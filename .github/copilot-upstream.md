@@ -137,13 +137,48 @@ git log --oneline main..HEAD  # Show PR contents
 
 These guardrails are tool-agnostic and apply across AI coding assistants used in projects. Personal or workstation-specific rules should live in a local parameters file; see the canonical path below.
 
+- Answer questions before taking action. When users ask questions, provide analysis/opinion first, then wait for confirmation before implementing.
 - Confirm before any write to external repos; show exact commands.
 - Avoid chained one-liners; use short, atomic steps; stop on first error.
 - Shell defaults during edit sessions: `set -e` only (no `-u`/`pipefail`).
 - Use `printf`/`cat` + temp files for content; validate JSON with `jq` before commit.
 - No auto-merge or force-push without explicit approval.
+- Default to additive commits. Do not amend, squash, or force-push changes on a shared branch unless reviewers or maintainers explicitly approve rewriting history.
 - Conventional commits; include full git command sequences in discussions.
 - Never use local .env files.
+
+### Repository Architecture Principles
+
+**NEVER use repositories as databases or state stores:**
+
+- ❌ Workflows that commit runtime data to repositories
+- ❌ Mixing code and runtime state in version control
+- ❌ Committing generated files that should be ephemeral
+- ❌ Using git history to track application state changes
+
+**ALWAYS maintain clean separation:**
+
+- ✅ Repositories contain only source code and configuration
+- ✅ Runtime data generated during build/deploy process
+- ✅ Stateful information lives in deployment artifacts (GitHub Pages, containers, etc.)
+- ✅ Workflows are stateless and idempotent
+
+**Red flags to question:**
+- "Should this workflow commit changes to the repo?"
+- "Is this data or code?"
+- "Why does this need to be in git history?"
+- "What happens if we run this workflow multiple times?"
+
+**Correct pattern:**
+```
+Repository (code) → Workflow (generates fresh data) → Deployment (current state)
+```
+
+**Anti-pattern:**
+```
+Repository (code + data) → Workflow (commits data) → Deployment (stale state)
+```
+
 - Canonical parameters file (local): `/home/derek/Documents/1-Personal/Linux/cursorrules`.
 
 <!-- Project-specific Renovate testing guidance should live in each repo's `.github/copilot-instructions.md`. -->
