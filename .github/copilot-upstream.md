@@ -179,6 +179,6 @@ Repository (code) → Workflow (generates fresh data) → Deployment (current st
 Repository (code + data) → Workflow (commits data) → Deployment (stale state)
 ```
 
-- Canonical parameters file (local): `/home/derek/Documents/1-Personal/Linux/cursorrules`.
+- Canonical parameters file (local): `/path/to/your/local/cursorrules`.
 
 <!-- Project-specific Renovate testing guidance should live in each repo's `.github/copilot-instructions.md`. -->
