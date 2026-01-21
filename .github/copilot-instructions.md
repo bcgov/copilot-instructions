@@ -1,11 +1,10 @@
 <!--
-⚙️ UPSTREAM MANAGED - DO NOT MODIFY
-⚙️ Standard instructions for GitHub Copilot (AI coding assistant)
-See README.md for VS Code settings usage.
+⚙️ SHARED BCGOV COPILOT INSTRUCTIONS
+⚙️ See README.md for installation and VS Code settings.
 -->
 
 ## Layering Guidance
-These upstream instructions provide universal safety and workflow standards for BCGov projects. Teams should add project-specific rules in `.github/copilot-instructions.md`, which will complement (not override) these shared standards.
+These shared instructions provide universal safety and workflow standards for BCGov projects. Teams can add project-specific rules by creating additional instruction files that complement these shared standards.
 
 ## Onboarding Checklist
 - Confirm branch protection is enabled
@@ -186,3 +185,4 @@ Repository (code) → Workflow (generates fresh data) → Deployment (current st
 ```
 Repository (code + data) → Workflow (commits data) → Deployment (stale state)
 ```
+
