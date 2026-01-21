@@ -11,18 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-    
-          
+
       - name: Check upstream header
         run: |
-          grep -q "UPSTREAM MANAGED" .github/copilot-upstream.md
-          
+          grep -q "UPSTREAM MANAGED" .github/copilot-instructions.md
+
       - name: Basic markdown validation
         run: |
           # Check for basic markdown issues
           # Ensure no tabs in markdown files  
           ! grep -P "^\t" *.md .github/*.md
-          
+
       - name: Validate JSON examples
         run: |
           # Extract and validate JSON examples from README
