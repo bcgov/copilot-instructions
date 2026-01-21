@@ -63,7 +63,7 @@ jobs:
             [ -f "$file" ] || continue
             # Match all markdown links [text](path) - filter external URLs below
             grep -oE '\]\([^)]+\)' "$file" | \
-              sed 's/\](\.\/\?//;s/)$//' | \
+              sed 's/^\]\(//;s/)$//' | \
               while read -r link; do
                 # Skip anchors and external links (http://, https://, mailto:, etc.)
                 [[ "$link" =~ ^# ]] && continue
