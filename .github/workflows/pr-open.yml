@@ -59,11 +59,10 @@ jobs:
       - name: Check for broken internal links
         run: |
           # Extract markdown links and verify paths exist
-          errors=0
           for file in README.md .github/*.md; do
             [ -f "$file" ] || continue
-            # Match [text](./path) or [text](path) style relative links
-            grep -oE '\]\(\./[^)]+\)|\]\([^http][^)]+\)' "$file" | \
+            # Match all markdown links [text](path) - filter external URLs below
+            grep -oE '\]\([^)]+\)' "$file" | \
               sed 's/\](\.\/\?//;s/)$//' | \
               while read -r link; do
                 # Skip anchors and external links
