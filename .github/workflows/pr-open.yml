@@ -31,3 +31,39 @@ jobs:
               exit 1
             }
           done
+
+      - name: Check required sections
+        run: |
+          file=".github/copilot-instructions.md"
+          missing=0
+          for section in "Universal Git Workflow" "Key Standards" "Conventional Commits" "Never"; do
+            if ! grep -q "##.*$section" "$file"; then
+              echo "❌ Missing required section: $section"
+              missing=1
+            fi
+          done
+          [ "$missing" -eq 0 ] || exit 1
+
+      - name: Check for broken internal links
+        run: |
+          # Extract markdown links and verify paths exist
+          errors=0
+          for file in README.md .github/*.md; do
+            [ -f "$file" ] || continue
+            # Match [text](./path) or [text](path) style relative links
+            grep -oE '\]\(\./[^)]+\)|\]\([^http][^)]+\)' "$file" | \
+              sed 's/\](\.\/\?//;s/)$//' | \
+              while read -r link; do
+                # Skip anchors and external links
+                [[ "$link" =~ ^# ]] && continue
+                [[ "$link" =~ ^http ]] && continue
+                # Remove anchor from path
+                path="${link%%#*}"
+                [ -z "$path" ] && continue
+                if [ ! -e "$path" ]; then
+                  echo "❌ Broken link in $file: $link"
+                  echo "broken=1" >> /tmp/link_errors
+                fi
+              done
+          done
+          [ -f /tmp/link_errors ] && exit 1 || true
