@@ -385,3 +385,18 @@ We value your input! We want to make contributing as easy and transparent as pos
 * Submitting a feature or fix
 * Proposing new features
 * Becoming a maintainer
+
+### Repository Structure
+
+This repository distributes `copilot-upstream.md` to all BCGov development teams. Changes here affect hundreds of developers.
+
+**Content placement:**
+- Universal coding standards → `.github/copilot-upstream.md`
+- Documentation and examples → `README.md`
+- Automation workflows → `.github/workflows/`
+
+**Guidelines:**
+- Keep `copilot-upstream.md` focused on universal principles
+- Only `.github/copilot-upstream.md` is distributed via curl to downstream PCs
+- Regular review to prevent instruction bloat and maintain effectiveness
+- Prioritize clarity, safety, and universal applicability

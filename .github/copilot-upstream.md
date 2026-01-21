@@ -143,7 +143,7 @@ git log --oneline main..HEAD  # Show PR contents
 
 ### AI assistant operational guardrails
 
-These guardrails are tool-agnostic and apply across AI coding assistants used in projects. Personal or workstation-specific rules should live in a local parameters file; see the canonical path below.
+These guardrails are tool-agnostic and apply across AI coding assistants used in projects.
 
 - Answer questions before taking action. When users ask questions, provide analysis/opinion first, then wait for confirmation before implementing.
 - Confirm before any write to external repos; show exact commands.
@@ -186,7 +186,3 @@ Repository (code) → Workflow (generates fresh data) → Deployment (current st
 ```
 Repository (code + data) → Workflow (commits data) → Deployment (stale state)
 ```
-
-- Personal or workstation-specific rules should live in a local file outside version control.
-
-<!-- Project-specific Renovate testing guidance should live in each repo's `.github/copilot-instructions.md`. -->
