@@ -65,9 +65,10 @@ jobs:
             grep -oE '\]\([^)]+\)' "$file" | \
               sed 's/\](\.\/\?//;s/)$//' | \
               while read -r link; do
-                # Skip anchors and external links
+                # Skip anchors and external links (http://, https://, mailto:, etc.)
                 [[ "$link" =~ ^# ]] && continue
-                [[ "$link" =~ ^http ]] && continue
+                [[ "$link" =~ ^https?:// ]] && continue
+                [[ "$link" =~ ^mailto: ]] && continue
                 # Remove anchor from path
                 path="${link%%#*}"
                 [ -z "$path" ] && continue
