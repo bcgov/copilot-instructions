@@ -4,94 +4,47 @@ Shared VS Code configuration to accelerate and guide the use of GitHub Copilot, 
 
 ## Installation
 
-### All Workspaces (Recommended)
+### VS Code Copilot (Per-Project)
 
-Apply the shared Copilot instructions globally across all VS Code workspaces.
+**Important:** VS Code Copilot only supports project-level instructions, not global settings. Each repository needs its own `.copilot/instructions` file.
 
-#### Option 1: Clone Repository (Recommended)
+#### Download Instructions to Your Project
 
-Clone once, then update anytime with `git pull`:
+⚠️ **Warning:** This will replace any existing `.copilot/instructions` file in your project.
+
+```bash
+mkdir -p .copilot
+curl -Lo .copilot/instructions \
+  https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
+```
+
+**To update:** Re-run the curl command to get the latest version.
+
+**To customize:** After downloading, edit `.copilot/instructions` to add project-specific rules. The shared instructions will be replaced on the next update, so keep customizations in a separate section or file if you need to preserve them.
+
+#### Alternative: Clone Repository (For Easy Updates)
+
+If you prefer to manage updates with git:
+
 
 ```bash
 git clone https://github.com/bcgov/copilot-instructions.git ~/Repos/copilot-instructions
 ```
 
-Configure VS Code `settings.json` with the path to the cloned file:
-
-1. Open VS Code
-2. Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (macOS)
-3. Type "Preferences: Open User Settings (JSON)" and select it
-4. Add the following (replace `<USERNAME>` with your actual username):
-
-```jsonc
-{
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-  "github.copilot.chat.codeGeneration.instructions": [
-    { "file": "/home/<USERNAME>/Repos/copilot-instructions/.github/copilot-instructions.md" }
-  ]
-}
-```
-
-**Path examples by OS:**
-- Linux: `/home/<USERNAME>/Repos/copilot-instructions/.github/copilot-instructions.md`
-- macOS: `/Users/<USERNAME>/Repos/copilot-instructions/.github/copilot-instructions.md`
-- Windows: `C:\\Users\\<USERNAME>\\Repos\\copilot-instructions\\.github\\copilot-instructions.md`
-
-**To update:** Navigate to the cloned repo and run `git pull`
-
-#### Option 2: Download with curl
-
-Quick one-time download (re-run manually to update):
+Then copy to each project:
 
 ```bash
-mkdir -p ~/.config
-curl -Lo ~/.config/copilot-instructions.md \
-  https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
+mkdir -p .copilot
+cp ~/Repos/copilot-instructions/.github/copilot-instructions.md .copilot/instructions
 ```
 
-Configure VS Code `settings.json` (use command palette as described above):
-
-```jsonc
-{
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-  "github.copilot.chat.codeGeneration.instructions": [
-    { "file": "/home/<USERNAME>/.config/copilot-instructions.md" }
-  ]
-}
-```
-
-**Path examples by OS:**
-- Linux: `/home/<USERNAME>/.config/copilot-instructions.md`
-- macOS: `/Users/<USERNAME>/.config/copilot-instructions.md`
-- Windows: `C:\\Users\\<USERNAME>\\.config\\copilot-instructions.md`
-
-### Single Repository
-
-For projects with specific requirements, download the instructions directly into your repository:
-
-```bash
-mkdir -p .github
-curl -Lo .github/copilot-instructions.md \
-  https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
-```
-
-Configure `.vscode/settings.json`:
-
-```jsonc
-{
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-  "github.copilot.chat.codeGeneration.instructions": [
-    { "file": ".github/copilot-instructions.md" }
-  ]
-}
-```
+**To update:** `cd ~/Repos/copilot-instructions && git pull`, then copy to projects as needed.
 
 ### Notes
 
-- **Absolute paths required** for global `settings.json`
-- **Invalid paths are harmless** - if the file doesn't exist, there's no effect
-- **VS Code sync** - ensure the file exists on all synced devices
-- **Customization** - add project-specific rules in your own `.github/copilot-instructions.md`
+- **VS Code limitation:** Global Copilot instructions via `settings.json` are not supported. Each project must have its own `.copilot/instructions` file.
+- **File replacement:** The curl command will overwrite existing `.copilot/instructions` files. Back up customizations before updating.
+- **Customization:** Add project-specific rules to `.copilot/instructions` after downloading, but be aware they'll be replaced on updates.
 
 ## Examples
 
@@ -149,7 +102,7 @@ We welcome contributions! Submit issues or pull requests to improve these shared
 
 ### Repository Structure
 
-- `.github/copilot-instructions.md` - shared BCGov coding standards (distributed to teams)
+- `.github/copilot-instructions.md` - shared coding standards
 - `README.md` - documentation and examples
 - `.github/workflows/` - automation
 - `scripts/` - utility scripts
