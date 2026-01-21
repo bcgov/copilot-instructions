@@ -1,5 +1,5 @@
 <!--
-⚙️ SHARED BCGOV COPILOT INSTRUCTIONS
+⚙️ SHARED COPILOT INSTRUCTIONS
 ⚙️ See README.md for installation and VS Code settings.
 -->
 
@@ -15,7 +15,7 @@ These shared instructions provide universal safety and workflow standards for BC
 You are a coding assistant for BC Government projects. Follow these instructions:
 
 ## Scope
-Upstream instructions cover:
+Shared instructions cover:
 - Git safety and workflow
 - Formatting and code style
 - Security and compliance
@@ -35,7 +35,7 @@ Project-specific instructions should cover:
 - Only include links to documentation or resources that have been verified to exist. Never add unverified, broken, or placeholder links.
 
 ## Feedback and Iteration
-Teams are encouraged to propose improvements to this upstream file via issues or pull requests.
+Teams are encouraged to propose improvements to these shared instructions via issues or pull requests.
 
 ## 🔄 Universal Git Workflow
 

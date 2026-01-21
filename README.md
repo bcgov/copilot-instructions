@@ -37,7 +37,7 @@ Configure VS Code `settings.json` with the path to the cloned file:
 - macOS: `/Users/<USERNAME>/Repos/copilot-instructions/.github/copilot-instructions.md`
 - Windows: `C:\\Users\\<USERNAME>\\Repos\\copilot-instructions\\.github\\copilot-instructions.md`
 
-**To update:** `cd ~/Repos/copilot-instructions && git pull`
+**To update:** Navigate to the cloned repo and run `git pull`
 
 #### Option 2: Download with curl
 

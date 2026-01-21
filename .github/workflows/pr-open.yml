@@ -12,9 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check upstream header
+      - name: Check shared instructions header
         run: |
-          grep -q "UPSTREAM MANAGED" .github/copilot-instructions.md
+          grep -q "SHARED COPILOT INSTRUCTIONS" .github/copilot-instructions.md
 
       - name: Basic markdown validation
         run: |
