@@ -16,7 +16,12 @@ Clone once, then update anytime with `git pull`:
 git clone https://github.com/bcgov/copilot-instructions.git ~/Repos/copilot-instructions
 ```
 
-Configure VS Code `settings.json` with the path to the cloned file (use your actual home directory path):
+Configure VS Code `settings.json` with the path to the cloned file:
+
+1. Open VS Code
+2. Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (macOS)
+3. Type "Preferences: Open User Settings (JSON)" and select it
+4. Add the following (replace `<USERNAME>` with your actual username):
 
 ```jsonc
 {
@@ -26,6 +31,11 @@ Configure VS Code `settings.json` with the path to the cloned file (use your act
   ]
 }
 ```
+
+**Path examples by OS:**
+- Linux: `/home/<USERNAME>/Repos/copilot-instructions/.github/copilot-instructions.md`
+- macOS: `/Users/<USERNAME>/Repos/copilot-instructions/.github/copilot-instructions.md`
+- Windows: `C:\\Users\\<USERNAME>\\Repos\\copilot-instructions\\.github\\copilot-instructions.md`
 
 **To update:** `cd ~/Repos/copilot-instructions && git pull`
 
@@ -39,7 +49,7 @@ curl -Lo ~/.config/copilot-instructions.md \
   https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
 ```
 
-Configure VS Code `settings.json`:
+Configure VS Code `settings.json` (use command palette as described above):
 
 ```jsonc
 {
@@ -49,6 +59,11 @@ Configure VS Code `settings.json`:
   ]
 }
 ```
+
+**Path examples by OS:**
+- Linux: `/home/<USERNAME>/.config/copilot-instructions.md`
+- macOS: `/Users/<USERNAME>/.config/copilot-instructions.md`
+- Windows: `C:\\Users\\<USERNAME>\\.config\\copilot-instructions.md`
 
 ### Single Repository
 
