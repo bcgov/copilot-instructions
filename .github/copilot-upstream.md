@@ -1,4 +1,3 @@
-
 <!--
 ⚙️ UPSTREAM MANAGED - DO NOT MODIFY
 ⚙️ Standard instructions for GitHub Copilot (AI coding assistant)
@@ -38,12 +37,6 @@ Project-specific instructions should cover:
 
 ## Feedback and Iteration
 Teams are encouraged to propose improvements to this upstream file via issues or pull requests.
-- Specify integration with external APIs or services
-- Document any unique patterns or conventions
-
-### **Git Safety Protocol:**
-```
-
 
 ## 🔄 Universal Git Workflow
 
@@ -60,23 +53,19 @@ git status                    # Confirm on feature branch
 - Confirming current branch is main
 - Confirming main is up to date
 - Confirming no uncommitted changes
-```
-```
 
 ### **Create PR:**
 ```bash
 git status  # Must be clean
 git fetch origin && git rebase main
-# REQUIRED: Set and verify upstream before PR creation
 git push --set-upstream origin $(git branch --show-current)
 git branch -vv  # MUST show origin/feature-branch as upstream
 gh pr create --title "feat: descriptive title" --body "## Summary
 
-Brief description
-- Always run `git push --set-upstream origin $(git branch --show-current)` after creating or rebasing a feature branch.
-- Run `git branch -vv` and confirm your branch is tracked by origin before creating a PR or pushing further changes.
-- If upstream is not set, repeat the push command until it is.
+Brief description"
 ```
+
+**Upstream tracking is required** - always run `git push --set-upstream` after creating or rebasing a feature branch, and verify with `git branch -vv` before creating a PR.
 
 ### **Fix Out-of-Date PR:**
 ```bash
@@ -107,6 +96,25 @@ git fetch origin && git rebase main && git push --force-with-lease
 - Small, focused changes over large refactoring
 - Latest stable versions for all tools
 - Never use local .env files for configuration
+
+### **Iterative Simplification & Code Reduction:**
+After implementing a feature, always look for opportunities to simplify and reduce code.
+
+**Simplification Principles:**
+- Minimize code changes - every line added should be necessary
+- Question every conditional: "Do we really need this branch?"
+- Prefer unified code paths: if the same operation works for multiple cases, use it for all
+- Remove detection when possible: if special-case detection isn't needed, remove it
+- Start working, then simplify: it's okay to start with conditionals, then iterate to find simpler patterns
+
+**Questions to Ask After Initial Implementation:**
+- Can we treat all cases the same way?
+- Is this conditional actually necessary, or does the operation work without it?
+- Can we remove this detection step if the underlying operation handles all cases?
+- Would a single code path work for what we're trying to achieve?
+- Can we achieve this with fewer lines of code?
+
+**Goal:** Less code is better code. Minimize changes and make them as non-intrusive as possible.
 
 ### **Documentation Standards:**
 - Use GitHub releases for version history (not changelogs)
@@ -179,6 +187,6 @@ Repository (code) → Workflow (generates fresh data) → Deployment (current st
 Repository (code + data) → Workflow (commits data) → Deployment (stale state)
 ```
 
-- Canonical parameters file (local): `/path/to/your/local/cursorrules`.
+- Personal or workstation-specific rules should live in a local file outside version control.
 
 <!-- Project-specific Renovate testing guidance should live in each repo's `.github/copilot-instructions.md`. -->
