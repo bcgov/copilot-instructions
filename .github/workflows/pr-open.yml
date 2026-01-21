@@ -32,6 +32,18 @@ jobs:
             }
           done
 
+      - name: Check instruction length
+        run: |
+          file=".github/copilot-instructions.md"
+          lines=$(wc -l < "$file")
+          limit=250
+          if [ "$lines" -gt "$limit" ]; then
+            echo "❌ Instructions too long: $lines lines (limit: $limit)"
+            echo "Consider simplifying to improve AI effectiveness."
+            exit 1
+          fi
+          echo "✅ Instructions length OK: $lines lines (limit: $limit)"
+
       - name: Check required sections
         run: |
           file=".github/copilot-instructions.md"
