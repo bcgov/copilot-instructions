@@ -6,6 +6,10 @@
 ## Layering Guidance
 These shared instructions provide universal safety and workflow standards for BCGov projects. Teams can add project-specific rules by creating additional instruction files that complement these shared standards.
 
+**Rule placement philosophy:**
+- **Shared instructions (this file)**: Proven, safe, obvious best practices that benefit all users
+- **Personal/experimental rules**: Less established, more assertive, or experimental approaches should be tested in personal instruction files first before promoting to shared standards
+
 ## Onboarding Checklist
 - Confirm branch protection is enabled
 - Use feature branches and pull requests for all changes
