@@ -96,6 +96,30 @@ git fetch origin && git rebase main && git push --force-with-lease
 - Latest stable versions for all tools
 - Never use local .env files for configuration
 
+### **Least Privilege Principle (CRITICAL):**
+
+Apply the principle of least privilege to ALL code, configurations, and systems. Grant only the minimum permissions, access, or capabilities necessary for functionality.
+
+**Apply to:**
+- **GitHub Actions workflows**: Use `permissions: {}` at workflow level, grant explicit permissions only at job/step level
+- **Application code**: Limit file system access, network permissions, API scopes
+- **Database access**: Grant only required tables/columns, not full database access
+- **Cloud resources**: Use IAM roles with minimal required permissions
+- **Container images**: Run as non-root user, drop unnecessary capabilities
+- **Service accounts**: Grant only the specific permissions needed for the service's function
+
+**Questions to ask:**
+- What is the minimum permission/access needed for this to work?
+- Can this run with fewer privileges?
+- Does this component need all these permissions, or can we scope it down?
+
+**Anti-patterns to avoid:**
+- ❌ Granting broad permissions "just in case"
+- ❌ Using admin/root when a limited user would work
+- ❌ Applying permissions at higher levels than necessary
+
+**Goal:** Every component should have the minimum privileges required to perform its function, nothing more.
+
 ### **Iterative Simplification & Code Reduction:**
 After implementing a feature, always look for opportunities to simplify and reduce code.
 
