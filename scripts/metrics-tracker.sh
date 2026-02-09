@@ -17,23 +17,23 @@ analyze_instructions() {
     echo ""
 
     # Get basic metrics
-    local lines words headers must_rules never_rules flexible_rules
+    local lines words headers must_rules never_rules unclear_rules
     lines=$(wc -l < "$file")
     words=$(wc -w < "$file")
     headers=$(grep -c '^##' "$file" 2>/dev/null || echo "0")
-    # MUST rules: Required practices
+    # MUST rules: Clear required practices
     must_rules=$(grep -c 'MUST\|ALWAYS' "$file" 2>/dev/null || echo "0")
-    # NEVER rules: Prohibited actions
+    # NEVER rules: Clear prohibited actions
     never_rules=$(grep -c 'NEVER' "$file" 2>/dev/null || echo "0")
-    # Flexible guidance: Principle-based guidance with flexibility
-    flexible_rules=$(grep -c 'Should\|Consider\|Prefer\|Recommend\|Avoid' "$file" 2>/dev/null || echo "0")
+    # UNCLEAR rules: Ambiguous guidance that needs clarification
+    unclear_rules=$(grep -c 'Should\|Consider\|Prefer\|Try' "$file" 2>/dev/null || echo "0")
 
     # Guidelines for a comprehensive shared instructions file
     local lines_target_min=150 lines_target_max=350
     local sections_target_min=10 sections_target_max=30
     local must_rules_target_max=20
     local never_rules_target_max=10
-    local flexible_rules_target_min=10
+    local unclear_rules_target_max=0
 
     # Display metrics with context in three columns
     echo "CURRENT:"
@@ -43,8 +43,8 @@ analyze_instructions() {
     printf "  %-18s %-15s %s\n" "Words" "-" "$words"
     printf "  %-18s %-15s %s\n" "Sections" "$sections_target_min-$sections_target_max" "$headers"
     printf "  %-18s %-15s %s\n" "MUST rules" "<$must_rules_target_max" "$must_rules"
-    printf "  %-18s %-15s %s\n" "Flexible guidance" ">$flexible_rules_target_min" "$flexible_rules"
     printf "  %-18s %-15s %s\n" "NEVER rules" "<$never_rules_target_max" "$never_rules"
+    printf "  %-18s %-15s %s\n" "UNCLEAR rules" "<=$unclear_rules_target_max" "$unclear_rules"
     echo ""
 
     # Assessment
@@ -70,33 +70,33 @@ analyze_instructions() {
     fi
 
     if [[ $must_rules -lt $must_rules_target_max ]]; then
-        echo "  ✅ MUST rules: Well-balanced required practices"
+        echo "  ✅ MUST rules: Essential practices clearly required"
         status_good=$((status_good + 1))
     else
-        echo "  ⚠️  MUST rules: Many required rules (consider reducing)"
-    fi
-
-    if [[ $flexible_rules -ge $flexible_rules_target_min ]]; then
-        echo "  ✅ Flexible guidance: Principle-based and adaptable"
-        status_good=$((status_good + 1))
-    else
-        echo "  ℹ️  Flexible guidance: Could include more principle-based guidance"
+        echo "  ⚠️  MUST rules: Many required rules (ensure each is essential)"
     fi
 
     if [[ $never_rules -lt $never_rules_target_max ]]; then
-        echo "  ✅ NEVER rules: Few hard prohibitions (flexible guidance)"
+        echo "  ✅ NEVER rules: Critical boundaries enforced"
         status_good=$((status_good + 1))
     else
-        echo "  ⚠️  NEVER rules: Many hard rules (limited flexibility)"
+        echo "  ⚠️  NEVER rules: Many prohibitions (clarify priorities)"
+    fi
+
+    if [[ $unclear_rules -le $unclear_rules_target_max ]]; then
+        echo "  ✅ UNCLEAR rules: None found (guardrails are clear)"
+        status_good=$((status_good + 1))
+    else
+        echo "  ⚠️  UNCLEAR rules: $unclear_rules found (reword for clarity: use MUST or NEVER)"
     fi
 
     echo ""
     if [[ $status_good -eq 5 ]]; then
-        echo "📈 Overall: Healthy file structure"
+        echo "📈 Overall: Clear, enforceable guardrails"
     elif [[ $status_good -ge 4 ]]; then
-        echo "📈 Overall: Good structure with room for improvement"
+        echo "📈 Overall: Mostly clear guardrails with minor issues"
     else
-        echo "📈 Overall: Review metric(s) above for potential improvements"
+        echo "📈 Overall: Review guideline wording for clarity"
     fi
     echo ""
 }
