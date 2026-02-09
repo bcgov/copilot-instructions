@@ -103,6 +103,29 @@ analyze_instructions() {
 
 # Main execution
 readonly DEFAULT_INSTRUCTIONS=".github/copilot-instructions.md"
+
+# Handle help flag
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    echo "Usage: $0 [file]"
+    echo ""
+    echo "Analyze copilot instructions for guardrails clarity."
+    echo ""
+    echo "Arguments:"
+    echo "  file    Path to instructions file (default: $DEFAULT_INSTRUCTIONS)"
+    echo ""
+    echo "Examples:"
+    echo "  $0                          # Analyze default file"
+    echo "  $0 custom/instructions.md   # Analyze custom file"
+    exit 0
+fi
+
+# Validate argument count
+if [[ $# -gt 1 ]]; then
+    echo "Error: Too many arguments. Expected 0 or 1, got $#" >&2
+    echo "Run '$0 --help' for usage information." >&2
+    exit 1
+fi
+
 local_file="${1:-$DEFAULT_INSTRUCTIONS}"
 
 analyze_instructions "$local_file"
