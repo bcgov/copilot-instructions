@@ -207,33 +207,5 @@ These guardrails are tool-agnostic and apply across AI coding assistants used in
 
 ### Repository Architecture Principles
 
-**NEVER use repositories as databases or state stores:**
-
-- ❌ Workflows that commit runtime data to repositories
-- ❌ Mixing code and runtime state in version control
-- ❌ Committing generated files that should be ephemeral
-- ❌ Using git history to track application state changes
-
-**ALWAYS maintain clean separation:**
-
-- ✅ Repositories contain only source code and configuration
-- ✅ Runtime data generated during build/deploy process
-- ✅ Stateful information lives in deployment artifacts (GitHub Pages, containers, etc.)
-- ✅ Workflows are stateless and idempotent
-
-**Red flags to question:**
-- "Should this workflow commit changes to the repo?"
-- "Is this data or code?"
-- "Why does this need to be in git history?"
-- "What happens if we run this workflow multiple times?"
-
-**Correct pattern:**
-```
-Repository (code) → Workflow (generates fresh data) → Deployment (current state)
-```
-
-**Anti-pattern:**
-```
-Repository (code + data) → Workflow (commits data) → Deployment (stale state)
-```
+**NEVER use repositories as databases or state stores**
 
