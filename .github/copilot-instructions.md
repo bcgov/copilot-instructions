@@ -117,10 +117,10 @@ git fetch origin && git rebase main && git push --force-with-lease
 **When a package upgrade isn't ready:**
 - ✅ **DO:** Clearly state the issue: "This package isn't ready yet because [reason]" or "Too soon to upgrade"
 - ❌ **DON'T:** Silently downgrade to avoid the problem
-- ❌ **DON'T:** Work around incompatibilities with patches or configuration changes
-- If asked to upgrade and it's blocked: be transparent, explain the blocker, and ask the user before attempting any workaround
+- ❌ **DON'T:** Work around incompatibilities with patches or configuration changes without explicit user approval
+- If asked to upgrade and it's blocked: be transparent, explain the blocker, and ask the user whether they want to proceed with a workaround; only implement it if they explicitly approve
 
-**Why:** Silent downgrades hide problems and create false confidence in solutions. Transparency helps users make informed decisions about timing and priorities.
+**Why:** Silent downgrades and unapproved workarounds hide problems and create false confidence in solutions. Transparency helps users make informed decisions about timing and priorities.
 
 ### **Least Privilege Principle (CRITICAL):**
 
@@ -170,7 +170,7 @@ After implementing a feature, always look for opportunities to simplify and redu
 - Use GitHub releases for version history (not changelogs)
 - PR history provides better change tracking than manual logs
 - Keep documentation focused and avoid redundant files
-- NEVER use manual tracking when automated tracking is available
+- NEVER add manually maintained tracking artifacts (changelogs, release logs, status logs, TODO lists) when equivalent views exist in GitHub features (issues, project boards, PR history, GitHub Releases) or CI tooling
 
 ## 🚫 Never
 
