@@ -117,10 +117,10 @@ git fetch origin && git rebase main && git push --force-with-lease
 **When a package upgrade isn't ready:**
 - ✅ **DO:** Clearly state the issue: "This package isn't ready yet because [reason]" or "Too soon to upgrade"
 - ❌ **DON'T:** Silently downgrade to avoid the problem
-- ❌ **DON'T:** Try to work around incompatibilities with patches or configuration changes
-- If asked to upgrade and it's blocked: be transparent, explain the blocker, and ask the user before attempting any workaround
+- ❌ **DON'T:** Work around incompatibilities with patches or configuration changes without explicit user approval
+- If asked to upgrade and it's blocked: be transparent, explain the blocker, and ask the user whether they want to proceed with a workaround; only implement it if they explicitly approve
 
-**Why:** Silent downgrades hide problems and create false confidence in solutions. Transparency helps users make informed decisions about timing and priorities.
+**Why:** Silent downgrades and unapproved workarounds hide problems and create false confidence in solutions. Transparency helps users make informed decisions about timing and priorities.
 
 ### **Least Privilege Principle (CRITICAL):**
 
@@ -152,7 +152,7 @@ After implementing a feature, always look for opportunities to simplify and redu
 **Simplification Principles:**
 - Minimize code changes - every line added should be necessary
 - Question every conditional: "Do we really need this branch?"
-- Prefer unified code paths: if the same operation works for multiple cases, use it for all
+- Use unified code paths: if the same operation works for multiple cases, use it for all
 - Remove detection when possible: if special-case detection isn't needed, remove it
 - Start working, then simplify: it's okay to start with conditionals, then iterate to find simpler patterns
 
@@ -170,7 +170,7 @@ After implementing a feature, always look for opportunities to simplify and redu
 - Use GitHub releases for version history (not changelogs)
 - PR history provides better change tracking than manual logs
 - Keep documentation focused and avoid redundant files
-- Prefer automated tracking over manual maintenance
+- NEVER add manually maintained tracking artifacts (changelogs, release logs, status logs, TODO lists) when equivalent views exist in GitHub features (issues, project boards, PR history, GitHub Releases) or CI tooling
 
 ## 🚫 Never
 
@@ -207,33 +207,5 @@ These guardrails are tool-agnostic and apply across AI coding assistants used in
 
 ### Repository Architecture Principles
 
-**NEVER use repositories as databases or state stores:**
-
-- ❌ Workflows that commit runtime data to repositories
-- ❌ Mixing code and runtime state in version control
-- ❌ Committing generated files that should be ephemeral
-- ❌ Using git history to track application state changes
-
-**ALWAYS maintain clean separation:**
-
-- ✅ Repositories contain only source code and configuration
-- ✅ Runtime data generated during build/deploy process
-- ✅ Stateful information lives in deployment artifacts (GitHub Pages, containers, etc.)
-- ✅ Workflows are stateless and idempotent
-
-**Red flags to question:**
-- "Should this workflow commit changes to the repo?"
-- "Is this data or code?"
-- "Why does this need to be in git history?"
-- "What happens if we run this workflow multiple times?"
-
-**Correct pattern:**
-```
-Repository (code) → Workflow (generates fresh data) → Deployment (current state)
-```
-
-**Anti-pattern:**
-```
-Repository (code + data) → Workflow (commits data) → Deployment (stale state)
-```
+**NEVER use repositories as databases or state stores**
 
