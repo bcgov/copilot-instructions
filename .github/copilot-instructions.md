@@ -117,7 +117,7 @@ git fetch origin && git rebase main && git push --force-with-lease
 **When a package upgrade isn't ready:**
 - ✅ **DO:** Clearly state the issue: "This package isn't ready yet because [reason]" or "Too soon to upgrade"
 - ❌ **DON'T:** Silently downgrade to avoid the problem
-- ❌ **DON'T:** Try to work around incompatibilities with patches or configuration changes
+- ❌ **DON'T:** Work around incompatibilities with patches or configuration changes
 - If asked to upgrade and it's blocked: be transparent, explain the blocker, and ask the user before attempting any workaround
 
 **Why:** Silent downgrades hide problems and create false confidence in solutions. Transparency helps users make informed decisions about timing and priorities.
@@ -152,7 +152,7 @@ After implementing a feature, always look for opportunities to simplify and redu
 **Simplification Principles:**
 - Minimize code changes - every line added should be necessary
 - Question every conditional: "Do we really need this branch?"
-- Prefer unified code paths: if the same operation works for multiple cases, use it for all
+- Use unified code paths: if the same operation works for multiple cases, use it for all
 - Remove detection when possible: if special-case detection isn't needed, remove it
 - Start working, then simplify: it's okay to start with conditionals, then iterate to find simpler patterns
 
@@ -170,7 +170,7 @@ After implementing a feature, always look for opportunities to simplify and redu
 - Use GitHub releases for version history (not changelogs)
 - PR history provides better change tracking than manual logs
 - Keep documentation focused and avoid redundant files
-- Prefer automated tracking over manual maintenance
+- NEVER use manual tracking when automated tracking is available
 
 ## 🚫 Never
 
