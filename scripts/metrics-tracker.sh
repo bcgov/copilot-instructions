@@ -17,16 +17,20 @@ analyze_instructions() {
     echo ""
 
     # Get basic metrics
-    local lines words headers decisions
+    local lines words headers standards constraints
     lines=$(wc -l < "$file")
     words=$(wc -w < "$file")
     headers=$(grep -c '^##' "$file" 2>/dev/null || echo "0")
-    decisions=$(grep -c 'IF\|NEVER\|ALWAYS' "$file" 2>/dev/null || echo "0")
+    # Standards: Mandatory guidelines (MUST/ALWAYS)
+    standards=$(grep -c 'MUST\|ALWAYS' "$file" 2>/dev/null || echo "0")
+    # Constraints: Hard rules that cannot be overridden (NEVER)
+    constraints=$(grep -c 'NEVER' "$file" 2>/dev/null || echo "0")
 
     # Guidelines for a comprehensive shared instructions file
     local lines_target_min=150 lines_target_max=350
     local sections_target_min=10 sections_target_max=30
-    local decisions_target_max=15
+    local standards_target_max=20
+    local constraints_target_max=10
 
     # Display metrics with context in three columns
     echo "CURRENT:"
@@ -35,7 +39,8 @@ analyze_instructions() {
     printf "  %-18s %-15s %s\n" "Lines" "$lines_target_min-$lines_target_max" "$lines"
     printf "  %-18s %-15s %s\n" "Words" "-" "$words"
     printf "  %-18s %-15s %s\n" "Sections" "$sections_target_min-$sections_target_max" "$headers"
-    printf "  %-18s %-15s %s\n" "Decision points" "<$decisions_target_max" "$decisions"
+    printf "  %-18s %-15s %s\n" "Standards" "<$standards_target_max" "$standards"
+    printf "  %-18s %-15s %s\n" "Constraints" "<$constraints_target_max" "$constraints"
     echo ""
 
     # Assessment
@@ -60,17 +65,24 @@ analyze_instructions() {
         echo "  ⚠️  Sections: Many sections (consider consolidation or splitting)"
     fi
 
-    if [[ $decisions -lt $decisions_target_max ]]; then
-        echo "  ✅ Decision points: Flexible guidance (not overly rigid)"
+    if [[ $standards -lt $standards_target_max ]]; then
+        echo "  ✅ Standards: Reasonable number of mandatory guidelines"
         status_good=$((status_good + 1))
     else
-        echo "  ⚠️  Decision points: Many hard rules (consider softening to principles)"
+        echo "  ⚠️  Standards: Many mandatory rules (may be over-constraining)"
+    fi
+
+    if [[ $constraints -lt $constraints_target_max ]]; then
+        echo "  ✅ Constraints: Few hard safety rules (flexible guidance)"
+        status_good=$((status_good + 1))
+    else
+        echo "  ⚠️  Constraints: Many hard rules (limited flexibility)"
     fi
 
     echo ""
-    if [[ $status_good -eq 3 ]]; then
+    if [[ $status_good -eq 4 ]]; then
         echo "📈 Overall: Healthy file structure"
-    elif [[ $status_good -eq 2 ]]; then
+    elif [[ $status_good -ge 3 ]]; then
         echo "📈 Overall: Good structure with room for improvement"
     else
         echo "📈 Overall: Review metric(s) above for potential improvements"
