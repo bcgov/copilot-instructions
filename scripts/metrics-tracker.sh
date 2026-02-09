@@ -50,7 +50,7 @@ analyze_instructions() {
     printf "  %-18s %-15s %s\n" "Sections" "$sections_target_min-$sections_target_max" "$headers"
     printf "  %-18s %-15s %s\n" "MUST rules" "<$must_rules_target_max" "$must_rules"
     printf "  %-18s %-15s %s\n" "NEVER rules" "<$never_rules_target_max" "$never_rules"
-    printf "  %-18s %-15s %s\n" "UNCLEAR rules" "<=$unclear_rules_target_max" "$unclear_rules"
+    printf "  %-18s %-15s %s\n" "UNCLEAR rules" "$unclear_rules_target_max" "$unclear_rules"
     echo ""
 
     # Assessment
