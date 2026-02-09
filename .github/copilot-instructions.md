@@ -96,6 +96,32 @@ git fetch origin && git rebase main && git push --force-with-lease
 - Latest stable versions for all tools
 - Never use local .env files for configuration
 
+### **Package Management (npm/Node.js) - Safe & Repeatable Builds:**
+
+**Goal:** Make sure builds are safely repeatable and predictable. Never create fragile workarounds that break when run again.
+
+**NEVER:**
+- Use `--legacy-peer-deps` flag or `legacy-peer-deps=true` config
+- Downgrade packages without asking the user first
+- Manually edit `package-lock.json` or other lock files
+- Create one-off solutions that won't work when the project is built fresh or on another machine
+
+**Instead:**
+- Resolve peer dependency conflicts by updating the conflicting packages to compatible versions
+- Use standard `npm install`, `npm update`, or explicit version bumps (`npm install package@latest`)
+- Let package managers handle lock files—they exist to ensure reproducibility
+- If a dependency conflict seems unsolvable, ask the user for guidance before attempting workarounds
+
+**Why:** Lock files guarantee everyone gets the same versions. Manual edits or legacy flags bypass this safety net, breaking builds on CI systems or other developer machines. Downgrades can introduce security issues or unintended behavior changes.
+
+**When a package upgrade isn't ready:**
+- ✅ **DO:** Clearly state the issue: "This package isn't ready yet because [reason]" or "Too soon to upgrade"
+- ❌ **DON'T:** Silently downgrade to avoid the problem
+- ❌ **DON'T:** Try to work around incompatibilities with patches or configuration changes
+- If asked to upgrade and it's blocked: be transparent, explain the blocker, and ask the user before attempting any workaround
+
+**Why:** Silent downgrades hide problems and create false confidence in solutions. Transparency helps users make informed decisions about timing and priorities.
+
 ### **Least Privilege Principle (CRITICAL):**
 
 Apply the principle of least privilege to ALL code, configurations, and systems. Grant only the minimum permissions, access, or capabilities necessary for functionality.
