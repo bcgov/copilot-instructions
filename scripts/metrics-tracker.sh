@@ -1,15 +1,8 @@
 #!/bin/bash
-# AI Instruction Complexity Analyzer
-# Simple, focused analysis with actionable insights
-# Demonstrates rule compliance and documentation standards
+# Metrics Tracker - Analyze copilot-instructions.md complexity
+# Reports metrics with context and guidelines
 
 set -euo pipefail
-
-# Analysis thresholds
-readonly WARNING_LINES=200
-readonly EXCESSIVE_LINES=300
-readonly WARNING_HEADERS=15
-readonly EXCESSIVE_HEADERS=25
 
 analyze_instructions() {
     local file="$1"
@@ -19,90 +12,120 @@ analyze_instructions() {
         return 1
     fi
 
-    echo "📊 AI INSTRUCTION ANALYSIS: $file"
+    echo "📊 METRICS: $file"
     echo "Generated: $(date)"
     echo ""
 
     # Get basic metrics
-    local lines words headers
+    local lines words headers must_rules never_rules unclear_rules
     lines=$(wc -l < "$file")
     words=$(wc -w < "$file")
     headers=$(grep -c '^##' "$file" 2>/dev/null || echo "0")
+    # MUST rules: Clear required practices
+    must_rules=$(grep -c 'MUST\|ALWAYS' "$file" 2>/dev/null || echo "0")
+    # NEVER rules: Clear prohibited actions
+    never_rules=$(grep -c 'NEVER' "$file" 2>/dev/null || echo "0")
+    # UNCLEAR rules: Ambiguous guidance that needs clarification
+    unclear_rules=$(grep -c 'Should\|Consider\|Prefer\|Try' "$file" 2>/dev/null || echo "0")
 
-    # Display metrics
-    echo "=== METRICS ==="
-    echo "Lines: $lines"
-    echo "Words: $words"
-    echo "Sections: $headers"
+    # Guidelines for a comprehensive shared instructions file
+    local lines_target_min=150 lines_target_max=350
+    local sections_target_min=10 sections_target_max=30
+    local must_rules_target_max=20
+    local never_rules_target_max=10
+    local unclear_rules_target_max=0
+
+    # Display metrics with context in three columns
+    echo "CURRENT:"
+    printf "  %-18s %-15s %s\n" "Metric" "Target" "Value"
+    printf "  %-18s %-15s %s\n" "------" "------" "-----"
+    printf "  %-18s %-15s %s\n" "Lines" "$lines_target_min-$lines_target_max" "$lines"
+    printf "  %-18s %-15s %s\n" "Words" "-" "$words"
+    printf "  %-18s %-15s %s\n" "Sections" "$sections_target_min-$sections_target_max" "$headers"
+    printf "  %-18s %-15s %s\n" "MUST rules" "<$must_rules_target_max" "$must_rules"
+    printf "  %-18s %-15s %s\n" "NEVER rules" "<$never_rules_target_max" "$never_rules"
+    printf "  %-18s %-15s %s\n" "UNCLEAR rules" "<=$unclear_rules_target_max" "$unclear_rules"
     echo ""
 
-    # Provide actionable insights
-    echo "=== INSIGHTS ==="
-
-    # Line count analysis
-    if [[ "$lines" -gt "$EXCESSIVE_LINES" ]]; then
-        echo "🚨 EXCESSIVE: $lines lines exceeds recommended limit of $EXCESSIVE_LINES"
-        echo "   Consider breaking into smaller, focused instruction files"
-    elif [[ "$lines" -gt "$WARNING_LINES" ]]; then
-        echo "⚠️  WARNING: $lines lines approaching limit of $EXCESSIVE_LINES"
-        echo "   Review for unnecessary content or consider reorganization"
+    # Assessment
+    echo "ASSESSMENT:"
+    local status_good=0
+    
+    if [[ $lines -ge $lines_target_min && $lines -le $lines_target_max ]]; then
+        echo "  ✅ Lines: Within healthy range"
+        status_good=$((status_good + 1))
+    elif [[ $lines -lt $lines_target_min ]]; then
+        echo "  ℹ️  Lines: Below target (more detail may be needed)"
     else
-        echo "✅ GOOD: $lines lines is within recommended range"
+        echo "  ⚠️  Lines: Above target (consider breaking into narrower focus)"
     fi
 
-    # Header analysis
-    if [[ "$headers" -gt "$EXCESSIVE_HEADERS" ]]; then
-        echo "🚨 EXCESSIVE: $headers sections may indicate over-organization"
-        echo "   Consider consolidating related sections"
-    elif [[ "$headers" -gt "$WARNING_HEADERS" ]]; then
-        echo "⚠️  WARNING: $headers sections - review organization"
+    if [[ $headers -ge $sections_target_min && $headers -le $sections_target_max ]]; then
+        echo "  ✅ Sections: Well-organized"
+        status_good=$((status_good + 1))
+    elif [[ $headers -lt $sections_target_min ]]; then
+        echo "  ℹ️  Sections: Few sections (may need better organization)"
     else
-        echo "✅ GOOD: $headers sections provides clear structure"
+        echo "  ⚠️  Sections: Many sections (consider consolidation or splitting)"
     fi
 
-    # Decision complexity
-    local decisions
-    decisions=$(grep -c 'IF\|NEVER\|ALWAYS' "$file" 2>/dev/null || echo "0")
-    # Clean up any newlines or extra output
-    decisions=$(echo "$decisions" | tr -d '\n' | tr -d ' ')
-    if [[ "$decisions" -gt 10 ]]; then
-        echo "⚠️  WARNING: $decisions decision points may create rigid constraints"
-        echo "   Consider if all rules are necessary"
-    elif [[ "$decisions" -gt 0 ]]; then
-        echo "✅ GOOD: $decisions decision points provide clear guidance"
+    if [[ $must_rules -lt $must_rules_target_max ]]; then
+        echo "  ✅ MUST rules: Essential practices clearly required"
+        status_good=$((status_good + 1))
     else
-        echo "ℹ️  INFO: No hard decision points - flexible guidance"
+        echo "  ⚠️  MUST rules: Many required rules (ensure each is essential)"
+    fi
+
+    if [[ $never_rules -lt $never_rules_target_max ]]; then
+        echo "  ✅ NEVER rules: Critical boundaries enforced"
+        status_good=$((status_good + 1))
+    else
+        echo "  ⚠️  NEVER rules: Many prohibitions (clarify priorities)"
+    fi
+
+    if [[ $unclear_rules -le $unclear_rules_target_max ]]; then
+        echo "  ✅ UNCLEAR rules: None found (guardrails are clear)"
+        status_good=$((status_good + 1))
+    else
+        echo "  ⚠️  UNCLEAR rules: $unclear_rules found (reword for clarity: use MUST or NEVER)"
     fi
 
     echo ""
-    echo "=== RECOMMENDATIONS ==="
-
-    if [[ "$lines" -gt "$WARNING_LINES" ]]; then
-        echo "• Break large files into focused, topic-specific instructions"
-        echo "• Remove outdated or redundant content"
-        echo "• Consider if all sections are actively used"
+    if [[ $status_good -eq 5 ]]; then
+        echo "📈 Overall: Clear, enforceable guardrails"
+    elif [[ $status_good -ge 4 ]]; then
+        echo "📈 Overall: Mostly clear guardrails with minor issues"
+    else
+        echo "📈 Overall: Review guideline wording for clarity"
     fi
-
-    if [[ "$headers" -gt "$WARNING_HEADERS" ]]; then
-        echo "• Consolidate related sections under broader categories"
-        echo "• Use subsections (###) for detailed breakdowns"
-        echo "• Ensure each section has clear, distinct purpose"
-    fi
-
-    if [[ "$decisions" -gt 5 ]]; then
-        echo "• Review if all rules are still necessary"
-        echo "• Consider converting rigid rules to flexible guidance"
-        echo "• Focus on principles rather than specific constraints"
-    fi
-
     echo ""
 }
 
 # Main execution
-if [[ $# -eq 0 ]]; then
-    echo "Usage: $0 <instruction-file>"
-    echo "Example: $0 .github/copilot-upstream.md"
+readonly DEFAULT_INSTRUCTIONS=".github/copilot-instructions.md"
+
+# Handle help flag
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    echo "Usage: $0 [file]"
+    echo ""
+    echo "Analyze copilot instructions for guardrails clarity."
+    echo ""
+    echo "Arguments:"
+    echo "  file    Path to instructions file (default: $DEFAULT_INSTRUCTIONS)"
+    echo ""
+    echo "Examples:"
+    echo "  $0                          # Analyze default file"
+    echo "  $0 custom/instructions.md   # Analyze custom file"
+    exit 0
+fi
+
+# Validate argument count
+if [[ $# -gt 1 ]]; then
+    echo "Error: Too many arguments. Expected 0 or 1, got $#" >&2
+    echo "Run '$0 --help' for usage information." >&2
     exit 1
 fi
 
-analyze_instructions "$1"
+local_file="${1:-$DEFAULT_INSTRUCTIONS}"
+
+analyze_instructions "$local_file"
