@@ -1,6 +1,6 @@
 #!/bin/bash
 # Metrics Tracker - Analyze copilot-instructions.md complexity
-# Reports basic metrics: lines, words, sections
+# Reports metrics with context and guidelines
 
 set -euo pipefail
 
@@ -23,11 +23,56 @@ analyze_instructions() {
     headers=$(grep -c '^##' "$file" 2>/dev/null || echo "0")
     decisions=$(grep -c 'IF\|NEVER\|ALWAYS' "$file" 2>/dev/null || echo "0")
 
-    # Display metrics
-    echo "Lines:                 $lines"
-    echo "Words:                 $words"
-    echo "Sections (##):         $headers"
-    echo "Decision points:       $decisions"
+    # Guidelines for a comprehensive shared instructions file
+    local lines_target_min=150 lines_target_max=350
+    local sections_target_min=10 sections_target_max=30
+    local decisions_target_max=15
+
+    # Display metrics with context
+    echo "CURRENT:"
+    echo "  Lines:           $lines (target: $lines_target_min-$lines_target_max)"
+    echo "  Words:           $words"
+    echo "  Sections (##):   $headers (target: $sections_target_min-$sections_target_max)"
+    echo "  Decision points: $decisions (target: <$decisions_target_max)"
+    echo ""
+
+    # Assessment
+    echo "ASSESSMENT:"
+    local status_good=0
+    
+    if [[ $lines -ge $lines_target_min && $lines -le $lines_target_max ]]; then
+        echo "  ✅ Lines: Within healthy range"
+        status_good=$((status_good + 1))
+    elif [[ $lines -lt $lines_target_min ]]; then
+        echo "  ℹ️  Lines: Below target (more detail may be needed)"
+    else
+        echo "  ⚠️  Lines: Above target (consider breaking into narrower focus)"
+    fi
+
+    if [[ $headers -ge $sections_target_min && $headers -le $sections_target_max ]]; then
+        echo "  ✅ Sections: Well-organized"
+        status_good=$((status_good + 1))
+    elif [[ $headers -lt $sections_target_min ]]; then
+        echo "  ℹ️  Sections: Few sections (may need better organization)"
+    else
+        echo "  ⚠️  Sections: Many sections (consider consolidation or splitting)"
+    fi
+
+    if [[ $decisions -lt $decisions_target_max ]]; then
+        echo "  ✅ Decision points: Flexible guidance (not overly rigid)"
+        status_good=$((status_good + 1))
+    else
+        echo "  ⚠️  Decision points: Many hard rules (consider softening to principles)"
+    fi
+
+    echo ""
+    if [[ $status_good -eq 3 ]]; then
+        echo "📈 Overall: Healthy file structure"
+    elif [[ $status_good -eq 2 ]]; then
+        echo "📈 Overall: Good structure with room for improvement"
+    else
+        echo "📈 Overall: Review metric(s) above for potential improvements"
+    fi
     echo ""
 }
 
