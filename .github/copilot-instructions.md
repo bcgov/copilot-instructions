@@ -166,6 +166,7 @@ After implementing a feature, always look for opportunities to simplify and redu
 **Goal:** Less code is better code. Minimize changes and make them as non-intrusive as possible.
 
 ### **Documentation Standards:**
+- Use 4-space indentation for code blocks in release notes, PR bodies, and documentation (not triple backticks)
 - Use GitHub releases for version history (not changelogs)
 - PR history provides better change tracking than manual logs
 - Keep documentation focused and avoid redundant files
