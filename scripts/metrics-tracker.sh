@@ -20,13 +20,19 @@ analyze_instructions() {
     local lines words headers must_rules never_rules unclear_rules
     lines=$(wc -l < "$file")
     words=$(wc -w < "$file")
-    headers=$(grep -c '^##' "$file" 2>/dev/null || echo "0")
+    headers=$(grep -c '^##' "$file" 2>/dev/null || true)
     # MUST rules: Clear required practices
-    must_rules=$(grep -c 'MUST\|ALWAYS' "$file" 2>/dev/null || echo "0")
+    must_rules=$(grep -c 'MUST\|ALWAYS' "$file" 2>/dev/null || true)
     # NEVER rules: Clear prohibited actions
-    never_rules=$(grep -c 'NEVER' "$file" 2>/dev/null || echo "0")
+    never_rules=$(grep -c 'NEVER' "$file" 2>/dev/null || true)
     # UNCLEAR rules: Ambiguous guidance that needs clarification
-    unclear_rules=$(grep -c 'Should\|Consider\|Prefer\|Try' "$file" 2>/dev/null || echo "0")
+    unclear_rules=$(grep -c 'Should\|Consider\|Prefer\|Try' "$file" 2>/dev/null || true)
+
+    # Ensure all counts are numeric (grep -c outputs 0 when no matches, but exits with code 1)
+    headers=${headers:-0}
+    must_rules=${must_rules:-0}
+    never_rules=${never_rules:-0}
+    unclear_rules=${unclear_rules:-0}
 
     # Guidelines for a comprehensive shared instructions file
     local lines_target_min=150 lines_target_max=350
