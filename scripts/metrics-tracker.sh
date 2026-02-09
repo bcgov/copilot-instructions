@@ -99,10 +99,7 @@ analyze_instructions() {
 }
 
 # Main execution
-if [[ $# -eq 0 ]]; then
-    echo "Usage: $0 <instruction-file>"
-    echo "Example: $0 .github/copilot-upstream.md"
-    exit 1
-fi
+readonly DEFAULT_INSTRUCTIONS=".github/copilot-instructions.md"
+local_file="${1:-$DEFAULT_INSTRUCTIONS}"
 
-analyze_instructions "$1"
+analyze_instructions "$local_file"
