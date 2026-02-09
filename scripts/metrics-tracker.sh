@@ -17,7 +17,7 @@ analyze_instructions() {
     echo ""
 
     # Get basic metrics
-    local lines words headers must_rules never_rules
+    local lines words headers must_rules never_rules flexible_rules
     lines=$(wc -l < "$file")
     words=$(wc -w < "$file")
     headers=$(grep -c '^##' "$file" 2>/dev/null || echo "0")
@@ -25,12 +25,15 @@ analyze_instructions() {
     must_rules=$(grep -c 'MUST\|ALWAYS' "$file" 2>/dev/null || echo "0")
     # NEVER rules: Prohibited actions
     never_rules=$(grep -c 'NEVER' "$file" 2>/dev/null || echo "0")
+    # Flexible guidance: Principle-based guidance with flexibility
+    flexible_rules=$(grep -c 'Should\|Consider\|Prefer\|Recommend\|Avoid' "$file" 2>/dev/null || echo "0")
 
     # Guidelines for a comprehensive shared instructions file
     local lines_target_min=150 lines_target_max=350
     local sections_target_min=10 sections_target_max=30
     local must_rules_target_max=20
     local never_rules_target_max=10
+    local flexible_rules_target_min=10
 
     # Display metrics with context in three columns
     echo "CURRENT:"
@@ -40,6 +43,7 @@ analyze_instructions() {
     printf "  %-18s %-15s %s\n" "Words" "-" "$words"
     printf "  %-18s %-15s %s\n" "Sections" "$sections_target_min-$sections_target_max" "$headers"
     printf "  %-18s %-15s %s\n" "MUST rules" "<$must_rules_target_max" "$must_rules"
+    printf "  %-18s %-15s %s\n" "Flexible guidance" ">$flexible_rules_target_min" "$flexible_rules"
     printf "  %-18s %-15s %s\n" "NEVER rules" "<$never_rules_target_max" "$never_rules"
     echo ""
 
@@ -72,6 +76,13 @@ analyze_instructions() {
         echo "  ⚠️  MUST rules: Many required rules (consider reducing)"
     fi
 
+    if [[ $flexible_rules -ge $flexible_rules_target_min ]]; then
+        echo "  ✅ Flexible guidance: Principle-based and adaptable"
+        status_good=$((status_good + 1))
+    else
+        echo "  ℹ️  Flexible guidance: Could include more principle-based guidance"
+    fi
+
     if [[ $never_rules -lt $never_rules_target_max ]]; then
         echo "  ✅ NEVER rules: Few hard prohibitions (flexible guidance)"
         status_good=$((status_good + 1))
@@ -80,9 +91,9 @@ analyze_instructions() {
     fi
 
     echo ""
-    if [[ $status_good -eq 4 ]]; then
+    if [[ $status_good -eq 5 ]]; then
         echo "📈 Overall: Healthy file structure"
-    elif [[ $status_good -ge 3 ]]; then
+    elif [[ $status_good -ge 4 ]]; then
         echo "📈 Overall: Good structure with room for improvement"
     else
         echo "📈 Overall: Review metric(s) above for potential improvements"
