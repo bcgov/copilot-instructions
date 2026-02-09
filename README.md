@@ -4,13 +4,22 @@ Shared VS Code configuration to accelerate and guide the use of GitHub Copilot, 
 
 ## Installation
 
-### VS Code Copilot (Per-Project)
+### Option 1: Global Context (Recommended for Chat)
 
-**Important:** VS Code Copilot only supports project-level instructions, not global settings. Each repository needs its own `.copilot/instructions` file.
+Copy the instructions to your home directory and reference them in every chat:
 
-#### Download Instructions to Your Project
+```bash
+curl -Lo ~/.copilot.md \
+  https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
+```
 
-⚠️ **Warning:** This will replace any existing `.copilot/instructions` file in your project.
+Then start each chat with: `@~/.copilot.md`
+
+This loads your standards into every conversation without per-project configuration.
+
+### Option 2: Per-Project Instructions
+
+For integrated project-level VS Code Copilot support:
 
 ```bash
 mkdir -p .copilot
@@ -18,50 +27,7 @@ curl -Lo .copilot/instructions \
   https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
 ```
 
-**To update:** Re-run the curl command to get the latest version.
-
-**To customize:** After downloading, edit `.copilot/instructions` to add project-specific rules. The shared instructions will be replaced on the next update, so keep customizations in a separate section or file if you need to preserve them.
-
-#### Alternative: Clone Repository (For Easy Updates)
-
-If you prefer to manage updates with git:
-
-
-```bash
-git clone https://github.com/bcgov/copilot-instructions.git ~/Repos/copilot-instructions
-```
-
-Then copy to each project:
-
-```bash
-mkdir -p .copilot
-cp ~/Repos/copilot-instructions/.github/copilot-instructions.md .copilot/instructions
-```
-
-**To update:** `cd ~/Repos/copilot-instructions && git pull`, then copy to projects as needed.
-
-### Notes
-
-- **VS Code limitation:** Global Copilot instructions via `settings.json` are not supported. Each project must have its own `.copilot/instructions` file.
-- **File replacement:** The curl command will overwrite existing `.copilot/instructions` files. Back up customizations before updating.
-- **Customization:** Add project-specific rules to `.copilot/instructions` after downloading, but be aware they'll be replaced on updates.
-
-## Examples
-
-### Creating Pull Requests with Copilot and GitHub CLI
-
-Ask Copilot: "Give me a PR command using gh cli."
-
-Copilot will generate a command block following the shared instructions, including conventional commit format and markdown-formatted PR body. Copy and paste directly into your terminal.
-
-## Optimization Tips
-
-If you experience inconsistent AI behavior:
-
-- **Safety rules first** - put critical rules at the top of instructions
-- **Hierarchical organization** - use global rules + project-specific additions
-- **Keep it focused** - aim for under 300 lines of instructions per session
-- **Move complexity to docs** - keep instructions concise
+Add project-specific rules to `.copilot/instructions` after downloading. Re-run the curl command to update with the latest shared standards.
 
 ## Scripts
 
@@ -70,44 +36,28 @@ Utility scripts in [`scripts/`](./scripts/):
 - **`git-safety.sh`** - prevents dangerous git/gh operations
 - **`metrics-tracker.sh`** - development metrics tracking
 
-## AI Safety and Command Protection
+## Git and GitHub CLI Safety
 
-AI tools can accidentally perform dangerous operations. The `git-safety.sh` script prevents dangerous git and GitHub CLI operations.
-
-### Installation
+The `git-safety.sh` script prevents accidental dangerous operations:
 
 ```bash
 sudo cp scripts/git-safety.sh /etc/profile.d/git-safety.sh
 sudo chmod +x /etc/profile.d/git-safety.sh
 ```
 
-See [`scripts/git-safety.sh`](./scripts/git-safety.sh) for the full implementation and documentation.
+**Git:** Blocks `commit`, `push`, `merge` on the default branch. Safe operations like `status`, `log`, `diff`, `fetch`, `pull` are allowed.
 
-### How It Works
+**GitHub CLI:** Only explicitly safe commands (`pr create`, `pr list`, `issue create`, etc.) are permitted. Dangerous operations (`pr merge`, `repo delete`) are blocked.
 
-**Git Protection:** Blocks dangerous operations (`commit`, `push`, `merge`) on the default branch. Safe operations (`status`, `log`, `diff`, `fetch`, `pull`) are allowed.
+Override when needed: `command git push origin main`
 
-**GitHub CLI Protection:** Allowlist approach - only explicitly safe commands (`pr create`, `pr list`, `issue create`, etc.) are permitted. Dangerous operations (`pr merge`, `repo delete`) are blocked.
-
-**Override when needed:** `command git push origin main` bypasses restrictions.
-
-## Additional Resources
-
-- [VS Code Copilot Documentation](https://code.visualstudio.com/docs/copilot/overview)
-- [Customizing Copilot](https://code.visualstudio.com/docs/copilot/copilot-customization)
+See [`scripts/git-safety.sh`](./scripts/git-safety.sh) for full details.
 
 ## Contributing
 
 We welcome contributions! Submit issues or pull requests to improve these shared guidelines.
 
-### Repository Structure
-
-- `.github/copilot-instructions.md` - shared coding standards
-- `README.md` - documentation and examples
-- `.github/workflows/` - automation
-- `scripts/` - utility scripts
-
 **Guidelines:**
-- Keep instructions focused on universal principles
-- Regular review to prevent bloat
-- Prioritize clarity, safety, and universal applicability
+- Keep instructions focused on universal principles and BC Government standards
+- Prioritize clarity, safety, and applicability across projects
+- Remove redundant or overly specific content during reviews
