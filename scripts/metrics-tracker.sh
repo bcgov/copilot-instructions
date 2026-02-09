@@ -17,20 +17,20 @@ analyze_instructions() {
     echo ""
 
     # Get basic metrics
-    local lines words headers standards constraints
+    local lines words headers must_always never
     lines=$(wc -l < "$file")
     words=$(wc -w < "$file")
     headers=$(grep -c '^##' "$file" 2>/dev/null || echo "0")
-    # Standards: Mandatory guidelines (MUST/ALWAYS)
-    standards=$(grep -c 'MUST\|ALWAYS' "$file" 2>/dev/null || echo "0")
-    # Constraints: Hard rules that cannot be overridden (NEVER)
-    constraints=$(grep -c 'NEVER' "$file" 2>/dev/null || echo "0")
+    # MUST/ALWAYS: Mandatory guidelines
+    must_always=$(grep -c 'MUST\|ALWAYS' "$file" 2>/dev/null || echo "0")
+    # NEVER: Hard rules that cannot be overridden
+    never=$(grep -c 'NEVER' "$file" 2>/dev/null || echo "0")
 
     # Guidelines for a comprehensive shared instructions file
     local lines_target_min=150 lines_target_max=350
     local sections_target_min=10 sections_target_max=30
-    local standards_target_max=20
-    local constraints_target_max=10
+    local must_always_target_max=20
+    local never_target_max=10
 
     # Display metrics with context in three columns
     echo "CURRENT:"
@@ -39,8 +39,8 @@ analyze_instructions() {
     printf "  %-18s %-15s %s\n" "Lines" "$lines_target_min-$lines_target_max" "$lines"
     printf "  %-18s %-15s %s\n" "Words" "-" "$words"
     printf "  %-18s %-15s %s\n" "Sections" "$sections_target_min-$sections_target_max" "$headers"
-    printf "  %-18s %-15s %s\n" "Standards" "<$standards_target_max" "$standards"
-    printf "  %-18s %-15s %s\n" "Constraints" "<$constraints_target_max" "$constraints"
+    printf "  %-18s %-15s %s\n" "MUST/ALWAYS" "<$must_always_target_max" "$must_always"
+    printf "  %-18s %-15s %s\n" "NEVER" "<$never_target_max" "$never"
     echo ""
 
     # Assessment
@@ -65,18 +65,18 @@ analyze_instructions() {
         echo "  ⚠️  Sections: Many sections (consider consolidation or splitting)"
     fi
 
-    if [[ $standards -lt $standards_target_max ]]; then
-        echo "  ✅ Standards: Reasonable number of mandatory guidelines"
+    if [[ $must_always -lt $must_always_target_max ]]; then
+        echo "  ✅ MUST/ALWAYS: Well-balanced required practices"
         status_good=$((status_good + 1))
     else
-        echo "  ⚠️  Standards: Many mandatory rules (may be over-constraining)"
+        echo "  ⚠️  MUST/ALWAYS: Many required rules (consider reducing)"
     fi
 
-    if [[ $constraints -lt $constraints_target_max ]]; then
-        echo "  ✅ Constraints: Few hard safety rules (flexible guidance)"
+    if [[ $never -lt $never_target_max ]]; then
+        echo "  ✅ NEVER: Few hard prohibitions (flexible guidance)"
         status_good=$((status_good + 1))
     else
-        echo "  ⚠️  Constraints: Many hard rules (limited flexibility)"
+        echo "  ⚠️  NEVER: Many hard rules (limited flexibility)"
     fi
 
     echo ""
