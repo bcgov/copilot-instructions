@@ -28,12 +28,14 @@ analyze_instructions() {
     local sections_target_min=10 sections_target_max=30
     local decisions_target_max=15
 
-    # Display metrics with context
+    # Display metrics with context in three columns
     echo "CURRENT:"
-    echo "  Lines:           $lines (target: $lines_target_min-$lines_target_max)"
-    echo "  Words:           $words"
-    echo "  Sections (##):   $headers (target: $sections_target_min-$sections_target_max)"
-    echo "  Decision points: $decisions (target: <$decisions_target_max)"
+    printf "  %-18s %-15s %s\n" "Metric" "Target" "Value"
+    printf "  %-18s %-15s %s\n" "------" "------" "-----"
+    printf "  %-18s %-15s %s\n" "Lines" "$lines_target_min-$lines_target_max" "$lines"
+    printf "  %-18s %-15s %s\n" "Words" "-" "$words"
+    printf "  %-18s %-15s %s\n" "Sections" "$sections_target_min-$sections_target_max" "$headers"
+    printf "  %-18s %-15s %s\n" "Decision points" "<$decisions_target_max" "$decisions"
     echo ""
 
     # Assessment
