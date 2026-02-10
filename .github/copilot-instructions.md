@@ -39,14 +39,7 @@ Teams are encouraged to propose improvements to these shared instructions via is
 
 ## Quality Standards
 
-**MUST prefer maintainable solutions. Shortcuts defer costs to others.**
-
-- Technical debt compounds over time
-- Root cause analysis > symptom treatment
-- Code review: challenge shortcuts
-
-> [!NOTE]
-> This rule requires judgment. Enforce through code review.
+**MUST prefer sustainable solutions. Do not hide problems—solve them.**
 
 ## 🔄 Universal Git Workflow
 
