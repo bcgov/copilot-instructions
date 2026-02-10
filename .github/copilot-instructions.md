@@ -37,6 +37,10 @@ Project-specific instructions should cover:
 ## Feedback and Iteration
 Teams are encouraged to propose improvements to these shared instructions via issues or pull requests.
 
+## Quality Standards
+
+**MUST prefer sustainable solutions. Do not hide problems—solve them.**
+
 ## 🔄 Universal Git Workflow
 
 ### **Create Feature Branch (CRITICAL - Follow This Order):**
