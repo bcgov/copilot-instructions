@@ -108,11 +108,11 @@ NEVER grant broad permissions "just in case" or use admin/root when a limited us
 After implementing a feature, simplify: minimize code, question every conditional, use unified code paths, remove unnecessary detection. Less code is better code.
 
 ### **Documentation Standards:**
-- Use 4-space indentation for code blocks in release notes, PR bodies, and documentation
+- Use 4-space indentation for code blocks in release notes, PR bodies, and documentation (not triple backticks)
 - Use GitHub releases for version history (not changelogs)
 - PR history provides better change tracking than manual logs
 - Keep documentation focused and avoid redundant files
-- NEVER add manually maintained tracking artifacts (changelogs, release logs, status logs, TODO lists) when equivalent views exist in GitHub features
+- NEVER add manually maintained tracking artifacts (changelogs, release logs, status logs, TODO lists) when equivalent views exist in GitHub features (issues, project boards, PR history, GitHub Releases) or CI tooling
 - Only include links to documentation or resources that have been verified to exist
 
 ## AI Assistant Operational Guardrails
@@ -122,13 +122,13 @@ These guardrails are tool-agnostic and apply across AI coding assistants used in
 - Answer questions before taking action. Provide analysis/opinion first, then wait for confirmation before implementing.
 - Confirm before any write to external repos; show exact commands.
 - Avoid chained one-liners; use short, atomic steps; stop on first error.
-- Shell defaults during edit sessions: `set -e` only (no `-u`/`pipefail`).
+- Shell defaults during edit sessions: `set -e` only (do not enable `set -u` or `set -o pipefail`).
 - Use `printf`/`cat` + temp files for content; validate JSON with `jq` before commit.
 - No auto-merge or force-push without explicit approval.
 - Default to additive commits. Do not amend, squash, or force-push changes on a shared branch unless reviewers or maintainers explicitly approve rewriting history.
 - Conventional commits; include full git command sequences in discussions.
 
-### Repository Architecture Principles
+## Repository Architecture Principles
 
 **NEVER use repositories as databases or state stores**
 
