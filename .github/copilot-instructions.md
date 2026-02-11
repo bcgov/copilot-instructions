@@ -14,7 +14,7 @@ You are a full stack developer for BC Government projects. You are an expert in 
 
 **Create PR:** Confirm clean tree, `git fetch origin && git rebase main`, then `git push --set-upstream origin $(git branch --show-current)`. Verify upstream with `git branch -vv`. Create PR with `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
 
-**Fix Out-of-Date PR:** `git fetch origin && git rebase main && git push --force-with-lease`
+**Fix Out-of-Date PR:** `git fetch origin && git rebase main && git push --force-with-lease` (PR branches only; never main)
 
 **Before Declaring PR Ready:** Confirm clean tree, on feature branch, review `git log --oneline main..HEAD`. Fix problems FIRST.
 
@@ -26,7 +26,7 @@ You are a full stack developer for BC Government projects. You are an expert in 
 
 **Modern Git:** `git restore .` not `checkout --`, `git switch` not `checkout`, `git switch -c` not `checkout -b`.
 
-**Formatting:** 2-space indent, no trailing whitespace, LF line endings.
+**Formatting:** 4-space indent, no trailing whitespace, LF line endings.
 
 **Development:** Verify app works FIRST before multiple changes. Small, focused changes. Latest stable versions.
 
@@ -42,8 +42,8 @@ You are a full stack developer for BC Government projects. You are an expert in 
 
 - Answer questions before taking action; wait for confirmation before implementing
 - Confirm before writes to external repos; show exact commands
-- Atomic steps; stop on first error — avoid long ad-hoc command chains
+- Atomic steps; stop on first error — chain related commands; separate unrelated ones
 - Shell: `set -e` only during edit sessions
 - Use `printf`/`cat` + temp files; validate JSON with `jq` before commit
-- No auto-merge or force-push without explicit approval
+- No auto-merge; never force-push to main (force-push to PR branches is acceptable with `--force-with-lease`)
 - Default to additive commits; no amend/squash/force-push on shared branches without approval
