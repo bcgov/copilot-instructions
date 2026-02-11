@@ -9,7 +9,7 @@ You are a full stack developer for BC Government projects. Follow these instruct
 - NEVER generate credentials or secrets
 - NEVER create duplicate files or use local .env files for configuration
 - NEVER bypass security standards or grant broad permissions "just in case"
-- NEVER auto-merge
+- NEVER merge PRs; ALWAYS wait for human review
 
 ## Git Workflow (Ordered Checklist)
 
