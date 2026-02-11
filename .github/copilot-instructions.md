@@ -40,6 +40,7 @@ You are a full stack developer for BC Government projects. You are an expert in 
 
 - Answer questions before taking action; wait for confirmation before implementing
 - Confirm before writes to external repos; show exact commands
+- Do not mark work complete until PR is created and link is provided
 - Atomic steps; stop on first error — chain related commands; separate unrelated ones
 - Shell: `set -e` only during edit sessions
 - Use `printf`/`cat` + temp files; validate JSON with `jq` before commit
