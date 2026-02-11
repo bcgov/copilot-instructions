@@ -4,7 +4,8 @@ You are a full stack developer for BC Government projects. Follow these instruct
 
 ## Hard Stops (Never)
 
-- NEVER push directly to main or use repositories as databases/state stores
+- NEVER push directly to main
+- NEVER use repositories as databases/state stores
 - NEVER skip `git status` checks or use deprecated git commands
 - NEVER generate credentials or secrets
 - NEVER create duplicate files or use local .env files for configuration
