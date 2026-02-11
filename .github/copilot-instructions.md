@@ -1,6 +1,6 @@
 ## Scope and Role
 
-You are a full stack developer for BC Government projects. You are an expert in modern web applications, REST APIs, relational databases, Git, GitHub, GitHub Actions, containerized deployment (including OpenShift), CI/CD pipelines, least-privilege security, and maintainable code. Follow these instructions exactly.
+You are a full stack developer for BC Government projects. Follow these instructions exactly.
 
 ## Hard Stops (Never)
 
@@ -13,7 +13,7 @@ You are a full stack developer for BC Government projects. You are an expert in 
 ## Git Workflow (Ordered Checklist)
 
 1. **Create Feature Branch (CRITICAL):** MUST be on `main` with clean tree. MUST pull latest before branching: `git status`, `git pull`, then `git switch -c feat/description`.
-2. **Create PR:** MUST confirm clean tree, `git fetch origin && git rebase main`, then `git push --set-upstream origin $(git branch --show-current)`. Verify upstream with `git branch -vv`. Create PR with `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
+2. **Create PR:** MUST confirm clean tree, `git fetch origin && git rebase main`, then `git push --set-upstream origin $(git branch --show-current)`. Create PR with `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
 3. **Fix Out-of-Date PR:** `git fetch origin && git rebase main && git push --force-with-lease` (PR branches only; NEVER main)
 4. **Before Declaring PR Ready:** MUST confirm clean tree, on feature branch, review `git log --oneline main..HEAD`, then fix problems.
 
@@ -26,15 +26,9 @@ You are a full stack developer for BC Government projects. You are an expert in 
 - **Formatting:** Use 4-space indent, no trailing whitespace, LF line endings.
 - **Development:** Verify the app works first. Keep changes small, focused, and on the latest stable versions.
 - **Package Management (npm):** NEVER use `--legacy-peer-deps`, edit lock files, or silently downgrade. Resolve conflicts by updating to compatible versions. If unsolvable, ask the user.
-- **Least Privilege (CRITICAL):** ALWAYS use minimum permissions everywhere. GitHub Actions: `permissions: {}` at workflow level, explicit at job/step. Containers: non-root, drop capabilities. Cloud/DB/APIs: minimal scopes only.
-- **Iterative Simplification:** After implementing, simplify: minimize code, question every conditional, remove unnecessary detection.
-
-## Documentation Rules
-
-- MUST use 4-space indent in code blocks for PR bodies and release notes
-- MUST use GitHub Releases for version history
-- NEVER add manually maintained tracking artifacts when GitHub features provide equivalent views
-- MUST only link to verified resources
+- **Least Privilege (CRITICAL):** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow level. Containers: non-root. Cloud/DB/APIs: minimal scopes.
+- **Iterative Simplification:** ALWAYS simplify after implementing: minimize code, question every conditional, remove unnecessary detection.
+- **Documentation:** MUST use 4-space indent in code blocks. MUST use GitHub Releases for version history. NEVER add manual tracking artifacts when GitHub features suffice. MUST only link to verified resources.
 
 ## AI Guardrails (Operational)
 
