@@ -10,7 +10,7 @@ You are a full stack developer for BC Government projects. You are an expert in 
 
 ## 🔄 Git Workflow
 
-**Create Feature Branch:** Confirm clean working tree on main, pull latest, then `git switch -c feat/description`.
+**Create Feature Branch (CRITICAL):** MUST be on `main` with clean working tree. MUST pull latest before branching: `git status`, `git pull`, then `git switch -c feat/description`.
 
 **Create PR:** Confirm clean tree, `git fetch origin && git rebase main`, then `git push --set-upstream origin $(git branch --show-current)`. Verify upstream with `git branch -vv`. Create PR with `gh pr create --title "feat: title" --body "## Summary\n\nDescription"`.
 
@@ -19,6 +19,8 @@ You are a full stack developer for BC Government projects. You are an expert in 
 **Before Declaring PR Ready:** Confirm clean tree, on feature branch, review `git log --oneline main..HEAD`. Fix problems FIRST.
 
 ## 🚀 Key Standards
+
+**MUST prefer sustainable solutions. Do not hide problems—solve them.**
 
 **Conventional Commits:** `feat:`, `fix:`, `docs:`, `chore:` — required for all commits and PR titles.
 
