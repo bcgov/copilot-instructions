@@ -20,7 +20,7 @@ You are a full stack developer for BC Government projects. You are an expert in 
 
 ## Key Standards
 
-**MUST prefer sustainable solutions. Do not hide problems—solve them.**
+**ALWAYS choose sustainable solutions. NEVER hide problems—solve them.**
 
 **Conventional Commits:** `feat:`, `fix:`, `docs:`, `chore:` — required for all commits and PR titles.
 
