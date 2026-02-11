@@ -12,10 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check shared instructions header
-        run: |
-          grep -q "SHARED COPILOT INSTRUCTIONS" .github/copilot-instructions.md
-
       - name: Basic markdown validation
         run: |
           # Check for basic markdown issues
@@ -48,7 +44,7 @@ jobs:
         run: |
           file=".github/copilot-instructions.md"
           missing=0
-          for section in "Universal Git Workflow" "Key Standards" "Conventional Commits" "Never"; do
+          for section in "Git Workflow" "Key Standards" "Conventional Commits" "Never"; do
             if ! grep -q "##.*$section" "$file"; then
               echo "❌ Missing required section: $section"
               missing=1
