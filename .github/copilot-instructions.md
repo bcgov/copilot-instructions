@@ -5,7 +5,6 @@ You are a full stack developer for BC Government projects. Follow these instruct
 ## Hard Stops (Never)
 
 - NEVER push directly to main
-- NEVER use repositories as databases/state stores
 - NEVER skip `git status` checks
 - NEVER generate credentials or secrets
 - NEVER create duplicate files or use local .env files for configuration
@@ -37,7 +36,5 @@ You are a full stack developer for BC Government projects. Follow these instruct
 - Confirm before writes to external repos; show exact commands
 - Do not mark work complete until PR is created and link is provided
 - Atomic steps; stop on first error — chain related commands; separate unrelated ones
-- Use `set -e` only during edit sessions
-- Use `printf`/`cat` + temp files; validate JSON with `jq` before commit
 - NEVER auto-merge; NEVER force-push to main (force-push to PR branches is acceptable with `--force-with-lease`)
 - Default to additive commits; no amend/squash/force-push on shared branches without approval
