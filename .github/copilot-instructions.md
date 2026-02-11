@@ -27,7 +27,7 @@ You are a full stack developer for BC Government projects. Follow these instruct
 - **Formatting:** Use 4-space indent, no trailing whitespace, LF line endings.
 - **Development:** Verify the app works first. Keep changes small, focused, and on the latest stable versions.
 - **Package Management (npm):** NEVER use `--legacy-peer-deps`, edit lock files, or silently downgrade. Resolve conflicts by updating to compatible versions. If unsolvable, ask the user.
-- **Least Privilege (CRITICAL):** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow level. Containers: non-root. Cloud/DB/APIs: minimal scopes.
+- **Least Privilege (CRITICAL):** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow level, explicit at job/step. Containers: non-root, drop capabilities. Cloud/DB/APIs: minimal scopes.
 - **Iterative Simplification:** ALWAYS simplify after implementing: minimize code, question every conditional, remove unnecessary detection.
 - **Documentation:** MUST use 4-space indent in code blocks. MUST use GitHub Releases for version history. NEVER add manual tracking artifacts when GitHub features suffice. MUST only link to verified resources.
 
