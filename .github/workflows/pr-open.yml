@@ -28,7 +28,7 @@ jobs:
         run: |
           for file in README.md .github/*.md; do
             [ -f "$file" ] || continue
-            grep -oE '\]\([^)]+\)' "$file" | \
+            { grep -oE '\]\([^)]+\)' "$file" || true; } | \
               sed 's/^\]\(//;s/)$//' | \
               while read -r link; do
                 [[ "$link" =~ ^# ]] && continue
