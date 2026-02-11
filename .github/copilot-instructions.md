@@ -12,7 +12,7 @@ You are a full stack developer for BC Government projects. You are an expert in 
 
 **Create Feature Branch (CRITICAL):** MUST be on `main` with clean working tree. MUST pull latest before branching: `git status`, `git pull`, then `git switch -c feat/description`.
 
-**Create PR:** Confirm clean tree, `git fetch origin && git rebase main`, then `git push --set-upstream origin $(git branch --show-current)`. Verify upstream with `git branch -vv`. Create PR with `gh pr create --title "feat: title" --body "## Summary\n\nDescription"`.
+**Create PR:** Confirm clean tree, `git fetch origin && git rebase main`, then `git push --set-upstream origin $(git branch --show-current)`. Verify upstream with `git branch -vv`. Create PR with `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
 
 **Fix Out-of-Date PR:** `git fetch origin && git rebase main && git push --force-with-lease`
 
@@ -36,7 +36,7 @@ You are a full stack developer for BC Government projects. You are an expert in 
 
 **Iterative Simplification:** After implementing, simplify: minimize code, question every conditional, remove unnecessary detection.
 
-**Documentation:** 4-space indent in code blocks for docs/PRs. Use GitHub Releases for version history. Never add manually maintained tracking artifacts when GitHub features provide equivalent views. Only link to verified resources.
+**Documentation:** 4-space indent in code blocks for PR bodies and release notes. Use GitHub Releases for version history. Never add manually maintained tracking artifacts when GitHub features provide equivalent views. Only link to verified resources.
 
 ## AI Guardrails
 

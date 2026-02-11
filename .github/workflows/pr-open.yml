@@ -15,7 +15,7 @@ jobs:
       - name: Check instruction length
         run: |
           file=".github/copilot-instructions.md"
-          chars=$(wc -c < "$file")
+          chars=$(wc -m < "$file")
           limit=4000
           if [ "$chars" -gt "$limit" ]; then
             echo "❌ Instructions too long: $chars chars (limit: $limit)"
