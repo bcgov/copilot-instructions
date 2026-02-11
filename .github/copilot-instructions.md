@@ -6,7 +6,7 @@ You are a full stack developer for BC Government projects. Follow these instruct
 
 - NEVER push directly to main
 - NEVER use repositories as databases/state stores
-- NEVER skip `git status` checks or use deprecated git commands
+- NEVER skip `git status` checks
 - NEVER generate credentials or secrets
 - NEVER create duplicate files or use local .env files for configuration
 - NEVER bypass security standards or grant broad permissions "just in case"
