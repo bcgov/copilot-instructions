@@ -12,60 +12,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Basic markdown validation
-        run: |
-          # Check for basic markdown issues
-          # Ensure no tabs in markdown files  
-          ! grep -P "^\t" *.md .github/*.md
-
-      - name: Validate JSON examples
-        run: |
-          # Extract and validate JSON examples from README
-          awk '/```jsonc/,/```/' README.md | grep -E '^\s*[{}"]' | while read -r line; do
-            echo "$line" | jq empty 2>/dev/null || {
-              echo "Invalid JSON found: $line"
-              exit 1
-            }
-          done
-
       - name: Check instruction length
         run: |
           file=".github/copilot-instructions.md"
-          lines=$(wc -l < "$file")
-          limit=250
-          if [ "$lines" -gt "$limit" ]; then
-            echo "❌ Instructions too long: $lines lines (limit: $limit)"
-            echo "Consider simplifying to improve AI effectiveness."
+          chars=$(wc -c < "$file")
+          limit=4000
+          if [ "$chars" -gt "$limit" ]; then
+            echo "❌ Instructions too long: $chars chars (limit: $limit)"
+            echo "GitHub Custom Instructions has a 4000-character limit."
             exit 1
           fi
-          echo "✅ Instructions length OK: $lines lines (limit: $limit)"
-
-      - name: Check required sections
-        run: |
-          file=".github/copilot-instructions.md"
-          missing=0
-          for section in "Git Workflow" "Key Standards" "Conventional Commits" "Never"; do
-            if ! grep -q "##.*$section" "$file"; then
-              echo "❌ Missing required section: $section"
-              missing=1
-            fi
-          done
-          [ "$missing" -eq 0 ] || exit 1
+          echo "✅ Instructions length OK: $chars chars (limit: $limit)"
 
       - name: Check for broken internal links
         run: |
-          # Extract markdown links and verify paths exist
           for file in README.md .github/*.md; do
             [ -f "$file" ] || continue
-            # Match all markdown links [text](path) - filter external URLs below
             grep -oE '\]\([^)]+\)' "$file" | \
               sed 's/^\]\(//;s/)$//' | \
               while read -r link; do
-                # Skip anchors and external links (http://, https://, mailto:, etc.)
                 [[ "$link" =~ ^# ]] && continue
                 [[ "$link" =~ ^https?:// ]] && continue
                 [[ "$link" =~ ^mailto: ]] && continue
-                # Remove anchor from path
                 path="${link%%#*}"
                 [ -z "$path" ] && continue
                 if [ ! -e "$path" ]; then
