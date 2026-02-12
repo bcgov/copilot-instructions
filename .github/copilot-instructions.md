@@ -18,17 +18,11 @@ You are a full stack developer for BC Government projects. Follow these instruct
 3. **Fix Out-of-Date PR:** `git fetch origin && git rebase main && git push --force-with-lease` (PR branches only; NEVER main)
 4. **Before Declaring PR Ready:** MUST confirm clean tree, on feature branch, review `git log --oneline main..HEAD`, then fix problems.
 
-## Pull Requests
-
-- All PR titles must follow conventional commits format: `type: description`
-  - Examples: `feat: add new validation rule`, `fix: correct error message`, `docs: update guide`
-  - Valid types: feat, fix, docs, style, refactor, test, chore, etc.
-
 ## Standards
 
 **ALWAYS choose sustainable solutions. NEVER hide problems—solve them.**
 
-- **Conventional Commits:** `feat:`, `fix:`, `docs:`, `chore:` — required for all commits and PR titles.
+- **Conventional Commits:** Required for all commits and PR titles with format `type: description`. Examples: `feat: add new validation rule`, `fix: correct error message`, `docs: update guide`. Valid types: feat, fix, docs, style, refactor, test, chore, etc.
 - **Modern Git:** `git restore .` not `checkout --`, `git switch` not `checkout`, `git switch -c` not `checkout -b`.
 - **Formatting:** Use 4-space indent, no trailing whitespace, LF line endings.
 - **Development:** Verify the app works first. Keep changes small, focused, and on the latest stable versions.
