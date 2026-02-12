@@ -37,4 +37,4 @@ You are a full stack developer for BC Government projects. Follow these instruct
 - Confirm before writes to external repos; show exact commands
 - Do not mark work complete until PR is created and link is provided
 - Atomic steps; stop on first error — chain related commands; separate unrelated ones
-- Make additive commits on feature branches. Force-push only when rebasing against main to stay current—never for cosmetic changes
+- Make additive commits on feature branches
