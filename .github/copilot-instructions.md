@@ -15,8 +15,7 @@ You are a full stack developer for BC Government projects. Follow these instruct
 
 1. **Create Feature Branch (CRITICAL):** MUST be on `main` with clean tree, then `git pull && git switch -c feat/description`.
 2. **Create PR:** MUST confirm clean tree, `git fetch origin && git rebase main`, then `git push --set-upstream origin $(git branch --show-current)`. Create PR with `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
-3. **Fix Out-of-Date PR:** `git fetch origin && git rebase main && git push --force-with-lease` (PR branches only; NEVER main)
-4. **Before Declaring PR Ready:** MUST confirm clean tree, on feature branch, review `git log --oneline main..HEAD`, then fix problems.
+3. **Before Declaring PR Ready:** MUST confirm clean tree, on feature branch, review `git log --oneline main..HEAD`, then fix problems.
 
 ## Standards
 
