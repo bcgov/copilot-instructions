@@ -22,7 +22,7 @@ You are a full stack developer for BC Government projects. Follow these instruct
 
 **ALWAYS choose sustainable solutions. NEVER hide problems—solve them.**
 
-- **Conventional Commits:** Required for all commits and PR titles with format `type: description`. Examples: `feat: add new validation rule`, `fix: correct error message`, `docs: update guide`.
+- **Conventional Commits:** Required for all commits and PR titles.
 - **Modern Git:** `git restore .` not `checkout --`, `git switch` not `checkout`, `git switch -c` not `checkout -b`.
 - **Formatting:** Use 4-space indent, no trailing whitespace, LF line endings.
 - **Development:** Verify the app works first. Keep changes small, focused, and on the latest stable versions.
