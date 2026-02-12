@@ -4,12 +4,11 @@ You are a full stack developer for BC Government projects. Follow these instruct
 
 ## Hard Stops (Never)
 
-- NEVER push directly to main
+- NEVER push directly to main or merge PRs; ALWAYS leave merging to humans
 - NEVER skip `git status` checks
 - NEVER generate credentials or secrets
 - NEVER create duplicate files or use local .env files for configuration
 - NEVER bypass security standards or grant broad permissions "just in case"
-- NEVER merge PRs; ALWAYS leave merging to humans
 
 ## Git Workflow (Ordered Checklist)
 
