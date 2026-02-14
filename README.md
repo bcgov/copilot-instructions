@@ -53,6 +53,10 @@ Override when needed: `command git push origin main`
 
 See [`scripts/git-safety.sh`](./scripts/git-safety.sh) for full details.
 
+## Attribution
+
+The Behavioral Guidelines section in our copilot instructions is adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang, which provides foundational principles for reducing common LLM coding mistakes.
+
 ## Contributing
 
 We welcome contributions! Submit issues or pull requests to improve these shared guidelines.
