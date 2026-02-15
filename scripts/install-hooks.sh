@@ -55,6 +55,16 @@ install_gitleaks() {
 install_hooks() {
   mkdir -p "$HOOKS_DIR"
 
+  if [[ ! -f "$SCRIPT_DIR/hooks/pre-commit" ]]; then
+    echo "ERROR: Hook file not found: $SCRIPT_DIR/hooks/pre-commit" >&2
+    exit 1
+  fi
+
+  if [[ ! -f "$SCRIPT_DIR/hooks/pre-push" ]]; then
+    echo "ERROR: Hook file not found: $SCRIPT_DIR/hooks/pre-push" >&2
+    exit 1
+  fi
+
   cp "$SCRIPT_DIR/hooks/pre-commit" "$HOOKS_DIR/pre-commit"
   cp "$SCRIPT_DIR/hooks/pre-push" "$HOOKS_DIR/pre-push"
 
