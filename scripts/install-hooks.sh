@@ -106,8 +106,9 @@ install_gh_safety() {
   local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   local git_safety="$script_dir/git-safety.sh"
   
-  if grep -q "GitHub CLI Safety (copilot-instructions)" "$bashrc" 2>/dev/null; then
+  if grep -q "AI POLICY (bcgov/copilot-instructions)" "$bashrc" 2>/dev/null; then
     echo "GitHub CLI safety already in ~/.bashrc"
+    echo "Remove the existing block if you want to re-install it." >&2
     return 0
   fi
 
