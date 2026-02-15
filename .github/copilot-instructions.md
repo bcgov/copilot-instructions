@@ -1,56 +1,23 @@
 ## Behavioral Guidelines
 
 ### Think Before Coding
-
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-Before implementing:
-- State assumptions explicitly. When uncertain, ask.
-- When multiple interpretations exist, present them - don't pick silently.
-- When a simpler approach exists, say so. Push back when warranted.
-- When something is unclear, stop. Name what's confusing. Ask.
+- State assumptions; ask when uncertain.
+- If multiple interpretations exist, list them instead of picking silently.
+- If unclear, stop and ask.
 
 ### Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
 - No features beyond what was asked.
-- Prefer simple, direct code for single-use logic. When similar code appears in multiple places or is likely to change together, refactor and reuse instead of duplicating.
+- Prefer simple, direct code for single-use logic; refactor and reuse when duplication appears.
 - No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it should be 50, rewrite it.
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
 ### Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even when you'd do it differently.
-- When you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
+- Touch only what you must; match existing style.
+- Don't refactor what isn't broken; mention unrelated dead code instead.
+- Remove orphans caused by your changes.
 
 ### Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-```
+- Define success criteria and verify.
+- For multi-step tasks, state a brief plan with checks.
 
 ## Standards
 
