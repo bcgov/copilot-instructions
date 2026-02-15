@@ -75,10 +75,17 @@ install_hooks() {
 
 install_gh_safety() {
   local bashrc="$HOME/.bashrc"
+  local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  local git_safety="$script_dir/git-safety.sh"
   
   if grep -q "GitHub CLI Safety (copilot-instructions)" "$bashrc" 2>/dev/null; then
     echo "GitHub CLI safety already in ~/.bashrc"
     return 0
+  fi
+
+  if [[ ! -f "$git_safety" ]]; then
+    echo "ERROR: Could not find $git_safety" >&2
+    return 1
   fi
 
   cat >> "$bashrc" << 'EOF'
@@ -90,28 +97,11 @@ install_gh_safety() {
 # - Use feature branches + PRs only
 # ============================================
 
-# GitHub CLI Safety (copilot-instructions)
-gh() {
-    local blocked_commands=("pr merge" "repo delete" "secret")
-
-    if [[ -n "${COMP_LINE:-}" || -n "${COMP_POINT:-}" ]]; then
-        $(command which gh) "$@"
-        return
-    fi
-
-    # Block only truly dangerous commands
-    for cmd in "${blocked_commands[@]}"; do
-        if [[ "$*" == *"$cmd"* ]]; then
-            echo "🚨 BLOCKED: 'gh $cmd' not allowed. Use GitHub UI instead." >&2
-            return 1
-        fi
-    done
-
-    $(command which gh) "$@"
-}
-export -f gh
 EOF
 
+  # Append the gh safety function from git-safety.sh (skip shebang)
+  tail -n +2 "$git_safety" >> "$bashrc"
+  
   echo "Added GitHub CLI safety to ~/.bashrc"
 }
 
