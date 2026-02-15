@@ -79,9 +79,4 @@ For multi-step tasks, state a brief plan:
 - **Package Management (npm):** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently. Resolve via compatible versions or ask.
 - **Least Privilege:** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities. Cloud/DB/APIs: minimal scopes.
 - **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts when GitHub features suffice.
-
-### Solution Design
-
-- **ALWAYS check existing solutions** (GitHub Marketplace, npmjs.com) before building custom
-- **NEVER propose repo-specific** when shared approach exists
-- **NEVER suggest solutions requiring manual maintenance** across repos
+- **Solution Design:** Prefer existing shared solutions before building custom ones; avoid repo-specific or maintenance-heavy approaches.
