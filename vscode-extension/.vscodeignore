@@ -1,0 +1,7 @@
+.git
+.gitignore
+.vscode
+node_modules
+*.vsix
+out/test
+src/**/*.test.ts

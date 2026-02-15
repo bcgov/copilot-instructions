@@ -1,0 +1,54 @@
+{
+  "name": "copilot-context-prepender",
+  "displayName": "Copilot Context Prepender",
+  "description": "Prepend custom global instructions to Copilot Chat requests",
+  "version": "0.0.1",
+  "publisher": "you",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "activationEvents": [
+    "onChatParticipant:copilot-context.contextual"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "chatParticipants": [
+      {
+        "id": "copilot-context.contextual",
+        "name": "contextual",
+        "fullName": "Contextual Assistant",
+        "description": "Chat with your custom context prepended"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Copilot Context Prepender",
+      "properties": {
+        "copilotContextPrepender.contextSource": {
+          "type": "string",
+          "default": "~/.copilot.md",
+          "description": "Path to local file (e.g., ~/.copilot.md) or public GitHub URL (e.g., https://raw.githubusercontent.com/user/repo/main/rules.md)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  }
+}
