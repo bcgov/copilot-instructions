@@ -13,6 +13,6 @@ while read -r local_ref local_sha remote_ref remote_sha; do
 done
 
 if [[ "$blocked" == true ]]; then
-  echo "BLOCKED: Pushes to the default branch are not allowed. Use feature branches + PRs." >&2
+  echo "BLOCKED: See .github/copilot-instructions.md" >&2
   exit 1
 fi
