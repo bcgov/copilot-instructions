@@ -40,18 +40,11 @@ The test: Every changed line should trace directly to the user's request.
 
 **Define success criteria. Loop until verified.**
 
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
 For multi-step tasks, state a brief plan:
 ```
 1. [Step] → verify: [check]
 2. [Step] → verify: [check]
 ```
-
-Strong success criteria let you loop independently.
 
 ### Communication Preferences
 
@@ -84,7 +77,6 @@ Strong success criteria let you loop independently.
 ### Project Standards
 
 - **Conventional Commits:** Required for all commits and PR titles.
-- **Formatting:** 4-space indent, no trailing whitespace, LF line endings.
 - **Package Management (npm):** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently. Resolve via compatible versions or ask.
 - **Least Privilege:** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities. Cloud/DB/APIs: minimal scopes.
 - **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts when GitHub features suffice.
