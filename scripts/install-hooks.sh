@@ -99,44 +99,18 @@ gh() {
         return
     fi
 
-    local first_cmd=$(echo "$args" | head -1 | awk '{print $1}')
-    local second_cmd=$(echo "$args" | head -1 | awk '{print $2}')
-    local full_command="$first_cmd $second_cmd"
-
-    if [[ "$first_cmd" == "--version" ]]; then
-        full_command="version"
-    elif [[ "$first_cmd" == "--help" ]]; then
-        full_command="help"
-    elif [[ "$second_cmd" == "--version" ]]; then
-        full_command="$first_cmd version"
-    elif [[ "$second_cmd" == "--help" ]]; then
-        full_command="$first_cmd help"
-    elif [[ "$second_cmd" =~ ^--(json|jq|template)$ ]]; then
-        full_command="$first_cmd $second_cmd"
-    fi
-
-    local allowed_commands=(
-        "auth" "auth status" "config" "version" "help" "browse" "search" "status" "completion" "extension"
-        "pr create" "pr list" "pr view" "pr status" "pr checkout" "pr diff" "pr close" "pr reopen" "pr edit"
-        "issue create" "issue edit" "issue list" "issue view" "issue status" "issue close" "issue reopen"
-        "run download-logs" "run list" "run view"
-        "repo view" "repo list"
-    )
-
-    local is_allowed=false
-    for allowed in "${allowed_commands[@]}"; do
-        if [[ "$full_command" == "$allowed" ]]; then
-            is_allowed=true
-            break
-        fi
-    done
-
-    if [[ "$is_allowed" == true ]]; then
-        $(command which gh) "$@"
-    else
-        echo "🚨 BLOCKED: 'gh $*' not in allowlist! Use GitHub UI for management." >&2
+    # Block only truly dangerous commands
+    if [[ "$args" == *"pr merge"* ]]; then
+        echo "🚨 BLOCKED: 'gh pr merge' not allowed. Use GitHub UI for merging." >&2
         return 1
     fi
+
+    if [[ "$args" == *"repo delete"* ]]; then
+        echo "🚨 BLOCKED: 'gh repo delete' not allowed. Use GitHub UI for deletion." >&2
+        return 1
+    fi
+
+    $(command which gh) "$@"
 }
 export -f gh
 EOF
