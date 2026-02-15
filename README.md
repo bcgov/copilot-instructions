@@ -33,25 +33,39 @@ Add project-specific rules to `.copilot/instructions` after downloading. Re-run 
 
 Utility scripts in [`scripts/`](./scripts/):
 
-- **`git-safety.sh`** - prevents dangerous git/gh operations
+- **`git-safety.sh`** - gh safety wrapper source (appended to bashrc)
+- **`install-hooks.sh`** - installs global git hooks (Gitleaks + main protection)
 - **`metrics-tracker.sh`** - development metrics tracking
 
-## Git and GitHub CLI Safety
+## Safety Setup (One-Time Install)
 
-The `git-safety.sh` script prevents accidental dangerous operations:
+Run the installer to set up Git hooks and GitHub CLI protection:
 
 ```bash
-sudo cp scripts/git-safety.sh /etc/profile.d/git-safety.sh
-sudo chmod +x /etc/profile.d/git-safety.sh
+bash scripts/install-hooks.sh
 ```
 
-**Git:** Blocks `commit`, `push`, `merge` on the default branch. Safe operations like `status`, `log`, `diff`, `fetch`, `pull` are allowed.
+**What it installs:**
 
-**GitHub CLI:** Only explicitly safe commands (`pr create`, `pr list`, `issue create`, etc.) are permitted. Dangerous operations (`pr merge`, `repo delete`) are blocked.
+1. **Global Git Hooks** (all repos on your machine)
+   - Pre-commit: Gitleaks secret scanner (blocks secrets before commit)
+   - Pre-push: Blocks pushes to `main`/`master` branches
+   - Installs Gitleaks to `~/.local/bin`
+   - Sets `git config --global core.hooksPath ~/.githooks`
+   - Backs up existing hooks and prompts before overriding a different `core.hooksPath`
 
-Override when needed: `command git push origin main`
+2. **GitHub CLI Safety** (appends to `~/.bashrc`)
+   - Blocklist wrapper for `gh` commands (source in `scripts/git-safety.sh`)
+   - Blocks dangerous operations (`gh pr merge`, `gh repo delete`, `gh secret`)
+   - AI policy comments visible in your bashrc
 
-See [`scripts/git-safety.sh`](./scripts/git-safety.sh) for full details.
+**After install:** Restart terminal or `source ~/.bashrc`
+
+**Emergency overrides:**
+- Git hooks: `git commit --no-verify` or `git push --no-verify`
+- gh wrapper: `command gh pr merge ...` (use GitHub UI instead)
+
+See [`scripts/hooks/`](./scripts/hooks/) and [`scripts/git-safety.sh`](./scripts/git-safety.sh) for details.
 
 ## Attribution
 

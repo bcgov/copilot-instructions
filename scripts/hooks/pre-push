@@ -1,0 +1,18 @@
+#!/bin/bash
+# Pre-push hook - Blocks pushes to the default branch.
+set -euo pipefail
+
+blocked=false
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/master)
+      blocked=true
+      ;;
+  esac
+done
+
+if [[ "$blocked" == true ]]; then
+  echo "BLOCKED: Pushes to 'main' and 'master' are blocked by a global pre-push hook. Use a feature branch." >&2
+  exit 1
+fi

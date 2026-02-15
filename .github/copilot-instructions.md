@@ -15,7 +15,7 @@ Before implementing:
 **Minimum code that solves the problem. Nothing speculative.**
 
 - No features beyond what was asked.
-- No abstractions for single-use code.
+- Prefer simple, direct code for single-use logic. When similar code appears in multiple places or is likely to change together, refactor and reuse instead of duplicating.
 - No "flexibility" or "configurability" that wasn't requested.
 - No error handling for impossible scenarios.
 - If you write 200 lines and it should be 50, rewrite it.
@@ -63,8 +63,8 @@ For multi-step tasks, state a brief plan:
 ### Hard Stops (Never)
 
 - NEVER push to main or merge PRs; ALWAYS leave merging to humans
-- NEVER generate credentials or secrets
-- NEVER create duplicate files or use local .env files
+- NEVER use destructive commands (gh pr merge, override git hooks, etc.); talk to the user
+- NEVER commit credentials or secrets in any form (.env, application.properties, application.yml, etc.)
 - NEVER bypass security standards or grant broad permissions "just in case"
 
 ### Operational Guardrails
