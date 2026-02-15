@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# Pre-push hook - Blocks pushes to the default branch.
 set -euo pipefail
 
 blocked=false
