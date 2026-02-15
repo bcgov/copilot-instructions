@@ -68,7 +68,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ### Operational Guardrails
 
-- Confirm before writes to external repos; show exact commands
 - Do not mark work complete until PR is created and link is provided
 - Stop on first error; chain related commands with &&, separate unrelated ones
 
