@@ -1,62 +1,25 @@
 ## Behavioral Guidelines
 
 ### Think Before Coding
-
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-Before implementing:
-- State assumptions explicitly. When uncertain, ask.
-- When multiple interpretations exist, present them - don't pick silently.
-- When a simpler approach exists, say so. Push back when warranted.
-- When something is unclear, stop. Name what's confusing. Ask.
+- State assumptions; ask when uncertain.
+- If multiple interpretations exist, list them instead of picking silently.
+- If unclear, stop and ask.
+- If a simpler approach exists, say so. Use it unless the user asks otherwise.
 
 ### Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
 - No features beyond what was asked.
-- Prefer simple, direct code for single-use logic. When similar code appears in multiple places or is likely to change together, refactor and reuse instead of duplicating.
+- Prefer simple, direct code for single-use logic; refactor and reuse when duplication appears.
 - No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it should be 50, rewrite it.
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
 ### Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even when you'd do it differently.
-- When you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
+- Touch only what you must; match existing style.
+- Don't refactor what isn't broken; mention unrelated dead code instead.
+- Remove orphans caused by your changes.
 
 ### Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-```
-
-### Communication Preferences
-
-- Keep code, comments, and commit messages professional and clean
-- When presenting multiple options, use **comparison tables** for clarity
-- Provide responses in code blocks for easy copy/paste
+- Define success criteria and verify.
+- For multi-step tasks, state a brief plan with checks.
+- If you can't verify, say what remains unverified.
 
 ## Standards
 
@@ -64,6 +27,7 @@ For multi-step tasks, state a brief plan:
 
 - NEVER push to main or merge PRs; ALWAYS leave merging to humans
 - NEVER use destructive commands (gh pr merge, override git hooks, etc.); talk to the user
+- NEVER use triple-backticks inside another code block; ALWAYS use 4-backtick fenced code blocks with a language tag
 - NEVER commit credentials or secrets in any form (.env, application.properties, application.yml, etc.)
 - NEVER bypass security standards or grant broad permissions "just in case"
 
@@ -84,9 +48,4 @@ For multi-step tasks, state a brief plan:
 - **Package Management (npm):** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently. Resolve via compatible versions or ask.
 - **Least Privilege:** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities. Cloud/DB/APIs: minimal scopes.
 - **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts when GitHub features suffice.
-
-### Solution Design
-
-- **ALWAYS check existing solutions** (GitHub Marketplace, npmjs.com) before building custom
-- **NEVER propose repo-specific** when shared approach exists
-- **NEVER suggest solutions requiring manual maintenance** across repos
+- **Solution Design:** Prefer existing shared solutions before building custom ones; avoid repo-specific or maintenance-heavy approaches.
