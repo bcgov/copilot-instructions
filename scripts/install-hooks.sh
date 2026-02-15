@@ -108,6 +108,7 @@ install_gh_safety() {
   
   if grep -q "AI POLICY (bcgov/copilot-instructions)" "$bashrc" 2>/dev/null; then
     echo "GitHub CLI safety already in ~/.bashrc"
+    echo "NOTE: Remove the existing AI POLICY block in ~/.bashrc to re-install it." >&2
     GH_SAFETY_ALREADY_INSTALLED=true
     return 0
   fi
@@ -145,6 +146,3 @@ echo "Bashrc: Appended GitHub CLI safety wrapper"
 echo "GitHub CLI: Blocklist enforced (gh pr merge, repo delete, secret blocked)"
 echo ""
 echo "Restart your terminal or run: source ~/.bashrc"
-if [[ "${GH_SAFETY_ALREADY_INSTALLED:-}" == "true" ]]; then
-  echo "If you want to re-install the bashrc block, remove the existing AI POLICY block from ~/.bashrc and re-run this script."
-fi
