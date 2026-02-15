@@ -68,6 +68,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ### Operational Guardrails
 
+- You may push and open PRs to feature branches without asking permission. Main branches are protected—never push directly to main.
 - Do not mark work complete until PR is created and link is provided
 - Stop on first error; chain related commands with &&, separate unrelated ones
 
