@@ -13,6 +13,6 @@ while read -r local_ref local_sha remote_ref remote_sha; do
 done
 
 if [[ "$blocked" == true ]]; then
-  echo "BLOCKED: See .github/copilot-instructions.md" >&2
+  echo "BLOCKED: Pushes to 'main' and 'master' are blocked by a global pre-push hook. Use a feature branch." >&2
   exit 1
 fi

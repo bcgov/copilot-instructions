@@ -15,7 +15,7 @@ Before implementing:
 **Minimum code that solves the problem. Nothing speculative.**
 
 - No features beyond what was asked.
-- No abstractions for single-use code; no duplication - refactor and reuse instead.
+- Prefer simple, direct code for single-use logic. When similar code appears in multiple places or is likely to change together, refactor and reuse instead of duplicating.
 - No "flexibility" or "configurability" that wasn't requested.
 - No error handling for impossible scenarios.
 - If you write 200 lines and it should be 50, rewrite it.

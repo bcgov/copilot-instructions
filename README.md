@@ -57,7 +57,7 @@ bash scripts/install-hooks.sh
 2. **GitHub CLI Safety** (appends to `~/.bashrc`)
   - Blocklist wrapper for `gh` commands (source in `scripts/git-safety.sh`)
   - Blocks dangerous operations (`gh pr merge`, `gh repo delete`, `gh secret`)
-   - AI policy comments visible in your bashrc
+  - AI policy comments visible in your bashrc
 
 **After install:** Restart terminal or `source ~/.bashrc`
 

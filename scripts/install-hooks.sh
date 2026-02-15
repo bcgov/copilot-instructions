@@ -108,7 +108,6 @@ install_gh_safety() {
   
   if grep -q "AI POLICY (bcgov/copilot-instructions)" "$bashrc" 2>/dev/null; then
     echo "NOTE: Remove the existing gh() function in ~/.bashrc to re-install it." >&2
-    GH_SAFETY_ALREADY_INSTALLED=true
     return 0
   fi
 
@@ -136,7 +135,10 @@ EOF
 
 install_gitleaks
 install_hooks
-install_gh_safety
+if ! install_gh_safety; then
+  echo "ERROR: Failed to install GitHub CLI safety." >&2
+  exit 1
+fi
 
 echo ""
 echo "✅ Setup complete!"
