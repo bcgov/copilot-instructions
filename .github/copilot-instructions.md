@@ -56,6 +56,16 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+### 5. Communication Preferences
+
+**Present information clearly and efficiently.**
+
+- Use a conversational, informal tone
+- Keep actual code, comments, and commit messages professional and clean
+- When presenting multiple options, use **comparison tables** instead of paragraphs for clarity
+- Provide responses in code blocks for easy copy/paste
+- Be confident and provide clear technical reasoning
+
 ## Standards
 
 ### Hard Stops (Never)
