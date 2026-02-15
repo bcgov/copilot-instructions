@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       // Get Copilot model
-      const [model] = await vscode.lm.selectChatModels({
+      const [ model ] = await vscode.lm.selectChatModels({
         vendor: 'copilot',
         family: 'gpt-4o'
       });
@@ -108,4 +108,4 @@ async function readLocalFile(filePath: string): Promise<string> {
   }
 }
 
-export function deactivate() {}
+export function deactivate() { }
