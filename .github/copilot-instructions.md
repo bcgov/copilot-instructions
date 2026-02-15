@@ -64,8 +64,7 @@ For multi-step tasks, state a brief plan:
 
 - NEVER push to main or merge PRs; ALWAYS leave merging to humans
 - NEVER use destructive commands (gh pr merge, override git hooks, etc.); talk to the user
-- NEVER generate credentials or secrets
-- NEVER create duplicate files or use local .env files
+- NEVER commit credentials or secrets in any form (.env, application.properties, application.yml, etc.)
 - NEVER bypass security standards or grant broad permissions "just in case"
 
 ### Operational Guardrails
