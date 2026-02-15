@@ -4,6 +4,7 @@
 - State assumptions; ask when uncertain.
 - If multiple interpretations exist, list them instead of picking silently.
 - If unclear, stop and ask.
+- If a simpler approach exists, say so.
 
 ### Simplicity First
 - No features beyond what was asked.
@@ -18,6 +19,7 @@
 ### Goal-Driven Execution
 - Define success criteria and verify.
 - For multi-step tasks, state a brief plan with checks.
+- If you can't verify, say what remains unverified.
 
 ## Standards
 
