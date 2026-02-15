@@ -110,6 +110,11 @@ gh() {
         return 1
     fi
 
+    if [[ "$args" == *" secret "* ]]; then
+        echo "🚨 BLOCKED: 'gh secret' commands not allowed. Use GitHub UI for secrets." >&2
+        return 1
+    fi
+
     $(command which gh) "$@"
 }
 export -f gh
