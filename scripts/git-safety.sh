@@ -10,7 +10,7 @@ gh() {
     # Check blocklist (skip during tab completion)
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
         if [[ "$*" =~ ^(pr merge|repo delete|secret) ]]; then
-            echo "🚨 BLOCKED: Command not allowed. Use GitHub UI instead." >&2
+            echo "BLOCKED: Command not allowed. Use GitHub UI instead." >&2
             return 1
         fi
     fi
