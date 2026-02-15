@@ -5,8 +5,6 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 HOOKS_DIR="$HOME/.githooks"
 BIN_DIR="$HOME/.local/bin"
 
-GITLEAKS_VERSION="8.18.2"
-
 install_gitleaks() {
   mkdir -p "$BIN_DIR"
 
@@ -38,9 +36,9 @@ install_gitleaks() {
   esac
 
   local tarball
-  tarball="gitleaks_${GITLEAKS_VERSION}_${os}_${arch}.tar.gz"
+  tarball="gitleaks_${os}_${arch}.tar.gz"
 
-  curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/${tarball}" \
+  curl -fsSL "https://github.com/gitleaks/gitleaks/releases/latest/download/${tarball}" \
     | tar -xz -C "$BIN_DIR" gitleaks
 
   if ! command -v gitleaks >/dev/null 2>&1; then
