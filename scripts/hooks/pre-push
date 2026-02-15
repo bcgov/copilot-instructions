@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+blocked=false
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/master)
+      blocked=true
+      ;;
+  esac
+done
+
+if [[ "$blocked" == true ]]; then
+  echo "BLOCKED: Pushes to the default branch are not allowed. Use feature branches + PRs." >&2
+  exit 1
+fi

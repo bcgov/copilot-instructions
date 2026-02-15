@@ -34,6 +34,7 @@ Add project-specific rules to `.copilot/instructions` after downloading. Re-run 
 Utility scripts in [`scripts/`](./scripts/):
 
 - **`git-safety.sh`** - prevents dangerous git/gh operations
+- **`install-hooks.sh`** - installs global git hooks (Gitleaks + main protection)
 - **`metrics-tracker.sh`** - development metrics tracking
 
 ## Git and GitHub CLI Safety
@@ -49,9 +50,19 @@ sudo chmod +x /etc/profile.d/git-safety.sh
 
 **GitHub CLI:** Only explicitly safe commands (`pr create`, `pr list`, `issue create`, etc.) are permitted. Dangerous operations (`pr merge`, `repo delete`) are blocked.
 
-Override when needed: `command git push origin main`
+Override git-safety.sh only: `command git push origin main` (hooks still apply)
 
 See [`scripts/git-safety.sh`](./scripts/git-safety.sh) for full details.
+
+## Global Git Hooks (Gitleaks)
+
+Install global hooks for local secret blocking and default-branch protection:
+
+```bash
+bash scripts/install-hooks.sh
+```
+
+These hooks use Gitleaks to scan staged changes before commits and block pushes to the default branch. Hooks are enforced by Git itself; follow the feature-branch + PR workflow.
 
 ## Attribution
 

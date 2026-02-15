@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  echo "BLOCKED: gitleaks not found. Run scripts/install-hooks.sh to install." >&2
+  exit 1
+fi
+
+staged_files=$(git diff --cached --name-only --diff-filter=ACMR)
+if [[ -z "$staged_files" ]]; then
+  exit 0
+fi
+
+gitleaks protect --staged --redact --no-banner
