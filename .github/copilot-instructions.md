@@ -1,3 +1,7 @@
+# Operational Guidelines
+
+**If you are an AI assistant, these rules apply to your work in this repository. Read and follow them.**
+
 ## Behavioral Guidelines
 
 ### Think Before Coding
