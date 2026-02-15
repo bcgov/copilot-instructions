@@ -7,16 +7,14 @@
 # GitHub CLI Safety Function - Prevents dangerous operations by AI and all users
 # Uses blocklist approach: only truly dangerous commands are blocked
 gh() {
-    local blocked_commands=("pr merge" "repo delete" "secret")
+    local blocked_commands="pr merge|repo delete|secret"
 
     # Check blocklist (skip during tab completion)
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
-        for cmd in "${blocked_commands[@]}"; do
-            if [[ "$*" == *"$cmd"* ]]; then
-                echo "🚨 BLOCKED: 'gh $cmd' not allowed. Use GitHub UI instead." >&2
-                return 1
-            fi
-        done
+        if [[ "$*" =~ $blocked_commands ]]; then
+            echo "🚨 BLOCKED: Command not allowed. Use GitHub UI instead." >&2
+            return 1
+        fi
     fi
 
     command gh "$@"
