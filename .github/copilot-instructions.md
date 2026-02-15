@@ -85,3 +85,9 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - **Package Management (npm):** Use latest stable versions when possible. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently. Resolve conflicts via compatible versions or ask.
 - **Least Privilege (CRITICAL):** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities. Cloud/DB/APIs: minimal scopes.
 - **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts when GitHub features suffice.
+
+### Solution Design
+
+- **ALWAYS check for existing solutions** (GitHub Marketplace, npmjs.com, community packages) before creating custom ones
+- **NEVER propose repo-specific solutions** when a shared/reusable approach exists
+- **NEVER suggest solutions requiring manual maintenance** across multiple repos
