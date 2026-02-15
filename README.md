@@ -33,7 +33,7 @@ Add project-specific rules to `.copilot/instructions` after downloading. Re-run 
 
 Utility scripts in [`scripts/`](./scripts/):
 
-- **`git-safety.sh`** - prevents dangerous GitHub CLI operations
+- **`git-safety.sh`** - gh safety wrapper source (appended to bashrc)
 - **`install-hooks.sh`** - installs global git hooks (Gitleaks + main protection)
 - **`metrics-tracker.sh`** - development metrics tracking
 
@@ -55,7 +55,7 @@ bash scripts/install-hooks.sh
   - Backs up existing hooks and prompts before overriding a different `core.hooksPath`
 
 2. **GitHub CLI Safety** (appends to `~/.bashrc`)
-  - Blocklist wrapper for `gh` commands
+  - Blocklist wrapper for `gh` commands (source in `scripts/git-safety.sh`)
   - Blocks dangerous operations (`gh pr merge`, `gh repo delete`, `gh secret`)
    - AI policy comments visible in your bashrc
 
