@@ -92,7 +92,6 @@ install_gh_safety() {
 
 # GitHub CLI Safety (copilot-instructions)
 gh() {
-    local args="$*"
     local blocked_commands=("pr merge" "repo delete" "secret")
 
     if [[ -n "${COMP_LINE:-}" || -n "${COMP_POINT:-}" ]]; then
@@ -102,7 +101,7 @@ gh() {
 
     # Block only truly dangerous commands
     for cmd in "${blocked_commands[@]}"; do
-        if [[ "$args" == *"$cmd"* ]]; then
+        if [[ "$*" == *"$cmd"* ]]; then
             echo "🚨 BLOCKED: 'gh $cmd' not allowed. Use GitHub UI instead." >&2
             return 1
         fi
