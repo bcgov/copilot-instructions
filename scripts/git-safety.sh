@@ -11,7 +11,7 @@ gh() {
 
     # Skip safety checks during tab completion only
     if [[ -n "${COMP_LINE:-}" || -n "${COMP_POINT:-}" ]]; then
-        $(command which gh) "$@"
+        command gh "$@"
         return
     fi
 
@@ -23,7 +23,7 @@ gh() {
         fi
     done
 
-    $(command which gh) "$@"
+    command gh "$@"
 }
 
 export -f gh
