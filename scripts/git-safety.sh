@@ -7,7 +7,7 @@ gh() {
     # Skip during tab completion
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
         if [[ "$*" =~ ^(pr merge|repo delete|secret) ]]; then
-            echo "BLOCKED: See .github/copilot-instructions.md" >&2
+            echo "BLOCKED: Command not allowed. Talk to the user." >&2
             return 1
         fi
     fi
