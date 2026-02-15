@@ -93,6 +93,7 @@ install_gh_safety() {
 # GitHub CLI Safety (copilot-instructions)
 gh() {
     local args="$*"
+    local blocked_commands=("pr merge" "repo delete" "secret")
 
     if [[ -n "${COMP_LINE:-}" || -n "${COMP_POINT:-}" ]]; then
         $(command which gh) "$@"
@@ -100,20 +101,12 @@ gh() {
     fi
 
     # Block only truly dangerous commands
-    if [[ "$args" == *"pr merge"* ]]; then
-        echo "🚨 BLOCKED: 'gh pr merge' not allowed. Use GitHub UI for merging." >&2
-        return 1
-    fi
-
-    if [[ "$args" == *"repo delete"* ]]; then
-        echo "🚨 BLOCKED: 'gh repo delete' not allowed. Use GitHub UI for deletion." >&2
-        return 1
-    fi
-
-    if [[ "$args" == *" secret "* ]]; then
-        echo "🚨 BLOCKED: 'gh secret' commands not allowed. Use GitHub UI for secrets." >&2
-        return 1
-    fi
+    for cmd in "${blocked_commands[@]}"; do
+        if [[ "$args" == *"$cmd"* ]]; then
+            echo "🚨 BLOCKED: 'gh $cmd' not allowed. Use GitHub UI instead." >&2
+            return 1
+        fi
+    done
 
     $(command which gh) "$@"
 }
