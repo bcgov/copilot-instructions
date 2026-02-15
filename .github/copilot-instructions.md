@@ -52,12 +52,6 @@ For multi-step tasks, state a brief plan:
 2. [Step] → verify: [check]
 ```
 
-### Communication Preferences
-
-- Keep code, comments, and commit messages professional and clean
-- When presenting multiple options, use **comparison tables** for clarity
-- Provide responses in code blocks for easy copy/paste
-
 ## Standards
 
 ### Hard Stops (Never)
