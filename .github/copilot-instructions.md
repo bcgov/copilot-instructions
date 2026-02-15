@@ -58,6 +58,7 @@ For multi-step tasks, state a brief plan:
 
 - NEVER push to main or merge PRs; ALWAYS leave merging to humans
 - NEVER use destructive commands (gh pr merge, override git hooks, etc.); talk to the user
+- NEVER use triple-backticks inside another code block; ALWAYS use 4-backtick fenced code blocks with a language tag
 - NEVER commit credentials or secrets in any form (.env, application.properties, application.yml, etc.)
 - NEVER bypass security standards or grant broad permissions "just in case"
 
