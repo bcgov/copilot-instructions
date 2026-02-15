@@ -8,10 +8,6 @@ BIN_DIR="$HOME/.local/bin"
 GITLEAKS_VERSION="8.18.2"
 
 install_gitleaks() {
-  if command -v gitleaks >/dev/null 2>&1; then
-    return 0
-  fi
-
   mkdir -p "$BIN_DIR"
 
   local os
