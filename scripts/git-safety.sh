@@ -1,32 +1,8 @@
 #!/bin/bash
 
-# Git Safety Function - Prevents dangerous operations by AI and all users
+# GitHub CLI Safety - Prevents dangerous operations by AI and all users
 # This file is automatically sourced by all bash sessions on the system
-
-git() {
-    local args="$*"
-
-    # Skip safety checks during tab completion only
-   if [[ -n "${COMP_LINE:-}" || -n "${COMP_POINT:-}" ]]; then
-        $(command which git) "$@"
-        return
-    fi
-
-    local current_branch=$(command git branch --show-current 2>/dev/null)
-    local default_branch=$(command git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' 2>/dev/null || echo main)
-
-    if [[ "$current_branch" = "$default_branch" ]]; then
-        local first_cmd=$(echo "$args" | awk '{print $1}')
-        local allowed_commands="branch checkout clone config diff fetch help log pull restore show status switch version"
-
-        if [[ " $allowed_commands " != *" $first_cmd "* ]]; then
-            echo "🚨 BLOCKED: '$first_cmd' not allowed on default branch ($default_branch)! Use feature branches."
-            return 1
-        fi
-    fi
-
-    $(command which git) "$@"
-}
+# Git operations are enforced via global hooks (see scripts/install-hooks.sh)
 
 # GitHub CLI Safety Function - Prevents dangerous operations by AI and all users
 # Uses allowlist approach: only explicitly allowed commands are permitted
@@ -116,4 +92,4 @@ gh() {
     fi
 }
 
-export -f git gh
+export -f gh

@@ -63,8 +63,10 @@ For multi-step tasks, state a brief plan:
 ### Hard Stops (Never)
 
 - NEVER push to main or merge PRs; ALWAYS leave merging to humans
+- NEVER use `gh pr merge` or other destructive GitHub CLI commands; use GitHub UI
 - NEVER generate credentials or secrets
 - NEVER create duplicate files or use local .env files
+- NEVER use `--no-verify` to bypass git hooks
 - NEVER bypass security standards or grant broad permissions "just in case"
 
 ### Operational Guardrails
