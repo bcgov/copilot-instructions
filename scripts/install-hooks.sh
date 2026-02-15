@@ -65,10 +65,38 @@ install_hooks() {
     exit 1
   fi
 
+  # Backup existing hooks if they exist
+  local timestamp
+  timestamp=$(date +%s)
+  
+  if [[ -f "$HOOKS_DIR/pre-commit" ]]; then
+    mv "$HOOKS_DIR/pre-commit" "$HOOKS_DIR/pre-commit.bak.$timestamp"
+    echo "NOTE: Existing pre-commit hook backed up to $HOOKS_DIR/pre-commit.bak.$timestamp" >&2
+  fi
+  
+  if [[ -f "$HOOKS_DIR/pre-push" ]]; then
+    mv "$HOOKS_DIR/pre-push" "$HOOKS_DIR/pre-push.bak.$timestamp"
+    echo "NOTE: Existing pre-push hook backed up to $HOOKS_DIR/pre-push.bak.$timestamp" >&2
+  fi
+
   cp "$SCRIPT_DIR/hooks/pre-commit" "$HOOKS_DIR/pre-commit"
   cp "$SCRIPT_DIR/hooks/pre-push" "$HOOKS_DIR/pre-push"
 
   chmod +x "$HOOKS_DIR/pre-commit" "$HOOKS_DIR/pre-push"
+
+  # Check and warn about existing git config
+  local current_hooks_path
+  current_hooks_path=$(git config --global --get core.hooksPath 2>/dev/null || true)
+  
+  if [[ -n "${current_hooks_path:-}" ]] && [[ "$current_hooks_path" != "$HOOKS_DIR" ]]; then
+    echo "WARNING: Your global git core.hooksPath is currently set to: $current_hooks_path" >&2
+    echo "This script will change it to: $HOOKS_DIR" >&2
+    read -r -p "Do you want to proceed? [y/N]: " answer
+    if [[ "${answer:-n}" != "y" ]] && [[ "${answer:-n}" != "Y" ]]; then
+      echo "Skipped updating global core.hooksPath. Hooks were copied to $HOOKS_DIR." >&2
+      return 0
+    fi
+  fi
 
   git config --global core.hooksPath "$HOOKS_DIR"
 }
