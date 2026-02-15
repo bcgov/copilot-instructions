@@ -9,8 +9,7 @@
 gh() {
     # Check blocklist (skip during tab completion)
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
-        # Check actual gh subcommands, not just any string in arguments
-        if [[ "$1 $2" == "pr merge" ]] || [[ "$1 $2" == "repo delete" ]] || [[ "$1" == "secret" ]]; then
+        if [[ "$*" =~ ^(pr merge|repo delete|secret) ]]; then
             echo "🚨 BLOCKED: Command not allowed. Use GitHub UI instead." >&2
             return 1
         fi
