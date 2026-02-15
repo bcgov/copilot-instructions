@@ -57,7 +57,6 @@ For multi-step tasks, state a brief plan:
 ### Hard Stops (Never)
 
 - NEVER push to main or merge PRs; ALWAYS leave merging to humans
-- NEVER skip `git status` checks
 - NEVER generate credentials or secrets
 - NEVER create duplicate files or use local .env files
 - NEVER bypass security standards or grant broad permissions "just in case"
@@ -72,7 +71,6 @@ For multi-step tasks, state a brief plan:
 
 1. **Create Feature Branch:** MUST be on `main` with clean tree, then `git pull && git switch -c feat/description`.
 2. **Create PR:** `git fetch origin && git rebase main`, then `git push -u origin $(git branch --show-current)`. MUST use `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
-3. **Before PR Ready:** Review `git log --oneline main..HEAD`, fix problems, verify clean tree.
 
 ### Project Standards
 
