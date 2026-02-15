@@ -69,7 +69,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ### Operational Guardrails
 
 - ALWAYS push and open PRs to feature branches without asking permission
-- NEVER mark work complete until PR is created and link is provided
+- NEVER mark work complete until all code is committed, pushed to remote, and PR is created. Workflow: `git add`, `git commit` (conventional format), `git push`, then verify `git status` is clean
 - ALWAYS stop on first error; chain related commands with &&, separate unrelated ones
 
 ### Git Workflow (Ordered Checklist)
