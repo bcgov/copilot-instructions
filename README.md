@@ -52,7 +52,7 @@ bash scripts/install-hooks.sh
    - Pre-push: Blocks pushes to `main`/`master` branches
    - Installs Gitleaks to `~/.local/bin`
    - Sets `git config --global core.hooksPath ~/.githooks`
-  - Backs up existing hooks and prompts before overriding a different `core.hooksPath`
+   - Backs up existing hooks and prompts before overriding a different `core.hooksPath`
 
 2. **GitHub CLI Safety** (appends to `~/.bashrc`)
   - Blocklist wrapper for `gh` commands (source in `scripts/git-safety.sh`)
