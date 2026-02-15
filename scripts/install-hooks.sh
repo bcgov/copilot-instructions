@@ -107,7 +107,7 @@ install_gh_safety() {
   local git_safety="$script_dir/git-safety.sh"
   
   if grep -q "AI POLICY (bcgov/copilot-instructions)" "$bashrc" 2>/dev/null; then
-    echo "NOTE: Remove the existing AI POLICY block in ~/.bashrc to re-install it." >&2
+    echo "NOTE: Remove the existing gc() function in ~/.bashrc to re-install it." >&2
     GH_SAFETY_ALREADY_INSTALLED=true
     return 0
   fi
