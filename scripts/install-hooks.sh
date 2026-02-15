@@ -107,8 +107,13 @@ install_gh_safety() {
   local bashrc="$HOME/.bashrc"
   local git_safety="$SCRIPT_DIR/git-safety.sh"
   
+  if grep -q '^gh()' "$bashrc" 2>/dev/null; then
+    echo "NOTE: gh() already exists in ~/.bashrc. Remove it to re-install the safety wrapper." >&2
+    return 0
+  fi
+
   if grep -q "AI POLICY (bcgov/copilot-instructions)" "$bashrc" 2>/dev/null; then
-    echo "NOTE: Remove the existing gh() function in ~/.bashrc to re-install it." >&2
+    echo "NOTE: Remove the existing AI POLICY block in ~/.bashrc to re-install it." >&2
     return 0
   fi
 
@@ -116,17 +121,6 @@ install_gh_safety() {
     echo "ERROR: Could not find $git_safety" >&2
     return 1
   fi
-
-  cat >> "$bashrc" << 'EOF'
-
-# ============================================
-# AI POLICY (bcgov/copilot-instructions)
-# - NEVER push to main or merge PRs
-# - NEVER run destructive GitHub CLI commands; talk to the user
-# - Use feature branches + PRs only
-# ============================================
-
-EOF
 
   # Append the gh safety function from git-safety.sh (skip shebang)
   tail -n +2 "$git_safety" >> "$bashrc"
