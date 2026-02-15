@@ -121,7 +121,7 @@ install_gh_safety() {
 # ============================================
 # AI POLICY (bcgov/copilot-instructions)
 # - NEVER push to main or merge PRs
-# - NEVER use gh pr merge (use GitHub UI)
+# - NEVER run destructive GitHub CLI commands; talk to the user
 # - Use feature branches + PRs only
 # ============================================
 
@@ -140,6 +140,6 @@ install_gh_safety
 echo ""
 echo "✅ Setup complete!"
 echo "Git hooks: Secrets blocked (Gitleaks) + main/master push blocked"
-echo "GitHub CLI: Allowlist enforced (gh pr merge blocked)"
+echo "GitHub CLI: Blocklist enforced (gh pr merge, repo delete, secret blocked)"
 echo ""
 echo "Restart your terminal or run: source ~/.bashrc"
