@@ -37,41 +37,34 @@ Utility scripts in [`scripts/`](./scripts/):
 - **`install-hooks.sh`** - installs global git hooks (Gitleaks + main protection)
 - **`metrics-tracker.sh`** - development metrics tracking
 
-## Git Safety (Global Hooks)
+## Safety Setup (One-Time Install)
 
-Install global Git hooks for local secret blocking and default-branch protection:
+Run the installer to set up Git hooks and GitHub CLI protection:
 
 ```bash
 bash scripts/install-hooks.sh
 ```
 
-**What it does:**
-- **Pre-commit:** Scans staged changes with Gitleaks; blocks secrets before they enter Git history.
-- **Pre-push:** Blocks pushes to `main`/`master`; enforces feature-branch workflow.
+**What it installs:**
 
-**Setup requirements:**
-- Installs Gitleaks binary to `~/.local/bin` (ensure it's on your `PATH`).
-- Sets `git config --global core.hooksPath ~/.githooks`.
-- Applies globally to all repos on your machine.
+1. **Global Git Hooks** (all repos on your machine)
+   - Pre-commit: Gitleaks secret scanner (blocks secrets before commit)
+   - Pre-push: Blocks pushes to `main`/`master` branches
+   - Installs Gitleaks to `~/.local/bin`
+   - Sets `git config --global core.hooksPath ~/.githooks`
 
-**Override (emergency use only):** `git commit --no-verify` or `git push --no-verify`
+2. **GitHub CLI Safety** (appends to `~/.bashrc`)
+   - Allowlist wrapper for `gh` commands
+   - Blocks dangerous operations (`gh pr merge`, `gh repo delete`)
+   - AI policy comments visible in your bashrc
 
-See [`scripts/hooks/`](./scripts/hooks/) for hook source.
+**After install:** Restart terminal or `source ~/.bashrc`
 
-## GitHub CLI Safety
+**Emergency overrides:**
+- Git hooks: `git commit --no-verify` or `git push --no-verify`
+- gh wrapper: `command gh pr merge ...` (use GitHub UI instead)
 
-The `git-safety.sh` script enforces a GitHub CLI allowlist (Git operations now handled by hooks):
-
-```bash
-sudo cp scripts/git-safety.sh /etc/profile.d/git-safety.sh
-sudo chmod +x /etc/profile.d/git-safety.sh
-```
-
-**GitHub CLI:** Only explicitly safe commands (`pr create`, `pr list`, `issue create`, etc.) are permitted. Dangerous operations (`pr merge`, `repo delete`) are blocked.
-
-**Override:** `command gh pr merge ...` (use GitHub UI instead)
-
-See [`scripts/git-safety.sh`](./scripts/git-safety.sh) for full allowlist.
+See [`scripts/hooks/`](./scripts/hooks/) and [`scripts/git-safety.sh`](./scripts/git-safety.sh) for details.
 
 ## Attribution
 
