@@ -76,4 +76,4 @@ install_hooks() {
 install_gitleaks
 install_hooks
 
-echo "Global git hooks installed. Secrets are blocked at commit time; pushes to main are blocked."
+echo "Global git hooks installed. Secrets are blocked at commit time; pushes to default branches (main/master) are blocked."
