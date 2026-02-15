@@ -4,7 +4,7 @@
 - State assumptions; ask when uncertain.
 - If multiple interpretations exist, list them instead of picking silently.
 - If unclear, stop and ask.
-- If a simpler approach exists, say so and use it.
+- If a simpler approach exists, say so. Use it unless the user asks otherwise.
 
 ### Simplicity First
 - No features beyond what was asked.
