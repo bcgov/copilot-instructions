@@ -68,14 +68,15 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ### Operational Guardrails
 
-- Do not mark work complete until PR is created and link is provided
-- Stop on first error; chain related commands with &&, separate unrelated ones
+- ALWAYS push and open PRs to feature branches without asking permission
+- NEVER mark work complete until PR is created and link is provided
+- ALWAYS stop on first error; chain related commands with &&, separate unrelated ones
 
 ### Git Workflow (Ordered Checklist)
 
 1. **Create Feature Branch (CRITICAL):** MUST be on `main` with clean tree, then `git pull && git switch -c feat/description`.
-2. **Create PR:** MUST confirm clean tree, `git fetch origin && git rebase main`, then `git push --set-upstream origin $(git branch --show-current)`. Use `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
-3. **Before Declaring PR Ready:** MUST confirm clean tree, on feature branch, review `git log --oneline main..HEAD`, then fix problems.
+2. **Create PR:** `git fetch origin && git rebase main`, then `git push --set-upstream origin $(git branch --show-current)`. MUST use `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
+3. **Before Declaring PR Ready:** Review `git log --oneline main..HEAD`, fix problems, verify clean tree before pushing.
 
 ### Project Standards
 
