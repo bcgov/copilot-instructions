@@ -35,11 +35,19 @@ install_gitleaks() {
       ;;
   esac
 
-  local tarball
-  tarball="gitleaks_${os}_${arch}.tar.gz"
+  local latest_url
+  latest_url=$(curl -fsSL "https://api.github.com/repos/gitleaks/gitleaks/releases/latest" \
+    | grep -Eo '"browser_download_url"\s*:\s*"[^"]+"' \
+    | cut -d '"' -f 4 \
+    | grep "gitleaks_.*_${os}_${arch}\.tar\.gz" \
+    | head -n 1)
 
-  curl -fsSL "https://github.com/gitleaks/gitleaks/releases/latest/download/${tarball}" \
-    | tar -xz -C "$BIN_DIR" gitleaks
+  if [[ -z "${latest_url:-}" ]]; then
+    echo "ERROR: Could not find latest gitleaks tarball for ${os}_${arch}." >&2
+    exit 1
+  fi
+
+  curl -fsSL "$latest_url" | tar -xz -C "$BIN_DIR" gitleaks
 
   if ! command -v gitleaks >/dev/null 2>&1; then
     echo "NOTE: Ensure $BIN_DIR is on your PATH to use gitleaks." >&2
