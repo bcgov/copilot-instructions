@@ -140,6 +140,7 @@ install_gh_safety
 echo ""
 echo "✅ Setup complete!"
 echo "Git hooks: Secrets blocked (Gitleaks) + main/master push blocked"
+echo "Bashrc: Appended GitHub CLI safety wrapper"
 echo "GitHub CLI: Blocklist enforced (gh pr merge, repo delete, secret blocked)"
 echo ""
 echo "Restart your terminal or run: source ~/.bashrc"
