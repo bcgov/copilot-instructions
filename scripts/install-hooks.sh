@@ -105,8 +105,7 @@ install_hooks() {
 
 install_gh_safety() {
   local bashrc="$HOME/.bashrc"
-  local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  local git_safety="$script_dir/git-safety.sh"
+  local git_safety="$SCRIPT_DIR/git-safety.sh"
   
   if grep -q "AI POLICY (bcgov/copilot-instructions)" "$bashrc" 2>/dev/null; then
     echo "NOTE: Remove the existing gh() function in ~/.bashrc to re-install it." >&2
