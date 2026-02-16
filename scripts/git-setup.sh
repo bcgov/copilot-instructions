@@ -143,17 +143,21 @@ configure_git_settings() {
   set_git_config "diff.algorithm" "histogram"
   set_git_config "diff.colorMoved" "default"
   set_git_config "diff.mnemonicPrefix" "true"
+  set_git_config "diff.renames" "true"
   
   # Push settings
   set_git_config "push.default" "simple"
   set_git_config "push.autoSetupRemote" "true"
+  set_git_config "push.followTags" "true"
   
   # Fetch settings
   set_git_config "fetch.prune" "true"
+  set_git_config "fetch.pruneTags" "true"
   
   # Rebase settings
   set_git_config "rebase.autoSquash" "true"
   set_git_config "rebase.autoStash" "true"
+  set_git_config "rebase.updateRefs" "true"
   
   # Commit settings
   set_git_config "commit.verbose" "true"
