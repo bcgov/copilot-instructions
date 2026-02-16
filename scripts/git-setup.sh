@@ -178,12 +178,9 @@ configure_git_settings() {
 
 # Main execution
 main() {
-  echo -e "${BLUE}"
-  echo "╔════════════════════════════════════════════════════════════╗"
-  echo "║           Git Configuration Setup                          ║"
-  echo "║           bcgov/copilot-instructions                       ║"
-  echo "╚════════════════════════════════════════════════════════════╝"
-  echo -e "${NC}"
+  echo -e "${BLUE}=== Git Configuration Setup ===${NC}"
+  echo -e "${BLUE}bcgov/copilot-instructions${NC}"
+  echo ""
   
   configure_user
   configure_gitignore
