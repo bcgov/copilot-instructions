@@ -97,7 +97,7 @@ cd copilot-instructions
    - `user.name` - Your full name
    - `user.email` - Your email address
 
-2. **Global .gitignore** (from bcgov/quickstart-openshift)
+2. **Global .gitignore** (from [bcgov/quickstart-openshift](https://github.com/bcgov/quickstart-openshift/blob/main/.gitignore))
    - Downloads comprehensive patterns for Node, Java, Python, Go
    - Sets `core.excludesfile = ~/.gitignore_global`
    - If file exists: offers to replace, append, or skip
