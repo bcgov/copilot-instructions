@@ -82,24 +82,42 @@ configure_gitignore() {
   
   if [[ -n "$current_gitignore" ]] && [[ -f "$current_gitignore" ]]; then
     print_skip "core.excludesfile already set to: $current_gitignore"
-    read -r -p "Do you want to download and append bcgov gitignore patterns? [y/N]: " append_answer
-    if [[ "${append_answer,,}" == "y" ]]; then
-      print_info "Downloading gitignore patterns from bcgov/quickstart-openshift..."
-      local temp_file
-      temp_file=$(mktemp)
-      if curl -fsSL "$GITIGNORE_URL" -o "$temp_file"; then
-        {
-          echo ""
-          echo "# Patterns from bcgov/quickstart-openshift"
-          cat "$temp_file"
-        } >> "$current_gitignore"
-        rm "$temp_file"
-        print_success "Appended bcgov patterns to $current_gitignore"
-      else
-        print_info "Failed to download gitignore patterns"
-        rm "$temp_file"
-      fi
-    fi
+    echo "File exists. How would you like to proceed?"
+    echo "  1) Replace - overwrite with bcgov patterns"
+    echo "  2) Append - add bcgov patterns to existing file"
+    echo "  3) Skip - keep current file unchanged"
+    read -r -p "Choose [1/2/3] (default: 3): " choice
+    
+    case "${choice}" in
+      1)
+        print_info "Downloading gitignore patterns from bcgov/quickstart-openshift..."
+        if curl -fsSL "$GITIGNORE_URL" -o "$current_gitignore"; then
+          print_success "Replaced $current_gitignore with bcgov patterns"
+        else
+          print_info "Failed to download gitignore patterns"
+        fi
+        ;;
+      2)
+        print_info "Downloading gitignore patterns from bcgov/quickstart-openshift..."
+        local temp_file
+        temp_file=$(mktemp)
+        if curl -fsSL "$GITIGNORE_URL" -o "$temp_file"; then
+          {
+            echo ""
+            echo "# Patterns from bcgov/quickstart-openshift"
+            cat "$temp_file"
+          } >> "$current_gitignore"
+          rm "$temp_file"
+          print_success "Appended bcgov patterns to $current_gitignore"
+        else
+          print_info "Failed to download gitignore patterns"
+          rm "$temp_file"
+        fi
+        ;;
+      *)
+        print_skip "Keeping existing gitignore unchanged"
+        ;;
+    esac
   else
     print_info "Downloading global gitignore from bcgov/quickstart-openshift..."
     if curl -fsSL "$GITIGNORE_URL" -o "$GLOBAL_GITIGNORE"; then

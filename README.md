@@ -100,7 +100,7 @@ cd copilot-instructions
 2. **Global .gitignore** (from bcgov/quickstart-openshift)
    - Downloads comprehensive patterns for Node, Java, Python, Go
    - Sets `core.excludesfile = ~/.gitignore_global`
-   - Offers to append patterns if you already have a global gitignore
+   - If file exists: offers to replace, append, or skip
 
 3. **Recommended Git Settings** (based on [GitButler blog](https://blog.gitbutler.com/how-git-core-devs-configure-git))
    - Better defaults for branch, diff, push, merge, and rebase workflows
