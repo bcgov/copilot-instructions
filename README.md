@@ -6,6 +6,7 @@ Guidelines and tooling to help developers effectively use GitHub Copilot while m
 
 - **[Copilot Instructions](/.github/copilot-instructions.md)** - Behavioral guidelines and coding standards that you can load into Copilot Chat
 - **Safety Tooling** (optional) - Git hooks and CLI wrappers that enforce the instructions' safety rules
+- **Git Configuration Setup** (optional) - Recommended settings, global gitignore, and user configuration
 
 ## Quick Start: Install Copilot Instructions
 
