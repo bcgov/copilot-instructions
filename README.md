@@ -29,10 +29,38 @@ curl -Lo .copilot/instructions \
 
 Add project-specific rules to `.copilot/instructions` after downloading. Re-run the curl command to update with the latest shared standards.
 
+## Git Configuration Setup
+
+Configure Git with recommended settings from core Git developers:
+
+```bash
+bash scripts/git-setup.sh
+```
+
+**What it configures:**
+
+1. **User Information** (interactive prompts if not set)
+   - `user.name` - Your full name
+   - `user.email` - Your email address
+
+2. **Global .gitignore** (from bcgov/quickstart-openshift)
+   - Downloads comprehensive patterns for Node, Java, Python, Go
+   - Sets `core.excludesfile = ~/.gitignore_global`
+   - Offers to append patterns if you already have a global gitignore
+
+3. **Recommended Git Settings** (based on [GitButler blog](https://blog.gitbutler.com/how-git-core-devs-configure-git))
+   - Better defaults for branch, diff, push, merge, and rebase workflows
+   - Improved conflict resolution with `zdiff3`
+   - Auto-stashing and auto-squashing for cleaner workflows
+   - Enhanced diff output with histogram algorithm and color-moved detection
+
+**Safety:** The script never overwrites existing settings. Run it multiple times safely.
+
 ## Scripts
 
 Utility scripts in [`scripts/`](./scripts/):
 
+- **`git-setup.sh`** - interactive git configuration setup with recommended defaults
 - **`git-safety.sh`** - gh safety wrapper source (appended to bashrc)
 - **`install-hooks.sh`** - installs global git hooks (Gitleaks + main protection)
 - **`metrics-tracker.sh`** - development metrics tracking
