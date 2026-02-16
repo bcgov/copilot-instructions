@@ -141,7 +141,7 @@ configure_git_settings() {
   
   # Diff settings
   set_git_config "diff.algorithm" "histogram"
-  set_git_config "diff.colorMoved" "default"
+  set_git_config "diff.colorMoved" "plain"
   set_git_config "diff.mnemonicPrefix" "true"
   set_git_config "diff.renames" "true"
   
