@@ -185,7 +185,6 @@ main() {
   configure_gitignore
   configure_git_settings
   
-  echo ""
   print_header "Setup Complete!"
   echo -e "${GREEN}Your Git configuration has been updated with recommended settings.${NC}"
   echo -e "${YELLOW}Run 'git config --global --list' to see all your global settings.${NC}"
