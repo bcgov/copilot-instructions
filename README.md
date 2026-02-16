@@ -40,7 +40,7 @@ Add project-specific rules to `.copilot/instructions` after downloading. Re-run 
 The Copilot instructions tell the AI "never push to main" and "never merge PRs." This installer enforces those rules with Git hooks and GitHub CLI protection:
 
 ```bash
-bash scripts/install-hooks.sh
+./scripts/install-hooks.sh
 ```
 
 **What it installs:**
@@ -72,7 +72,7 @@ See [`scripts/hooks/`](./scripts/hooks/) for hook source code.
 Configure Git with recommended settings from core Git developers:
 
 ```bash
-bash scripts/git-setup.sh
+./scripts/git-setup.sh
 ```
 
 **What it configures:**
