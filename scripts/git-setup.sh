@@ -5,7 +5,6 @@ GITIGNORE_URL="https://raw.githubusercontent.com/bcgov/quickstart-openshift/main
 GLOBAL_GITIGNORE="$HOME/.gitignore_global"
 
 # Colors for output
-RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
@@ -89,9 +88,11 @@ configure_gitignore() {
       local temp_file
       temp_file=$(mktemp)
       if curl -fsSL "$GITIGNORE_URL" -o "$temp_file"; then
-        echo "" >> "$current_gitignore"
-        echo "# Patterns from bcgov/quickstart-openshift" >> "$current_gitignore"
-        cat "$temp_file" >> "$current_gitignore"
+        {
+          echo ""
+          echo "# Patterns from bcgov/quickstart-openshift"
+          cat "$temp_file"
+        } >> "$current_gitignore"
         rm "$temp_file"
         print_success "Appended bcgov patterns to $current_gitignore"
       else
