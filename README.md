@@ -1,8 +1,14 @@
-# Shared Copilot Instructions
+# Copilot Instructions
 
-Shared VS Code configuration to accelerate and guide the use of GitHub Copilot, an AI coding assistant.
+Guidelines and tooling to help developers effectively use GitHub Copilot while maintaining security and quality standards.
 
-## Installation
+## What's Included
+
+- **[Copilot Instructions](/.github/copilot-instructions.md)** - Behavioral guidelines and coding standards that you can load into Copilot Chat
+- **Safety Tooling** (optional) - Git hooks and CLI wrappers that enforce the instructions' safety rules
+- **Git Configuration Setup** (optional) - Recommended settings, global gitignore, and user configuration
+
+## Quick Start: Install Copilot Instructions
 
 ### Option 1: Global Context (Recommended for Chat)
 
@@ -15,7 +21,7 @@ curl -Lo ~/.copilot.md \
 
 Then start each chat with: `@~/.copilot.md`
 
-This loads your standards into every conversation without per-project configuration.
+This loads your standards into every Copilot conversation without per-project configuration.
 
 ### Option 2: Per-Project Instructions
 
@@ -29,20 +35,20 @@ curl -Lo .copilot/instructions \
 
 Add project-specific rules to `.copilot/instructions` after downloading. Re-run the curl command to update with the latest shared standards.
 
-## Scripts
+## Safety Setup (Recommended)
 
-Utility scripts in [`scripts/`](./scripts/):
+The Copilot instructions tell the AI "never push to main" and "never merge PRs." This installer enforces those rules with Git hooks and GitHub CLI protection:
 
-- **`git-safety.sh`** - gh safety wrapper source (appended to bashrc)
-- **`install-hooks.sh`** - installs global git hooks (Gitleaks + main protection)
-- **`metrics-tracker.sh`** - development metrics tracking
-
-## Safety Setup (One-Time Install)
-
-Run the installer to set up Git hooks and GitHub CLI protection:
-
+**Option 1: Quick Install (curl)**
 ```bash
-bash scripts/install-hooks.sh
+curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/install-hooks.sh | bash
+```
+
+**Option 2: Clone and Run**
+```bash
+git clone https://github.com/bcgov/copilot-instructions.git
+cd copilot-instructions
+./scripts/install-hooks.sh
 ```
 
 **What it installs:**
@@ -55,7 +61,7 @@ bash scripts/install-hooks.sh
    - Backs up existing hooks and prompts before overriding a different `core.hooksPath`
 
 2. **GitHub CLI Safety** (appends to `~/.bashrc`)
-   - Blocklist wrapper for `gh` commands (source in `scripts/git-safety.sh`)
+   - Blocklist wrapper for `gh` commands (source in [`scripts/git-safety.sh`](./scripts/git-safety.sh))
    - Blocks dangerous operations (`gh pr merge`, `gh repo delete`, `gh secret`)
    - AI policy comments visible in your bashrc
 
@@ -65,17 +71,55 @@ bash scripts/install-hooks.sh
 - Git hooks: `git commit --no-verify` or `git push --no-verify`
 - gh wrapper: `command gh pr merge ...` (use GitHub UI instead)
 
-See [`scripts/hooks/`](./scripts/hooks/) and [`scripts/git-safety.sh`](./scripts/git-safety.sh) for details.
+See [`scripts/hooks/`](./scripts/hooks/) for hook source code.
+
+## Optional Enhancements
+
+### Git Configuration Setup
+
+Configure Git with recommended settings from core Git developers:
+
+**Option 1: Quick Install (curl)**
+```bash
+curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/git-setup.sh | bash
+```
+
+**Option 2: Clone and Run**
+```bash
+git clone https://github.com/bcgov/copilot-instructions.git
+cd copilot-instructions
+./scripts/git-setup.sh
+```
+
+**What it configures:**
+
+1. **User Information** (interactive prompts if not set)
+   - `user.name` - Your full name
+   - `user.email` - Your email address
+
+2. **Global .gitignore** (from [bcgov/quickstart-openshift](https://github.com/bcgov/quickstart-openshift/blob/main/.gitignore))
+   - Downloads comprehensive patterns for Node, Java, Python, Go
+   - Sets `core.excludesfile = ~/.gitignore_global`
+   - If file exists: offers to replace, append, or skip
+
+3. **Recommended Git Settings** (based on [GitButler blog](https://blog.gitbutler.com/how-git-core-devs-configure-git))
+   - Better defaults for branch, diff, push, and rebase workflows
+   - Auto-stashing and auto-squashing for cleaner workflows
+   - Enhanced diff output with histogram algorithm and color-moved detection
+
+**Safety:** The script never overwrites existing settings. Run it multiple times safely.
 
 ## Attribution
 
 The Behavioral Guidelines section in our copilot instructions is adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang, which provides foundational principles for reducing common LLM coding mistakes.
+
+The recommended Git configuration settings in `git-setup.sh` are based on [How Git core developers configure Git](https://blog.gitbutler.com/how-git-core-devs-configure-git) by GitButler, documenting best practices used by Git's core development team.
 
 ## Contributing
 
 We welcome contributions! Submit issues or pull requests to improve these shared guidelines.
 
 **Guidelines:**
-- Keep instructions focused on universal principles and BC Government standards
+- Keep instructions focused on universal principles and shared standards
 - Prioritize clarity, safety, and applicability across projects
 - Remove redundant or overly specific content during reviews
