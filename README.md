@@ -39,7 +39,15 @@ Add project-specific rules to `.copilot/instructions` after downloading. Re-run 
 
 The Copilot instructions tell the AI "never push to main" and "never merge PRs." This installer enforces those rules with Git hooks and GitHub CLI protection:
 
+**Option 1: Quick Install (curl)**
 ```bash
+curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/install-hooks.sh | bash
+```
+
+**Option 2: Clone and Run**
+```bash
+git clone https://github.com/bcgov/copilot-instructions.git
+cd copilot-instructions
 ./scripts/install-hooks.sh
 ```
 
@@ -71,7 +79,15 @@ See [`scripts/hooks/`](./scripts/hooks/) for hook source code.
 
 Configure Git with recommended settings from core Git developers:
 
+**Option 1: Quick Install (curl)**
 ```bash
+curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/git-setup.sh | bash
+```
+
+**Option 2: Clone and Run**
+```bash
+git clone https://github.com/bcgov/copilot-instructions.git
+cd copilot-instructions
 ./scripts/git-setup.sh
 ```
 
