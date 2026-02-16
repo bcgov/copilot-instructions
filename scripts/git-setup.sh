@@ -92,7 +92,7 @@ configure_gitignore() {
       1)
         print_info "Downloading gitignore patterns from bcgov/quickstart-openshift..."
         if curl -fsSL "$GITIGNORE_URL" -o "$current_gitignore"; then
-          print_success "Replaced $current_gitignore with patterns"
+          print_success "Replaced $current_gitignore with recommended patterns"
         else
           print_info "Failed to download gitignore patterns"
         fi
@@ -108,7 +108,7 @@ configure_gitignore() {
             cat "$temp_file"
           } >> "$current_gitignore"
           rm "$temp_file"
-          print_success "Appended patterns to $current_gitignore"
+          print_success "Appended recommended patterns to $current_gitignore"
         else
           print_info "Failed to download gitignore patterns"
           rm "$temp_file"
