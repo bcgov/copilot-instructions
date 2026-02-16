@@ -1,8 +1,13 @@
-# Shared Copilot Instructions
+# BC Government Copilot Instructions
 
-Shared VS Code configuration to accelerate and guide the use of GitHub Copilot, an AI coding assistant.
+Guidelines and tooling to help BC Government developers effectively use GitHub Copilot while maintaining security and quality standards.
 
-## Installation
+## What's Included
+
+- **[Copilot Instructions](/.github/copilot-instructions.md)** - Behavioral guidelines and coding standards that you can load into Copilot Chat
+- **Safety Tooling** (optional) - Git hooks and CLI wrappers that enforce the instructions' safety rules
+
+## Quick Start: Install Copilot Instructions
 
 ### Option 1: Global Context (Recommended for Chat)
 
@@ -15,7 +20,7 @@ curl -Lo ~/.copilot.md \
 
 Then start each chat with: `@~/.copilot.md`
 
-This loads your standards into every conversation without per-project configuration.
+This loads BC Government standards into every Copilot conversation without per-project configuration.
 
 ### Option 2: Per-Project Instructions
 
@@ -29,7 +34,39 @@ curl -Lo .copilot/instructions \
 
 Add project-specific rules to `.copilot/instructions` after downloading. Re-run the curl command to update with the latest shared standards.
 
-## Git Configuration Setup
+## Safety Setup (Recommended)
+
+The Copilot instructions tell the AI "never push to main" and "never merge PRs." This installer enforces those rules with Git hooks and GitHub CLI protection:
+
+```bash
+bash scripts/install-hooks.sh
+```
+
+**What it installs:**
+
+1. **Global Git Hooks** (all repos on your machine)
+   - Pre-commit: Gitleaks secret scanner (blocks secrets before commit)
+   - Pre-push: Blocks pushes to `main`/`master` branches
+   - Installs Gitleaks to `~/.local/bin`
+   - Sets `git config --global core.hooksPath ~/.githooks`
+   - Backs up existing hooks and prompts before overriding a different `core.hooksPath`
+
+2. **GitHub CLI Safety** (appends to `~/.bashrc`)
+   - Blocklist wrapper for `gh` commands (source in [`scripts/git-safety.sh`](./scripts/git-safety.sh))
+   - Blocks dangerous operations (`gh pr merge`, `gh repo delete`, `gh secret`)
+   - AI policy comments visible in your bashrc
+
+**After install:** Restart terminal or `source ~/.bashrc`
+
+**Emergency overrides:**
+- Git hooks: `git commit --no-verify` or `git push --no-verify`
+- gh wrapper: `command gh pr merge ...` (use GitHub UI instead)
+
+See [`scripts/hooks/`](./scripts/hooks/) for hook source code.
+
+## Optional Enhancements
+
+### Git Configuration Setup
 
 Configure Git with recommended settings from core Git developers:
 
@@ -55,45 +92,6 @@ bash scripts/git-setup.sh
    - Enhanced diff output with histogram algorithm and color-moved detection
 
 **Safety:** The script never overwrites existing settings. Run it multiple times safely.
-
-## Scripts
-
-Utility scripts in [`scripts/`](./scripts/):
-
-- **`git-setup.sh`** - interactive git configuration setup with recommended defaults
-- **`git-safety.sh`** - gh safety wrapper source (appended to bashrc)
-- **`install-hooks.sh`** - installs global git hooks (Gitleaks + main protection)
-- **`metrics-tracker.sh`** - development metrics tracking
-
-## Safety Setup (One-Time Install)
-
-Run the installer to set up Git hooks and GitHub CLI protection:
-
-```bash
-bash scripts/install-hooks.sh
-```
-
-**What it installs:**
-
-1. **Global Git Hooks** (all repos on your machine)
-   - Pre-commit: Gitleaks secret scanner (blocks secrets before commit)
-   - Pre-push: Blocks pushes to `main`/`master` branches
-   - Installs Gitleaks to `~/.local/bin`
-   - Sets `git config --global core.hooksPath ~/.githooks`
-   - Backs up existing hooks and prompts before overriding a different `core.hooksPath`
-
-2. **GitHub CLI Safety** (appends to `~/.bashrc`)
-   - Blocklist wrapper for `gh` commands (source in `scripts/git-safety.sh`)
-   - Blocks dangerous operations (`gh pr merge`, `gh repo delete`, `gh secret`)
-   - AI policy comments visible in your bashrc
-
-**After install:** Restart terminal or `source ~/.bashrc`
-
-**Emergency overrides:**
-- Git hooks: `git commit --no-verify` or `git push --no-verify`
-- gh wrapper: `command gh pr merge ...` (use GitHub UI instead)
-
-See [`scripts/hooks/`](./scripts/hooks/) and [`scripts/git-safety.sh`](./scripts/git-safety.sh) for details.
 
 ## Attribution
 
