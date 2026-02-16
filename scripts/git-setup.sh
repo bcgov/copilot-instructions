@@ -83,8 +83,8 @@ configure_gitignore() {
   if [[ -n "$current_gitignore" ]] && [[ -f "$current_gitignore" ]]; then
     print_skip "core.excludesfile already set to: $current_gitignore"
     echo "File exists. How would you like to proceed?"
-    echo "  1) Replace - overwrite with patterns"
-    echo "  2) Append - add patterns to existing file"
+    echo "  1) Replace - overwrite with recommended patterns"
+    echo "  2) Append - add recommended patterns to existing file"
     echo "  3) Skip - keep current file unchanged"
     read -r -p "Choose [1/2/3] (default: 3): " choice
     
