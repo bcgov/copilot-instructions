@@ -180,7 +180,6 @@ configure_git_settings() {
 main() {
   echo -e "${BLUE}=== Git Configuration Setup ===${NC}"
   echo -e "${BLUE}bcgov/copilot-instructions${NC}"
-  echo ""
   
   configure_user
   configure_gitignore
