@@ -83,8 +83,8 @@ configure_gitignore() {
   if [[ -n "$current_gitignore" ]] && [[ -f "$current_gitignore" ]]; then
     print_skip "core.excludesfile already set to: $current_gitignore"
     echo "File exists. How would you like to proceed?"
-    echo "  1) Replace - overwrite with bcgov patterns"
-    echo "  2) Append - add bcgov patterns to existing file"
+    echo "  1) Replace - overwrite with patterns"
+    echo "  2) Append - add patterns to existing file"
     echo "  3) Skip - keep current file unchanged"
     read -r -p "Choose [1/2/3] (default: 3): " choice
     
@@ -92,7 +92,7 @@ configure_gitignore() {
       1)
         print_info "Downloading gitignore patterns from bcgov/quickstart-openshift..."
         if curl -fsSL "$GITIGNORE_URL" -o "$current_gitignore"; then
-          print_success "Replaced $current_gitignore with bcgov patterns"
+          print_success "Replaced $current_gitignore with patterns"
         else
           print_info "Failed to download gitignore patterns"
         fi
@@ -108,7 +108,7 @@ configure_gitignore() {
             cat "$temp_file"
           } >> "$current_gitignore"
           rm "$temp_file"
-          print_success "Appended bcgov patterns to $current_gitignore"
+          print_success "Appended patterns to $current_gitignore"
         else
           print_info "Failed to download gitignore patterns"
           rm "$temp_file"
