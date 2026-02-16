@@ -103,8 +103,7 @@ cd copilot-instructions
    - If file exists: offers to replace, append, or skip
 
 3. **Recommended Git Settings** (based on [GitButler blog](https://blog.gitbutler.com/how-git-core-devs-configure-git))
-   - Better defaults for branch, diff, push, merge, and rebase workflows
-   - Improved conflict resolution with `zdiff3`
+   - Better defaults for branch, diff, push, and rebase workflows
    - Auto-stashing and auto-squashing for cleaner workflows
    - Enhanced diff output with histogram algorithm and color-moved detection
 

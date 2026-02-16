@@ -151,9 +151,6 @@ configure_git_settings() {
   # Fetch settings
   set_git_config "fetch.prune" "true"
   
-  # Merge settings
-  set_git_config "merge.conflictstyle" "zdiff3"
-  
   # Rebase settings
   set_git_config "rebase.autoSquash" "true"
   set_git_config "rebase.autoStash" "true"
