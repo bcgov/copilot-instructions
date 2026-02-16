@@ -1,6 +1,6 @@
-# BC Government Copilot Instructions
+# Copilot Instructions
 
-Guidelines and tooling to help BC Government developers effectively use GitHub Copilot while maintaining security and quality standards.
+Guidelines and tooling to help developers effectively use GitHub Copilot while maintaining security and quality standards.
 
 ## What's Included
 
@@ -20,7 +20,7 @@ curl -Lo ~/.copilot.md \
 
 Then start each chat with: `@~/.copilot.md`
 
-This loads BC Government standards into every Copilot conversation without per-project configuration.
+This loads your standards into every Copilot conversation without per-project configuration.
 
 ### Option 2: Per-Project Instructions
 
@@ -102,6 +102,6 @@ The Behavioral Guidelines section in our copilot instructions is adapted from [C
 We welcome contributions! Submit issues or pull requests to improve these shared guidelines.
 
 **Guidelines:**
-- Keep instructions focused on universal principles and BC Government standards
+- Keep instructions focused on universal principles and shared standards
 - Prioritize clarity, safety, and applicability across projects
 - Remove redundant or overly specific content during reviews
