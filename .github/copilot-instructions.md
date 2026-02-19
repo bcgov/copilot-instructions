@@ -21,6 +21,16 @@
 - For multi-step tasks, state a brief plan with checks.
 - If you can't verify, say what remains unverified.
 
+### Code Suggestion Expectations
+- MUST analyze the project’s existing imports, utilities, and patterns before suggesting new code.
+- MUST avoid introducing new libraries unless absolutely necessary and approved.
+- MUST explain trade-offs when offering multiple implementation options.
+- MUST default to the simplest, most maintainable solution that fits the project’s current architecture.
+- MUST avoid “clever” or overly abstract solutions unless the project already uses them.
+- MUST match the project’s coding style, architecture, and conventions.
+- MUST avoid suggesting rewrites or large refactors unless explicitly requested.
+- MUST highlight when a simpler solution exists using built‑ins or existing utilities.
+
 ## Standards
 
 ### Hard Stops (Never)
@@ -49,3 +59,11 @@
 - **Least Privilege:** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities. Cloud/DB/APIs: minimal scopes.
 - **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts when GitHub features suffice.
 - **Solution Design:** Prefer existing shared solutions before building custom ones; avoid repo-specific or maintenance-heavy approaches.
+
+### Commit Message Requirements
+- MUST include the **GitHub or Jira issue number** in the commit subject.
+- MUST keep commit messages scoped and descriptive.
+
+### Dependency Discipline
+- MUST verify that the proposed library is actively maintained, compatible with the project’s stack, not duplicating functionality already available, and lightweight and low‑risk.
+- MUST avoid adding libraries that solve trivial problems, introduce unnecessary abstraction, or increase bundle size or operational complexity.
