@@ -54,15 +54,11 @@
 
 ### Project Standards
 
-- **Conventional Commits:** Required for all commits and PR titles.
+- **Conventional Commits:** Required for all commits and PR titles. MUST include the GitHub or Jira issue number in the commit subject and keep messages scoped and descriptive.
 - **Package Management (npm):** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently. Resolve via compatible versions or ask.
 - **Least Privilege:** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities. Cloud/DB/APIs: minimal scopes.
 - **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts when GitHub features suffice.
 - **Solution Design:** Prefer existing shared solutions before building custom ones; avoid repo-specific or maintenance-heavy approaches.
-
-### Commit Message Requirements
-- MUST including the **GitHub or Jira issue number** in the commit subject.
-- MUST keep commit messages scoped and descriptive.
 
 ### Dependency Discipline
 - MUST verify that the proposed library is actively maintained, compatible with the project’s stack, not duplicating functionality already available, and lightweight and low‑risk.
