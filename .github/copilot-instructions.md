@@ -22,11 +22,14 @@
 - If you can't verify, say what remains unverified.
 
 ### Code Suggestion Expectations
-- MUST analyze the project’s existing imports, utilities, and patterns before suggesting new code.  
-- MUST avoid introducing new libraries unless absolutely necessary and approved.  
-- MUST explain trade-offs when offering multiple implementation options.  
-- MUST default to the simplest, most maintainable solution that fits the project’s current architecture.  
+- MUST analyze the project’s existing imports, utilities, and patterns before suggesting new code.
+- MUST avoid introducing new libraries unless absolutely necessary and approved.
+- MUST explain trade-offs when offering multiple implementation options.
+- MUST default to the simplest, most maintainable solution that fits the project’s current architecture.
 - MUST avoid “clever” or overly abstract solutions unless the project already uses them.
+- MUST match the project’s coding style, architecture, and conventions.
+- MUST avoid suggesting rewrites or large refactors unless explicitly requested.
+- MUST highlight when a simpler solution exists using built‑ins or existing utilities.
 
 ## Standards
 
@@ -58,39 +61,9 @@
 - **Solution Design:** Prefer existing shared solutions before building custom ones; avoid repo-specific or maintenance-heavy approaches.
 
 ### Commit Message Requirements
-- MUST follow **Conventional Commits** for all commits and PR titles.  
-- MUST include the **GitHub or Jira issue number** in the commit subject, formatted as:  
-  - `feat(#123): description`  
-  - `fix(WP-510): correct lower-case search behavior`  
-- MUST keep commit messages scoped and descriptive; avoid vague messages like “fix stuff” or “update code.”  
-- MUST reference only issues that actually relate to the change.  
-- MUST avoid bundling unrelated changes into a single commit.
-
-### Commit Message Examples
-- `fix(#510): allow lowercase letters in Block ID search`  
-- `refactor(WP-342): extract shared validation logic`  
-- `feat(#128): add CSV export for admin reports`
+- MUST including the **GitHub or Jira issue number** in the commit subject.
+- MUST keep commit messages scoped and descriptive.
 
 ### Dependency Discipline
-- MUST prefer **existing project libraries** before introducing new ones.  
-- MUST justify any new dependency with clear, project‑level value — not convenience.  
-- MUST verify that the proposed library is:
-  - actively maintained  
-  - compatible with the project’s stack  
-  - not duplicating functionality already available  
-  - lightweight and low‑risk  
-- MUST avoid adding libraries that:
-  - solve trivial problems  
-  - introduce unnecessary abstraction  
-  - increase bundle size or operational complexity  
-- MUST ask the user before adding any new dependency, explaining:
-  - why it’s needed  
-  - what alternatives were considered  
-  - why existing libraries are insufficient
-
-### When Suggesting Code
-- MUST use the **existing libraries and patterns** already present in the repo.  
-- MUST match the project’s coding style, architecture, and conventions.  
-- MUST avoid suggesting rewrites or large refactors unless explicitly requested.  
-- MUST highlight when a simpler solution exists using built‑ins or existing utilities.
-
+- MUST verify that the proposed library is actively maintained, compatible with the project’s stack, not duplicating functionality already available, and lightweight and low‑risk.
+- MUST avoid adding libraries that solve trivial problems, introduce unnecessary abstraction, or increase bundle size or operational complexity.
