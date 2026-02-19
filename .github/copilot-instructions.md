@@ -61,7 +61,7 @@
 - **Solution Design:** Prefer existing shared solutions before building custom ones; avoid repo-specific or maintenance-heavy approaches.
 
 ### Commit Message Requirements
-- MUST including the **GitHub or Jira issue number** in the commit subject.
+- MUST include the **GitHub or Jira issue number** in the commit subject.
 - MUST keep commit messages scoped and descriptive.
 
 ### Dependency Discipline
