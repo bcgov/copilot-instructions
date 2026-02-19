@@ -29,7 +29,7 @@
 - MUST avoid “clever” or overly abstract solutions unless the project already uses them.
 - MUST match the project’s coding style, architecture, and conventions.
 - MUST avoid suggesting rewrites or large refactors unless explicitly requested.
-- MUST highlight when a simpler solution exists using built‑ins or existing utilities.
+- MUST highlight when a simpler solution exists using built-ins or existing utilities.
 
 ## Standards
 
