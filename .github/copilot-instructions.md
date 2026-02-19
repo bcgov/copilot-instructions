@@ -65,5 +65,5 @@
 - MUST keep commit messages scoped and descriptive.
 
 ### Dependency Discipline
-- MUST verify that the proposed library is actively maintained, compatible with the project's stack, not duplicating functionality already available, and lightweight and low-risk.
+- MUST verify that the proposed library is actively maintained, compatible with the project’s stack, not duplicating functionality already available, and lightweight and low‑risk.
 - MUST avoid adding libraries that solve trivial problems, introduce unnecessary abstraction, or increase bundle size or operational complexity.
