@@ -54,7 +54,7 @@
 
 ### Project Standards
 
-- **Conventional Commits:** Required for all commits and PR titles. MUST include the GitHub or Jira issue number in the commit subject and keep messages scoped and descriptive.
+- **Conventional Commits:** Required for all commits and PR titles. MUST include the GitHub or Jira issue number in the commit subject and keep messages scoped and descriptive. This file is the source of truth for commit and PR conventions; update any duplicate instructions to match this wording.
 - **Package Management (npm):** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently. Resolve via compatible versions or ask.
 - **Least Privilege:** ALWAYS use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities. Cloud/DB/APIs: minimal scopes.
 - **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts when GitHub features suffice.
