@@ -19,7 +19,7 @@
 ### Goal-Driven Execution
 - Define success criteria and verify.
 - For multi-step tasks, state a brief plan with checks.
-- If you can't verify, say what remains unverified.
+- Always verify before marking work done; if verification is impossible, say so explicitly.
 
 ### Code Suggestions
 - MUST analyze existing imports, utilities, and patterns before suggesting new code.
@@ -44,7 +44,7 @@
 ### Operational Guardrails
 
 - ALWAYS push and open PRs to feature branches without asking
-- NEVER mark work complete until committed, pushed, and PR created
+- NEVER mark work complete until verified, committed, pushed, and PR created
 - ALWAYS stop on first error; chain related commands with &&
 
 ### Git Workflow
