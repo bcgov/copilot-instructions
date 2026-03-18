@@ -33,10 +33,10 @@ set_git_config() {
   local scope="${3:-global}"
   
   local current_value
-  current_value=$(git config --"$scope" --get "$key" 2>/dev/null || true)
+  current_value=$(command git config --"$scope" --get "$key" 2>/dev/null || true)
   
   if [[ -z "$current_value" ]]; then
-    git config --"$scope" "$key" "$value"
+    command git config --"$scope" "$key" "$value"
     print_success "Set $key = $value"
   else
     print_skip "Skipping $key (already set to: $current_value)"
@@ -49,13 +49,13 @@ configure_user() {
   
   local current_name
   local current_email
-  current_name=$(git config --global --get user.name 2>/dev/null || true)
-  current_email=$(git config --global --get user.email 2>/dev/null || true)
+  current_name=$(command git config --global --get user.name 2>/dev/null || true)
+  current_email=$(command git config --global --get user.email 2>/dev/null || true)
   
   if [[ -z "$current_name" ]]; then
     read -r -p "What is your name? " name
     if [[ -n "$name" ]]; then
-      git config --global user.name "$name"
+      command git config --global user.name "$name"
       print_success "Set user.name = $name"
     fi
   else
@@ -65,7 +65,7 @@ configure_user() {
   if [[ -z "$current_email" ]]; then
     read -r -p "What is your email address? " email
     if [[ -n "$email" ]]; then
-      git config --global user.email "$email"
+      command git config --global user.email "$email"
       print_success "Set user.email = $email"
     fi
   else
@@ -78,7 +78,7 @@ configure_gitignore() {
   print_header "Global .gitignore Configuration"
   
   local current_gitignore
-  current_gitignore=$(git config --global --get core.excludesfile 2>/dev/null || true)
+  current_gitignore=$(command git config --global --get core.excludesfile 2>/dev/null || true)
   
   if [[ -n "$current_gitignore" ]] && [[ -f "$current_gitignore" ]]; then
     print_skip "core.excludesfile already set to: $current_gitignore"
@@ -121,7 +121,7 @@ configure_gitignore() {
   else
     print_info "Downloading global gitignore from bcgov/quickstart-openshift..."
     if curl -fsSL "$GITIGNORE_URL" -o "$GLOBAL_GITIGNORE"; then
-      git config --global core.excludesfile "$GLOBAL_GITIGNORE"
+      command git config --global core.excludesfile "$GLOBAL_GITIGNORE"
       print_success "Set core.excludesfile = $GLOBAL_GITIGNORE"
     else
       print_info "Failed to download gitignore, skipping"

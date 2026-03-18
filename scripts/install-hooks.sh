@@ -88,7 +88,7 @@ install_hooks() {
 
   # Check and warn about existing git config
   local current_hooks_path
-  current_hooks_path=$(git config --global --get core.hooksPath 2>/dev/null || true)
+  current_hooks_path=$(command git config --global --get core.hooksPath 2>/dev/null || true)
   
   if [[ -n "${current_hooks_path:-}" ]] && [[ "$current_hooks_path" != "$HOOKS_DIR" ]]; then
     echo "WARNING: Your global git core.hooksPath is currently set to: $current_hooks_path" >&2
@@ -100,7 +100,7 @@ install_hooks() {
     fi
   fi
 
-  git config --global core.hooksPath "$HOOKS_DIR"
+  command git config --global core.hooksPath "$HOOKS_DIR"
 }
 
 install_gh_safety() {
@@ -139,5 +139,6 @@ echo ""
 echo "✅ Setup complete!"
 echo "Git hooks: Secrets blocked (Gitleaks) + main/master push blocked"
 echo "GitHub CLI: Blocklist enforced (gh pr merge, repo delete, secret blocked)"
+echo "Git config: All git config commands blocked (use 'command git config' to bypass)"
 echo ""
 echo "Restart your terminal or run: source ~/.bashrc"
