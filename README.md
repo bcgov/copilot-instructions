@@ -65,11 +65,17 @@ cd copilot-instructions
    - Blocks dangerous operations (`gh pr merge`, `gh repo delete`, `gh secret`)
    - AI policy comments visible in your bashrc
 
+3. **Git Config Protection** (appends to `~/.bashrc`)
+   - Wrapper for `git` that blocks all `git config` subcommand invocations
+   - Prevents AI from changing your identity, credentials, hooks path, or any other git setting
+   - Human bypass: `command git config ...` (use this in scripts or when you need to change settings manually)
+
 **After install:** Restart terminal or `source ~/.bashrc`
 
 **Emergency overrides:**
 - Git hooks: `git commit --no-verify` or `git push --no-verify`
 - gh wrapper: `command gh pr merge ...` (use GitHub UI instead)
+- git config wrapper: `command git config ...`
 
 See [`scripts/hooks/`](./scripts/hooks/) for hook source code.
 
