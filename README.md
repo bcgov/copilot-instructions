@@ -5,7 +5,7 @@ Guidelines and tooling to help developers effectively use GitHub Copilot while m
 ## What's Included
 
 - **[Copilot Instructions](/.github/copilot-instructions.md)** - Behavioral guidelines and coding standards that you can load into Copilot Chat
-- **Safety Tooling** (optional) - Git hooks and CLI wrappers that enforce the instructions' safety rules
+- **Safety Tooling** (optional) - Git hooks and shell wrappers that enforce the instructions' safety rules
 - **Git Configuration Setup** (optional) - Recommended settings, global gitignore, and user configuration
 
 ## Quick Start: Install Copilot Instructions
@@ -37,7 +37,7 @@ Add project-specific rules to `.copilot/instructions` after downloading. Re-run 
 
 ## Safety Setup (Recommended)
 
-The Copilot instructions tell the AI "never push to main" and "never merge PRs." This installer enforces those rules with Git hooks and GitHub CLI protection:
+The Copilot instructions tell the AI "never push to main", "never merge PRs", and "never run git config." This installer enforces those rules with git hooks and shell wrappers:
 
 **Option 1: Quick Install (curl)**
 ```bash
@@ -57,7 +57,7 @@ cd copilot-instructions
    - Pre-commit: Gitleaks secret scanner (blocks secrets before commit)
    - Pre-push: Blocks pushes to `main`/`master` branches
    - Installs Gitleaks to `~/.local/bin`
-   - Sets `git config --global core.hooksPath ~/.githooks`
+   - Sets `core.hooksPath = ~/.githooks` (via `command git config` — bypasses the git config wrapper)
    - Backs up existing hooks and prompts before overriding a different `core.hooksPath`
 
 2. **GitHub CLI Safety** (appends to `~/.bashrc`)
