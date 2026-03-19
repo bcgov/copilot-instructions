@@ -37,6 +37,7 @@
 
 - NEVER push to main or merge PRs; leave merging to humans
 - NEVER use destructive commands (gh pr merge, override git hooks, etc.)
+- NEVER squash, rebase -i, or otherwise destroy commit history in PR branches - commits tell the story of changes and squashing makes review impossible
 - NEVER use triple-backticks inside code blocks; use 4-backtick fenced blocks
 - NEVER commit credentials or secrets (.env, application.properties, etc.)
 - NEVER bypass security standards or grant broad permissions
