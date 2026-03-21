@@ -45,6 +45,7 @@
 - ALWAYS push and open PRs to feature branches without asking
 - NEVER mark work complete until verified, committed, pushed, and PR created
 - ALWAYS stop on first error; chain related commands with &&
+- Block SQL injection (e.g., string concat in queries like "id = '" + input + "'"), XSS (e.g., innerHTML = userInput), or unsanitized inputs (e.g., eval(rawInput)) in code/docs.
 
 ### Git Workflow
 1. **Create Branch:** On `main` with clean tree: `git pull && git switch -c feat/description`
