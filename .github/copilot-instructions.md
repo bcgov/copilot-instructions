@@ -34,27 +34,23 @@
 ## Standards
 
 ### Hard Stops (Never)
-
 - NEVER push to main or merge PRs; leave merging to humans
 - NEVER use destructive commands (gh pr merge, override git hooks, etc.)
 - NEVER squash, rebase -i, or otherwise destroy commit history in PR branches - commits tell the story of changes and squashing makes review impossible
 - NEVER use triple-backticks inside code blocks; use 4-backtick fenced blocks
-- NEVER commit credentials or secrets (.env, application.properties, etc.)
+- NEVER commit credentials/secrets (.env files, API keys, passwords, tokens, SSNs, emails, names, phone numbers) OR include them in PR bodies/issues/markdown.
 - NEVER bypass security standards or grant broad permissions
 
 ### Operational Guardrails
-
 - ALWAYS push and open PRs to feature branches without asking
 - NEVER mark work complete until verified, committed, pushed, and PR created
 - ALWAYS stop on first error; chain related commands with &&
 
 ### Git Workflow
-
 1. **Create Branch:** On `main` with clean tree: `git pull && git switch -c feat/description`
 2. **Create PR:** `git fetch origin && git rebase main`, then `git push -u origin $(git branch --show-current)`. Use `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`
 
 ### Project Standards
-
 - **Conventional Commits:** Required for all commits and PR titles. MUST include GitHub or Jira issue number in commit subject and keep messages scoped and descriptive.
 - **Package Management:** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently.
 - **Least Privilege:** Use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities.
