@@ -46,7 +46,7 @@
 - NEVER mark work complete until verified, committed, pushed, and PR created
 - ALWAYS stop on first error; chain related commands with &&
 - Block SQL injection (e.g., string concat in queries like "id = '" + input + "'"), XSS (e.g., innerHTML = userInput), or unsanitized inputs (e.g., eval(rawInput)) in code/docs.
-- When a scratchpad or temporary storage is needed, use `./.tmp/` in the project root (globally git-ignored). This keeps artifacts project-local and avoids cross-project contamination.
+- When a scratchpad or temporary storage is needed, use `./.tmp/` in the project root if `git check-ignore .tmp/` confirms it is git-ignored. Otherwise fall back to `/tmp`. This keeps artifacts project-local and avoids cross-project contamination.
 
 ### Git Workflow
 1. **Create Branch:** On `main` with clean tree: `git pull && git switch -c feat/description`
