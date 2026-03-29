@@ -21,32 +21,30 @@
 - For multi-step tasks, state a brief plan with checks.
 - Always verify before marking work done; if verification is impossible, say so explicitly.
 
-### Code Suggestions
-- MUST analyze existing imports, utilities, and patterns before suggesting new code.
-- MUST avoid new libraries unless absolutely necessary and approved.
+### Code Quality & Dependencies
+- MUST analyze existing patterns before suggesting new code.
+- MUST avoid new libraries unless absolutely necessary. If adding one, verify it is maintained, compatible, non-duplicative, and lightweight. Avoid libraries that solve trivial problems or increase complexity.
 - MUST explain trade-offs when offering multiple options.
-- MUST default to the simplest, most maintainable solution.
 - MUST avoid "clever" or overly abstract solutions unless already used.
 - MUST match the project's style, architecture, and conventions.
-- MUST avoid suggesting rewrites or large refactors unless requested.
-- MUST highlight simpler solutions using built-ins or existing utilities.
 
 ## Standards
 
 ### Hard Stops (Never)
 - NEVER push to main or merge PRs; leave merging to humans
 - NEVER use destructive commands (gh pr merge, override git hooks, etc.)
-- NEVER squash, rebase -i, or otherwise destroy commit history in PR branches - commits tell the story of changes and squashing makes review impossible
+- NEVER squash, rebase -i, or otherwise destroy commit history in PR branches
 - NEVER use triple-backticks inside code blocks; use 4-backtick fenced blocks
-- NEVER commit credentials/secrets (.env files, API keys, passwords, tokens, SSNs, emails, names, phone numbers) OR include them in PR bodies/issues/markdown.
+- NEVER commit credentials/secrets (.env files, API keys, tokens) OR include them in PR bodies/issues/markdown.
 - NEVER bypass security standards or grant broad permissions
+- NEVER silently delete, skip, or comment out failing tests. Fix the code, or flag the test for human review and discuss before removing.
 
 ### Operational Guardrails
 - ALWAYS push and open PRs to feature branches without asking
 - NEVER mark work complete until verified, committed, pushed, and PR created
 - ALWAYS stop on first error; chain related commands with &&
-- Block SQL injection (e.g., string concat in queries like "id = '" + input + "'"), XSS (e.g., innerHTML = userInput), or unsanitized inputs (e.g., eval(rawInput)) in code/docs.
-- When a scratchpad or temporary storage is needed, use `./.tmp/` in the project root if `git check-ignore .tmp/` confirms it is git-ignored. Otherwise fall back to `/tmp`. This keeps artifacts project-local and avoids cross-project contamination.
+- Block SQL injection, XSS, and unsanitized inputs (e.g., eval, innerHTML, string-concatenated queries) in code/docs.
+- When a scratchpad or temporary storage is needed, use `./.tmp/` if `git check-ignore .tmp/` confirms it is git-ignored, otherwise `/tmp`.
 
 ### Git Workflow
 1. **Create Branch:** On `main` with clean tree: `git pull && git switch -c feat/description`
@@ -57,8 +55,3 @@
 - **Package Management:** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently.
 - **Least Privilege:** Use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities.
 - **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts.
-- **Solution Design:** Prefer existing shared solutions; avoid repo-specific or maintenance-heavy approaches.
-
-### Dependency Discipline
-- MUST verify library is maintained, compatible, non-duplicative, and lightweight.
-- MUST avoid libraries that solve trivial problems or increase complexity.
