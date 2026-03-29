@@ -176,6 +176,70 @@ configure_git_settings() {
   set_git_config "grep.patternType" "perl"
 }
 
+# Configure signed commits using SSH keys
+configure_commit_signing() {
+  print_header "Signed Commits Configuration"
+  
+  # Check if signing is already configured
+  local current_sign
+  current_sign=$(command git config --global --get commit.gpgsign 2>/dev/null || true)
+  local current_format
+  current_format=$(command git config --global --get gpg.format 2>/dev/null || true)
+  local current_key
+  current_key=$(command git config --global --get user.signingkey 2>/dev/null || true)
+  
+  if [[ "$current_sign" == "true" ]] && [[ -n "$current_key" ]]; then
+    print_skip "Commit signing already configured (key: $current_key)"
+    return 0
+  fi
+  
+  # Detect existing SSH keys
+  local ssh_key=""
+  local key_candidates=(
+    "$HOME/.ssh/id_ed25519.pub"
+    "$HOME/.ssh/id_ecdsa_sk.pub"
+    "$HOME/.ssh/id_ecdsa.pub"
+    "$HOME/.ssh/id_rsa.pub"
+  )
+  
+  for candidate in "${key_candidates[@]}"; do
+    if [[ -f "$candidate" ]]; then
+      ssh_key="$candidate"
+      break
+    fi
+  done
+  
+  if [[ -z "$ssh_key" ]]; then
+    print_info "No SSH signing key found."
+    print_info "To enable signed commits, generate a key first:"
+    print_info "  ssh-keygen -t ed25519 -C 'your@email.com' -f ~/.ssh/id_ed25519"
+    print_info "Then add the public key to GitHub as a signing key."
+    return 0
+  fi
+  
+  print_info "Found SSH key: $ssh_key"
+  echo ""
+  echo "Signed commits prove your identity and show a 'Verified' badge on GitHub."
+  echo "Enable signed commits with this key?"
+  echo "  1) Yes - enable SSH commit signing"
+  echo "  2) Skip - do not configure signing"
+  read -r -p "Choose [1/2] (default: 2): " choice
+  
+  case "${choice}" in
+    1)
+      set_git_config "commit.gpgsign" "true"
+      set_git_config "gpg.format" "ssh"
+      set_git_config "user.signingkey" "$ssh_key"
+      print_success "Commit signing enabled"
+      print_info "Add this key to GitHub as a signing key:"
+      print_info "  https://github.com/settings/keys"
+      ;;
+    *)
+      print_skip "Keeping unsigned commits"
+      ;;
+  esac
+}
+
 # Main execution
 main() {
   echo -e "${BLUE}=== Git Configuration Setup ===${NC}"
@@ -184,6 +248,7 @@ main() {
   configure_user
   configure_gitignore
   configure_git_settings
+  configure_commit_signing
   
   print_header "Setup Complete!"
   echo -e "${GREEN}Your Git configuration has been updated with recommended settings.${NC}"
