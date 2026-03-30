@@ -37,7 +37,7 @@
 - NEVER use triple-backticks inside code blocks; use 4-backtick fenced blocks
 - NEVER commit credentials/secrets (.env files, API keys, tokens) OR include them in PR bodies/issues/markdown.
 - NEVER bypass security standards or grant broad permissions
-- NEVER silently delete, skip, or comment out failing tests. Fix the code, or flag the test for human review and discuss before removing.
+- NEVER silently delete, skip, or comment out failing tests. NEVER advise ignoring, dismissing, or bypassing failing tests — including in PR comments, reviews, or commit messages. ALWAYS run the full test suite and ensure every test passes before marking work done. If a test fails, fix the underlying code. If a test is genuinely outdated or incorrect, flag it explicitly for human review and discuss before any removal.
 
 ### Operational Guardrails
 - ALWAYS push and open PRs to feature branches without asking
