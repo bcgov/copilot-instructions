@@ -51,7 +51,7 @@
 2. **Create PR:** `git fetch origin && git rebase main`, then `git push -u origin $(git branch --show-current)`. Use `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`
 
 ### Project Standards
-- **Conventional Commits:** Required for all commits and PR titles. Include GitHub or Jira issue number in commit subject when available. Keep messages scoped and descriptive.
+- **Conventional Commits:** Required for all commits and PR titles. Keep messages scoped and descriptive.
 - **Package Management:** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently.
 - **Least Privilege:** Use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities.
 - **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts.
