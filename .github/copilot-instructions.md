@@ -38,6 +38,7 @@
 - NEVER commit credentials/secrets (.env files, API keys, tokens) OR include them in PR bodies/issues/markdown.
 - NEVER bypass security standards or grant broad permissions
 - NEVER silently delete, skip, or comment out failing tests, and NEVER advise ignoring or bypassing them. ALWAYS ensure all tests pass — fix the underlying code, not the test. If a test is genuinely outdated, flag it for human review before removing.
+- NEVER silence tooling diagnostics (`ignoreDeprecations`, `eslint-disable`, `@ts-ignore`, `@ts-expect-error`). Fix the root cause.
 
 ### Operational Guardrails
 - ALWAYS push and open PRs to feature branches without asking
