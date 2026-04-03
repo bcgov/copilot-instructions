@@ -50,9 +50,10 @@
 ### Git Workflow
 1. **Create Branch:** On `main` with clean tree: `git pull && git switch -c feat/description`
 2. **Create PR:** `git fetch origin && git rebase main`, then `git push -u origin $(git branch --show-current)`. Use `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`
-3. **Link Issues:** When the task references a GitHub issue, end the PR body with `Closes #<number>` (or `Fixes #<number>`). This auto-closes the issue on merge. Do NOT attempt to assign issues via the API — closing keywords are sufficient.`
+3. **Link Issues:** When the task references a GitHub issue, end the PR body with `Closes #<number>` (or `Fixes #<number>`). This auto-closes the issue on merge. Do NOT attempt to assign issues via the API — closing keywords are sufficient.
 
 ### Project Standards
+- **GitHub Actions:** Preserve action versions and runners. Only change `uses:` or `runs-on` if explicitly requested — never upgrade/downgrade based on training data.
 - **Conventional Commits:** Required for all commits and PR titles. Keep messages scoped and descriptive.
 - **Package Management:** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently.
 - **Least Privilege:** Use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities.
