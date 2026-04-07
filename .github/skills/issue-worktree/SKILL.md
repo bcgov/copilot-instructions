@@ -1,9 +1,9 @@
-# Autonomous Worktree Skill
+# Issue Worktree Skill
 
-Use this skill when tasked with work on a GitHub Issue. It ensures a clean, isolated environment using `git worktree`, allowing you to work on multiple issues in parallel without workspace contamination.
+Use this skill when asked to work on a GitHub issue in an isolated worktree. It uses `git worktree` to keep issue work separate from your main checkout and supports a clean issue-to-PR workflow.
 
 ## Objective
-Automatically set up a dedicated `git worktree`, implement the requested fix, submit a PR with correct closure language, and clean up the environment.
+Automatically set up a dedicated `git worktree`, implement the requested fix, submit a PR with correct closure language, and keep the worktree available until the user confirms cleanup.
 
 ## The Standard Protocol
 

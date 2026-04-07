@@ -36,18 +36,23 @@ curl -Lo .copilot/instructions \
 
 Add project-specific rules to `.copilot/instructions` after downloading. Re-run the curl command to update with the latest shared standards.
 
-### Option 3: Global Skills (For Advanced Agents)
 ### Option 3: Per-Project Skills (For VS Code Copilot)
 
 Copy skills into your project's `.github/skills/` folder. VS Code Copilot discovers and loads them on-demand when relevant:
 
 ```bash
 mkdir -p .github/skills
-curl -Lo .github/skills/autonomous-worktree/SKILL.md --create-dirs \
-   https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/skills/autonomous-worktree/SKILL.md
+curl -Lo .github/skills/issue-worktree/SKILL.md --create-dirs \
+   https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/skills/issue-worktree/SKILL.md
 ```
 
-This makes the **Autonomous Worktree** skill available in your project. Add more skills from this repo as needed.
+This makes the **Issue Worktree** skill available in your project. Add more skills from this repo as needed.
+
+Use skills by asking normally in chat. You do not need a slash command. Prompts that match this skill include:
+
+- `Solve issue #123 in a worktree`
+- `Work on issue #123 in an isolated worktree and open a PR`
+- `Use the issue worktree workflow for issue #123`
 
 ## Safety Setup (Recommended)
 
