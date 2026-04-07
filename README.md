@@ -5,6 +5,7 @@ Guidelines and tooling to help developers effectively use GitHub Copilot while m
 ## What's Included
 
 - **[Copilot Instructions](/.github/copilot-instructions.md)** - Behavioral guidelines and coding standards that you can load into Copilot Chat
+- **[Skills](/.github/skills)** - Autonomous workflow playbooks loaded on-demand by VS Code Copilot
 - **Safety Tooling** (optional) - Git hooks and shell wrappers that enforce the instructions' safety rules
 - **Git Configuration Setup** (optional) - Recommended settings, global gitignore, and user configuration
 
@@ -34,6 +35,19 @@ curl -Lo .copilot/instructions \
 ```
 
 Add project-specific rules to `.copilot/instructions` after downloading. Re-run the curl command to update with the latest shared standards.
+
+### Option 3: Global Skills (For Advanced Agents)
+### Option 3: Per-Project Skills (For VS Code Copilot)
+
+Copy skills into your project's `.github/skills/` folder. VS Code Copilot discovers and loads them on-demand when relevant:
+
+```bash
+mkdir -p .github/skills
+curl -Lo .github/skills/autonomous-worktree/SKILL.md --create-dirs \
+   https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/skills/autonomous-worktree/SKILL.md
+```
+
+This makes the **Autonomous Worktree** skill available in your project. Add more skills from this repo as needed.
 
 ## Safety Setup (Recommended)
 
