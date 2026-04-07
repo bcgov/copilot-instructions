@@ -54,6 +54,23 @@ Use skills by asking normally in chat. You do not need a slash command. Prompts 
 - `Work on issue #123 in an isolated worktree and open a PR`
 - `Use the issue worktree workflow for issue #123`
 
+## How Skills Work
+
+**Instructions** and **skills** are both placed under `.github/` but behave differently:
+
+| | Instructions | Skills |
+|---|---|---|
+| Loading | Always-on — injected into every chat | On-demand — loaded only when relevant |
+| Purpose | Standing rules and coding standards | Step-by-step workflows for specific tasks |
+| Trigger | Automatic | Natural language request |
+
+Skills are not slash commands. You invoke them by describing the job in plain language. VS Code Copilot matches your request against the skill name, title, and description, then loads and follows the playbook.
+
+**Tips for reliable activation:**
+- Use the job description, not the skill name. Ask for what you want done.
+- Include the key words from the skill's domain: "issue", "worktree", "PR".
+- If Copilot doesn't pick it up, mention the skill explicitly: "use the issue worktree workflow."
+
 ## Safety Setup (Recommended)
 
 The Copilot instructions tell the AI "never push to main", "never merge PRs", and "never run git config." This installer enforces those rules with git hooks and shell wrappers:
