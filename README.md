@@ -5,6 +5,7 @@ Guidelines and tooling to help developers effectively use GitHub Copilot while m
 ## What's Included
 
 - **[Copilot Instructions](/.github/copilot-instructions.md)** - Behavioral guidelines and coding standards that you can load into Copilot Chat
+- **[Skills](/.github/skills)** - Autonomous workflow playbooks loaded on-demand by VS Code Copilot
 - **Safety Tooling** (optional) - Git hooks and shell wrappers that enforce the instructions' safety rules
 - **Git Configuration Setup** (optional) - Recommended settings, global gitignore, and user configuration
 
@@ -34,6 +35,40 @@ curl -Lo .copilot/instructions \
 ```
 
 Add project-specific rules to `.copilot/instructions` after downloading. Re-run the curl command to update with the latest shared standards.
+
+### Option 3: Per-Project Skills (For VS Code Copilot)
+
+Copy skills into your project's `.github/skills/` folder. VS Code Copilot discovers and loads them on-demand when relevant:
+
+```bash
+curl -Lo .github/skills/issue-worktree/SKILL.md --create-dirs \
+   https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/skills/issue-worktree/SKILL.md
+```
+
+This makes the **Issue Worktree** skill available in your project. Add more skills from this repo as needed.
+
+Use skills by asking normally in chat. You do not need a slash command. Prompts that match this skill include:
+
+- `Solve issue #123 in a worktree`
+- `Work on issue #123 in an isolated worktree and open a PR`
+- `Use the issue worktree workflow for issue #123`
+
+## How Skills Work
+
+**Instructions** and **skills** are both placed under `.github/` but behave differently:
+
+| | Instructions | Skills |
+|---|---|---|
+| Loading | Always-on — injected into every chat | On-demand — loaded only when relevant |
+| Purpose | Standing rules and coding standards | Step-by-step workflows for specific tasks |
+| Trigger | Automatic | Natural language request |
+
+Skills are not slash commands. You invoke them by describing the job in plain language. VS Code Copilot matches your request against the skill name, title, and description, then loads and follows the playbook.
+
+**Tips for reliable activation:**
+- Use the job description, not the skill name. Ask for what you want done.
+- Include the key words from the skill's domain: "issue", "worktree", "PR".
+- If Copilot doesn't pick it up, mention the skill explicitly: "use the issue worktree workflow."
 
 ## Safety Setup (Recommended)
 
