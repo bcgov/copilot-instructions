@@ -12,16 +12,22 @@ Automatically set up a dedicated `git worktree`, implement the requested fix, su
 - Verify the base branch exists (usually `main`).
 
 ### 2. Workspace Setup
+- Verify which base branch exists (usually `main`) and use that verified branch in the setup commands below.
 - Create a dedicated worktree:
   ```bash
   export ISSUE_ID="<id>"
-  git worktree add .workspaces/$ISSUE_ID -b fix/$ISSUE_ID main
+  export BASE_BRANCH="<verified-base-branch>"
+  git worktree add .workspaces/$ISSUE_ID -b fix/$ISSUE_ID "$BASE_BRANCH"
+  ```
+- Add `.workspaces/` to your local exclude list to prevent accidental commits:
+  ```bash
+  echo ".workspaces" >> .git/info/exclude
   ```
 - All subsequent operations MUST be performed inside `.workspaces/$ISSUE_ID`.
 
 ### 3. Implementation Ritual
 - **Step 1: Test Baseline.** Run existing tests if they exist to confirm the current state.
-- **Step 2: Surgical Edit.** Apply changes following the "Surgical Changes" rule in `copilot-instructions.md`.
+- **Step 2: Surgical Edit.** Apply changes following the "Surgical Changes" rule in the Copilot instructions.
 - **Step 3: Verification.** Run tests to confirm the fix works and no regressions were introduced.
 
 ### 4. The Pull Request
@@ -29,7 +35,7 @@ Automatically set up a dedicated `git worktree`, implement the requested fix, su
 - Push the branch: `git push -u origin fix/$ISSUE_ID`.
 - Create the PR:
   ```bash
-  gh pr create --title "fix: resolution for #$ISSUE_ID" --body "## Summary\n\n[Description of changes]\n\nCloses #$ISSUE_ID"
+  gh pr create --title "fix: resolution for #$ISSUE_ID" --body $'## Summary\n\n[Description of changes]\n\nCloses #$ISSUE_ID'
   ```
 
 ### 5. Cleanup (Post-Verification)
