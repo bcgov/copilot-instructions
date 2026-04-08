@@ -41,7 +41,6 @@ Add project-specific rules to `.copilot/instructions` after downloading. Re-run 
 Copy skills into your project's `.github/skills/` folder. VS Code Copilot discovers and loads them on-demand when relevant:
 
 ```bash
-mkdir -p .github/skills
 curl -Lo .github/skills/issue-worktree/SKILL.md --create-dirs \
    https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/skills/issue-worktree/SKILL.md
 ```
