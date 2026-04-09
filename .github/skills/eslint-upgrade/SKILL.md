@@ -18,6 +18,8 @@ See `bcgov/quickstart-openshift` for a working example:
 "devDependencies": {
   "eslint": "^9.0.0",
   "eslint-config-prettier": "^9.0.0",
+  "eslint-plugin-prettier": "^5.0.0",
+  "prettier": "^3.0.0",
   "typescript-eslint": "^8.0.0",
   "@angular-eslint/eslint-plugin": "^18.0.0",
   "@angular-eslint/eslint-plugin-template": "^18.0.0",
@@ -30,6 +32,8 @@ See `bcgov/quickstart-openshift` for a working example:
 "devDependencies": {
   "eslint": "^9.0.0",
   "eslint-config-prettier": "^9.0.0",
+  "eslint-plugin-prettier": "^5.0.0",
+  "prettier": "^3.0.0",
   "typescript-eslint": "^8.0.0"
 }
 ```
@@ -40,29 +44,24 @@ See `bcgov/quickstart-openshift` for a working example:
 
 #### Angular Frontend (`admin/eslint.config.mjs` or `public/eslint.config.mjs`):
 ```javascript
-import { FlatCompat } from '@eslint/js'
-import angular from '@angular-eslint/eslint-plugin'
-import angularParser from '@angular-eslint/template-parser'
-import angularTemplate from '@angular-eslint/eslint-plugin-template'
 import tseslint from 'typescript-eslint'
+import angular from '@angular-eslint/eslint-plugin'
+import angularTemplate from '@angular-eslint/eslint-plugin-template'
+import angularParser from '@angular-eslint/template-parser'
 import prettier from 'eslint-config-prettier'
-
-const compat = new FlatCompat({
-  baseDirectory: import.meta.dirname,
-})
 
 export default [
   {
     ignores: ['projects/**/*', 'dist/**', 'node_modules/**', 'coverage/**'],
   },
-  ...tsseslint.configs['recommended'],
+  ...tseslint.configs['recommended'],
   {
     files: ['**/*.ts'],
     plugins: {
       '@angular-eslint': angular,
     },
     languageOptions: {
-      parser: angularParser,
+      parser: tseslint.parser,
       parserOptions: {
         project: 'tsconfig.json',
       },
@@ -72,6 +71,9 @@ export default [
     files: ['**/*.html'],
     plugins: {
       '@angular-eslint/template': angularTemplate,
+    },
+    languageOptions: {
+      parser: angularParser,
     },
   },
   {
@@ -87,11 +89,6 @@ export default [
       ],
     },
   },
-  {
-    rules: {
-      'prettier/prettier': 'error',
-    },
-  },
   prettier,
 ]
 ```
@@ -105,7 +102,7 @@ export default [
   {
     ignores: ['dist/**', 'node_modules/**', 'coverage/**', '.eslintrc.js'],
   },
-  ...tsseslint.configs['recommended'],
+  ...tseslint.configs['recommended'],
   {
     files: ['**/*.ts'],
     languageOptions: {
@@ -121,7 +118,6 @@ export default [
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      'prettier/prettier': 'error',
     },
   },
   prettier,
@@ -178,11 +174,5 @@ Install:
 npm install --save-dev @angular-eslint/eslint-plugin @angular-eslint/eslint-plugin-template @angular-eslint/template-parser
 ```
 
-### "Flat Compat" not found
-Install:
-```bash
-npm install --save-dev @eslint/js
-```
-
 ### Prettier conflicts
-Ensure `prettier` is last in the config array and `eslint-config-prettier` is in dependencies.
+Ensure `prettier` is last in the config array and `eslint-config-prettier` is in dependencies. Do not enable `prettier/prettier` rule unless using `eslint-plugin-prettier`.
