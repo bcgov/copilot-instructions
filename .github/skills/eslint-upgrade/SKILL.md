@@ -8,18 +8,125 @@ ESLint v9+ uses flat config (ESM `.mjs` files) instead of the legacy `.eslintrc.
 
 ## Example Reference
 
-See `bcgov/quickstart-openshift` for a working example:
+See `bcgov/quickstart-openshift` for the canonical example:
 - https://github.com/bcgov/quickstart-openshift/blob/main/eslint-base.config.mjs
 
 ## Dependencies Required
 
-### Frontend (Angular)
 ```json
 "devDependencies": {
   "eslint": "^9.0.0",
   "eslint-config-prettier": "^9.0.0",
-  "eslint-plugin-prettier": "^5.0.0",
-  "prettier": "^3.0.0",
+  "typescript-eslint": "^8.0.0"
+}
+```
+
+For React/Vite projects, add:
+```json
+"@eslint/js": "^9.0.0"
+```
+
+## Migration Steps
+
+### 1. Create Flat Config
+
+Create `eslint.config.mjs` in your project root:
+
+```javascript
+import tseslint from 'typescript-eslint'
+import prettier from 'eslint-config-prettier'
+
+export default [
+  {
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'vite.config.*', 'vitest.config.*'],
+  },
+  ...tseslint.configs['recommended'],
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: 'tsconfig.json',
+      },
+    },
+  },
+  prettier,
+]
+```
+
+### 2. Framework-Specific Notes
+
+#### React/Vite
+For React projects using Vite, use the recommended config from `@eslint/js`:
+
+```javascript
+import tseslint from 'typescript-eslint'
+import eslintPluginReact from 'eslint-plugin-react'
+import eslintPluginReactHooks from 'eslint-plugin-react-hooks'
+import prettier from 'eslint-config-prettier'
+
+export default [
+  {
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**'],
+  },
+  ...tseslint.configs['recommended'],
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: {
+      react: eslintPluginReact,
+      'react-hooks': eslintPluginReactHooks,
+    },
+    languageOptions: {
+      parserOptions: {
+        project: 'tsconfig.json',
+      },
+    },
+    rules: {
+      ...eslintPluginReact.configs.recommended.rules,
+      ...eslintPluginReactHooks.configs.recommended.rules,
+    },
+  },
+  prettier,
+]
+```
+
+#### NestJS/Backend
+NestJS projects may need additional rules disabled:
+
+```javascript
+import tseslint from 'typescript-eslint'
+import prettier from 'eslint-config-prettier'
+
+export default [
+  {
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**'],
+  },
+  ...tseslint.configs['recommended'],
+  {
+    files: ['**/*.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: 'tsconfig.json',
+        sourceType: 'module',
+      },
+    },
+  },
+  {
+    rules: {
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+    },
+  },
+  prettier,
+]
+```
+
+#### Angular
+Angular requires `@angular-eslint` packages:
+
+```json
+"devDependencies": {
+  "eslint": "^9.0.0",
+  "eslint-config-prettier": "^9.0.0",
   "typescript-eslint": "^8.0.0",
   "@angular-eslint/eslint-plugin": "^18.0.0",
   "@angular-eslint/eslint-plugin-template": "^18.0.0",
@@ -27,22 +134,6 @@ See `bcgov/quickstart-openshift` for a working example:
 }
 ```
 
-### Backend (NestJS/Node)
-```json
-"devDependencies": {
-  "eslint": "^9.0.0",
-  "eslint-config-prettier": "^9.0.0",
-  "eslint-plugin-prettier": "^5.0.0",
-  "prettier": "^3.0.0",
-  "typescript-eslint": "^8.0.0"
-}
-```
-
-## Migration Steps
-
-### 1. Create Project Config Files
-
-#### Angular Frontend (`admin/eslint.config.mjs` or `public/eslint.config.mjs`):
 ```javascript
 import tseslint from 'typescript-eslint'
 import angular from '@angular-eslint/eslint-plugin'
@@ -57,104 +148,38 @@ export default [
   ...tseslint.configs['recommended'],
   {
     files: ['**/*.ts'],
-    plugins: {
-      '@angular-eslint': angular,
-    },
+    plugins: { '@angular-eslint': angular },
     languageOptions: {
       parser: tseslint.parser,
-      parserOptions: {
-        project: 'tsconfig.json',
-      },
+      parserOptions: { project: 'tsconfig.json' },
     },
   },
   {
     files: ['**/*.html'],
-    plugins: {
-      '@angular-eslint/template': angularTemplate,
-    },
-    languageOptions: {
-      parser: angularParser,
-    },
-  },
-  {
-    files: ['**/*.ts'],
-    rules: {
-      '@angular-eslint/component-selector': [
-        'error',
-        { prefix: 'app', style: 'kebab-case', type: 'element' },
-      ],
-      '@angular-eslint/directive-selector': [
-        'error',
-        { prefix: 'app', style: 'camelCase', type: 'attribute' },
-      ],
-    },
+    plugins: { '@angular-eslint/template': angularTemplate },
+    languageOptions: { parser: angularParser },
   },
   prettier,
 ]
 ```
 
-#### Backend API (`api/eslint.config.mjs`):
-```javascript
-import tseslint from 'typescript-eslint'
-import prettier from 'eslint-config-prettier'
-
-export default [
-  {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**', '.eslintrc.js'],
-  },
-  ...tseslint.configs['recommended'],
-  {
-    files: ['**/*.ts'],
-    languageOptions: {
-      parserOptions: {
-        project: 'tsconfig.json',
-        sourceType: 'module',
-      },
-    },
-  },
-  {
-    rules: {
-      '@typescript-eslint/interface-name-prefix': 'off',
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-  prettier,
-]
-```
-
-### 2. Update angular.json
-
-Add `eslintConfig` option to the lint builder:
-
+Update `angular.json` to use the new config:
 ```json
 "lint": {
-  "builder": "@angular-eslint/builder:lint",
   "options": {
-    "eslintConfig": "eslint.config.mjs",
-    "lintFilePatterns": [
-      "src/**/*.ts",
-      "src/**/*.html"
-    ]
+    "eslintConfig": "eslint.config.mjs"
   }
 }
 ```
 
-### 3. Remove Legacy Config Files
+### 3. Remove Legacy Config
 
-Delete:
-- `.eslintrc.json`
-- `.eslintrc.js`
+Delete: `.eslintrc.json`, `.eslintrc.js`, `.eslintrc.*`
 
-### 4. Test the Migration
+### 4. Test
 
 ```bash
-# Run lint to verify
 npm run lint
-
-# Or for Angular projects
-ng lint
 ```
 
 ## Key Differences
@@ -164,15 +189,13 @@ ng lint
 | JSON/YAML format | JavaScript (ESM) |
 | Hierarchical with overrides | Array of config objects |
 | `extends` array | Import and spread configs |
-| Parser in plugins | Uses `@typescript-eslint/parser` |
 
 ## Troubleshooting
 
-### "Cannot find module '@angular-eslint/eslint-plugin'"
-Install:
+### "Cannot find module 'typescript-eslint'"
 ```bash
-npm install --save-dev @angular-eslint/eslint-plugin @angular-eslint/eslint-plugin-template @angular-eslint/template-parser
+npm install --save-dev typescript-eslint
 ```
 
 ### Prettier conflicts
-Ensure `prettier` is last in the config array and `eslint-config-prettier` is in dependencies. Do not enable `prettier/prettier` rule unless using `eslint-plugin-prettier`.
+Ensure `eslint-config-prettier` is last in the config array.
