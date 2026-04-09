@@ -1,3 +1,8 @@
+---
+name: eslint-upgrade
+description: Upgrade ESLint to v9+. Use when migrating from .eslintrc.* to flat config (eslint.config.mjs).
+---
+
 # ESLint 9+ Upgrade
 
 Guide for upgrading to ESLint v9+ which requires migrating from `.eslintrc.*` to flat config (`eslint.config.mjs`).
