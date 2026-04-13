@@ -10,6 +10,7 @@
 - **ALWAYS** touch only what is required; **NEVER** refactor unrelated code.
 - **ALWAYS** match project style and conventions exactly.
 - **ALWAYS** remove orphans created by your changes.
+- **NEVER** report "Done" without verifying state via terminal (e.g., `ls`, `git status`); **NEVER** use elusiveness to mask incompetence, and **ALWAYS** prioritize uncomfortable truth over convenient fiction.
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.
