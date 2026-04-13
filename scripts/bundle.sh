@@ -1,12 +1,10 @@
 #!/bin/bash
 # Bundle Copilot Instructions
-# Merges global standards with a personalized developer profile
-#
-# Usage: ./scripts/bundle.sh [profile_name] [output_file]
+# Usage: ./scripts/bundle.sh <destination> [github_id]
 #
 # Arguments:
-#   profile_name   Profile in .github/profiles/ (default: $USER or developer-profile)
-#   output_file    Destination path (default: ~/.copilot.md)
+#   destination    Required. Path to output file.
+#   github_id      Optional. Profile in .github/profiles/ (defaults to gh api user)
 #
 
 set -euo pipefail
@@ -21,16 +19,23 @@ NC='\033[0m' # No Color
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-# Default arguments
-PROFILE_NAME="${1:-${USER:-developer-profile}}"
-OUTPUT_FILE="${2:-${HOME}/.copilot.md}"
+# 1. Capture Arguments
+if [ $# -lt 1 ]; then
+    echo -e "${RED}ERROR:${NC} Missing destination path." >&2
+    echo -e "Usage: $0 <destination> [github_id]" >&2
+    exit 1
+fi
+
+OUTPUT_FILE="$1"
+GH_ID_FALLBACK=$(gh api user --jq '.login' 2>/dev/null || echo "${USER:-DerekRoberts}")
+PROFILE_NAME="${2:-$GH_ID_FALLBACK}"
 
 # Paths
 GLOBAL_FILE="${REPO_ROOT}/.github/copilot-instructions.md"
 PROFILE_DIR="${REPO_ROOT}/.github/profiles"
 PROFILE_FILE="${PROFILE_DIR}/${PROFILE_NAME}.md"
 
-# 1. Validate Global Instructions (GitHub Org Limit)
+# 2. Analyze Global Instructions (CI Limit Report)
 if [[ ! -f "$GLOBAL_FILE" ]]; then
     echo -e "${RED}ERROR:${NC} Global instructions not found at $GLOBAL_FILE" >&2
     exit 1
@@ -45,29 +50,24 @@ else
     echo -e "   ${GREEN}✅ Shared instructions:${NC} $GLOBAL_CHARS characters (CI Limit: 4,000)"
 fi
 
-# 2. Verify Profile
+# 3. Verify Profile
 echo -e "${BLUE}👤 Merging profile:${NC} '$PROFILE_NAME'..."
 if [[ ! -f "$PROFILE_FILE" ]]; then
     echo -e "${RED}❌ ERROR:${NC} Profile file not found: $PROFILE_FILE" >&2
-    echo -e "   Please create your profile in .github/profiles/ or use 'developer-profile'." >&2
+    echo -e "   Use 'DerekRoberts' as a template for your own profile." >&2
     exit 1
 fi
 
-# 3. Bundle
+# 4. Bundle
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
 {
     cat "$GLOBAL_FILE"
     echo -e "\n"
-    if [[ -f "$PROFILE_FILE" ]]; then
-        cat "$PROFILE_FILE"
-    else
-        echo -e "${RED}ERROR:${NC} Default profile template missing at $PROFILE_FILE" >&2
-        exit 1
-    fi
+    cat "$PROFILE_FILE"
 } > "$OUTPUT_FILE"
 
-# 4. Final Metrics
+# 5. Result Summary
 TOTAL_CHARS=$(wc -m < "$OUTPUT_FILE")
 echo -e "${GREEN}✨ Success:${NC} Personalized instructions bundled to $OUTPUT_FILE"
 
@@ -78,7 +78,7 @@ else
     echo -e "   Total size: $TOTAL_CHARS characters."
 fi
 
-# 5. Run detail metrics
+# 6. Run detail metrics
 if [[ -f "${SCRIPT_DIR}/metrics.sh" ]]; then
     echo ""
     bash "${SCRIPT_DIR}/metrics.sh" "$OUTPUT_FILE"
