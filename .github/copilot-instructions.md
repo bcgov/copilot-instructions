@@ -1,60 +1,53 @@
 ## Behavioral Guidelines
 
-### Think Before Coding
-- State assumptions; ask when uncertain.
-- If multiple interpretations exist, list them instead of picking silently.
-- If unclear, stop and ask.
-- If a simpler approach exists, say so. Use it unless requested otherwise.
+### Think & Plan
+- **ALWAYS** state assumptions and ask when uncertain; list interpretations if multiple exist.
+- **ALWAYS** propose simpler approaches and default to simplicity unless requested otherwise.
 
-### Simplicity First
-- No features beyond what was asked.
-- Prefer simple, direct code for single-use logic; refactor when duplication appears.
-- No "flexibility" or "configurability" that wasn't requested.
+### Implementation Discipline
+- **NEVER** implement unrequested features or configurability.
+- **ALWAYS** use direct, single-use code; refactor only when duplication appears.
+- **ALWAYS** touch only what is required; **NEVER** refactor unrelated code.
+- **ALWAYS** match existing style, architecture, and conventions exactly.
+- **ALWAYS** remove orphans created by your changes.
 
-### Surgical Changes
-- Touch only what you must; match existing style.
-- Don't refactor what isn't broken; mention unrelated dead code instead.
-- Remove orphans caused by your changes.
+### Verification
+- **ALWAYS** define success criteria and verify against them before marking work done.
+- **ALWAYS** state a brief plan with verification checks for multi-step tasks.
 
-### Goal-Driven Execution
-- Define success criteria and verify.
-- For multi-step tasks, state a brief plan with checks.
-- Always verify before marking work done; if verification is impossible, say so explicitly.
-
-### Code Quality & Dependencies
-- MUST analyze existing patterns before suggesting new code.
-- MUST avoid new libraries unless absolutely necessary. If adding one, verify it is maintained, compatible, non-duplicative, and lightweight. Avoid libraries that solve trivial problems or increase complexity.
-- MUST explain trade-offs when offering multiple options.
-- MUST avoid "clever" or overly abstract solutions unless already used.
-- MUST match the project's style, architecture, and conventions.
+### Dependencies
+- **ALWAYS** avoid dependencies for low-volume (< 20 lines) or low-risk logic.
+- **ALWAYS** use battle-tested libraries only when bespoke alternatives are complex, security-sensitive, or high-risk.
+- **ALWAYS** verify new dependencies are maintained, compatible, non-duplicative, and lightweight.
+- **ALWAYS** explain trade-offs for proposed architectural choices.
+- **NEVER** use "clever" or overly abstract solutions unless already established in the codebase.
 
 ## Standards
 
 ### Hard Stops (Never)
-- NEVER push to main or merge PRs; leave merging to humans
-- NEVER use destructive commands (gh pr merge, override git hooks, etc.)
-- NEVER squash, rebase -i, or otherwise destroy commit history in PR branches
-- NEVER use triple-backticks inside code blocks; use 4-backtick fenced blocks
-- NEVER commit credentials/secrets (.env files, API keys, tokens) OR include them in PR bodies/issues/markdown.
-- NEVER bypass security standards or grant broad permissions
-- NEVER silently delete, skip, or comment out failing tests, and NEVER advise ignoring or bypassing them. ALWAYS ensure all tests pass — fix the underlying code, not the test. If a test is genuinely outdated, flag it for human review before removing.
-- NEVER silence tooling diagnostics (`ignoreDeprecations`, `eslint-disable`, `@ts-ignore`, `@ts-expect-error`). Fix the root cause.
+- **NEVER** branch from an existing feature branch; **ALWAYS** initialize new work from a fresh checkout of main.
+- **NEVER** push to main or merge PRs; leave merging to humans.
+- **NEVER** use destructive git commands on shared history (e.g., `gh pr merge`, `git push --force`, `git rebase -i`).
+- **NEVER** use triple-backticks inside code blocks; **ALWAYS** use 4-backtick fenced blocks.
+- **NEVER** commit or include credentials, secrets, or PII in code or PR descriptions.
+- **NEVER** bypass security standards or grant broad permissions.
+- **NEVER** silence tooling diagnostics (`eslint-disable`, `@ts-ignore`); fix the root cause.
+- **NEVER** delete or skip failing tests; **ALWAYS** fix the code to ensure the full test suite passes.
 
 ### Operational Guardrails
-- ALWAYS push and open PRs to feature branches without asking
-- NEVER mark work complete until verified, committed, pushed, and PR created
-- ALWAYS stop on first error; chain related commands with &&
-- Block SQL injection, XSS, and unsanitized inputs (e.g., eval, innerHTML, string-concatenated queries) in code/docs.
-- When a scratchpad or temporary storage is needed, use `./.tmp/` if `git check-ignore .tmp/` confirms it is git-ignored, otherwise `/tmp`.
+- **ALWAYS** push and open PRs to feature branches without asking.
+- **NEVER** mark work complete until verified, committed, pushed, and PR created.
+- **ALWAYS** stop on the first error; chain related commands with `&&`.
+- **ALWAYS** block SQL injection, XSS, and unsanitized inputs in both code and docs.
+- For temporary storage, **ALWAYS** use `./.tmp/` if git-ignored, otherwise `/tmp`.
 
 ### Git Workflow
-1. **Create Branch:** On `main` with clean tree: `git pull && git switch -c feat/description`
-2. **Create PR:** `git fetch origin && git rebase main`, then `git push -u origin $(git branch --show-current)`. Use `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`
-3. **Link Issues:** When the task references a GitHub issue, end the PR body with `Closes #<number>` to auto-close the issue on merge.
+1. **Branching:** **ALWAYS** run `git checkout main && git pull && git switch -c feat/description` before making any changes.
+2. **PR Creation:** **ALWAYS** run `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline` before pushing; **STOP** if unintended commits appear.
+3. **Closing:** **ALWAYS** end PR bodies with `Closes #<number>` if a task references a GitHub issue.
 
 ### Project Standards
-- **GitHub Actions:** NEVER change action versions and runners.
-- **Conventional Commits:** Required for all commits and PR titles. Keep messages scoped and descriptive.
-- **Package Management:** Use latest stable versions. NEVER use `--legacy-peer-deps`, edit lock files, or downgrade silently.
-- **Least Privilege:** Use minimum permissions. GitHub Actions: `permissions: {}` at workflow, explicit at job/step. Containers: non-root, drop capabilities.
-- **Documentation:** Use GitHub Releases for version history. NEVER add manual tracking artifacts.
+- **ALWAYS** use Conventional Commits with scoped, descriptive messages.
+- **ALWAYS** use latest stable package versions; **NEVER** downgrade or edit lock files silently.
+- **ALWAYS** use minimum permissions (e.g., `permissions: {}` in GitHub Actions).
+- **ALWAYS** use GitHub Releases; **NEVER** add manual version tracking artifacts.
