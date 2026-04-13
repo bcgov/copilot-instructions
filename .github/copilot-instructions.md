@@ -30,6 +30,7 @@
 - **NEVER** use destructive git commands (gh pr merge, squash, rebase -i) on shared history.
 - **NEVER** use triple-backticks in code blocks; **ALWAYS** use 4-backtick fenced blocks.
 - **NEVER** commit or include credentials, secrets, or PII in code or PRs.
+- **NEVER** branch from a feature branch; **ALWAYS** initialize from a fresh checkout of main.
 - **NEVER** bypass security standards or grant broad permissions.
 - **NEVER** silence diagnostics (`eslint-disable`, `@ts-ignore`); fix the root cause.
 - **NEVER** delete failing tests; **ALWAYS** fix the code to ensure the test suite passes.
