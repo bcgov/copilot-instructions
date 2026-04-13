@@ -45,6 +45,7 @@
 1. **Branching:** **ALWAYS** run `git checkout main && git pull && git switch -c feat/description` before making any changes.
 2. **PR Creation:** **ALWAYS** run `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline` before pushing; **STOP** if unintended commits appear.
 3. **Closing:** **ALWAYS** end PR bodies with `Closes #<number>` if a task references a GitHub issue.
+4. **Syncing:** When asked to **"Sync #number"**, **ALWAYS**: rebase the PR branch onto latest `main`, review `gh pr view --comments`, and check `gh pr checks` for failures. Address all feedback and CI errors before pushing.
 
 ### Project Standards
 - **ALWAYS** use Conventional Commits with scoped, descriptive messages.
