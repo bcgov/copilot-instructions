@@ -48,14 +48,8 @@
 - When a scratchpad or temporary storage is needed, use `./.tmp/` if `git check-ignore .tmp/` confirms it is git-ignored, otherwise `/tmp`.
 
 ### Git Workflow
-1. **Create Branch:** ALWAYS run these exact commands before making any changes, no exceptions:
-   `git checkout main && git pull && git switch -c feat/description`
-   - NEVER branch from an existing feature branch
-   - NEVER skip `git checkout main` even if `git status` is clean
-2. **Create PR:** Before pushing, ALWAYS verify the branch contains ONLY intended commits:
-   `git log main..HEAD --oneline`
-   If unintended commits appear, STOP and fix the branch before proceeding.
-   Then: `git push -u origin $(git branch --show-current)` and `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`
+1. **Create Branch:** ALWAYS run `git checkout main && git pull && git switch -c feat/description` before making any changes — NEVER branch from an existing feature branch and NEVER skip `git checkout main` even if `git status` is clean.
+2. **Create PR:** ALWAYS run `git log main..HEAD --oneline` before pushing and STOP if unintended commits appear. Then push with `git push -u origin $(git branch --show-current)` and open the PR with `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
 3. **Link Issues:** When the task references a GitHub issue, end the PR body with `Closes #<number>` to auto-close the issue on merge.
 
 ### Project Standards
