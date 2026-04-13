@@ -49,7 +49,7 @@
 
 ### Git Workflow
 1. **Create Branch:** ALWAYS run `git checkout main && git pull && git switch -c feat/description` before making any changes — NEVER branch from an existing feature branch and NEVER skip `git checkout main` even if `git status` is clean.
-2. **Create PR:** ALWAYS run `git log main..HEAD --oneline` before pushing and STOP if unintended commits appear. Then push with `git push -u origin $(git branch --show-current)` and open the PR with `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
+2. **Create PR:** ALWAYS run `git fetch origin && git rebase origin/main` to sync with latest main, then run `git log origin/main..HEAD --oneline` and STOP if unintended commits appear. Then push with `git push -u origin $(git branch --show-current)` and open the PR with `gh pr create --title "feat: title" --body $'## Summary\n\nDescription'`.
 3. **Link Issues:** When the task references a GitHub issue, end the PR body with `Closes #<number>` to auto-close the issue on merge.
 
 ### Project Standards
