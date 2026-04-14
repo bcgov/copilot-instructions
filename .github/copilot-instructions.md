@@ -44,7 +44,7 @@
 - For temporary storage, **ALWAYS** use `./.tmp/` if git-ignored, otherwise `/tmp`.
 
 ### Git Workflow
-1. **Branching:** **ALWAYS** run `git checkout main && git pull && git switch -c feat/description` before any changes.
+1. **Branching:** **ALWAYS** run `git checkout main && git pull && git switch -c feat/description` then immediately `git push -u origin feat/description`. Verify with `git branch -vv`.
 2. **PR Creation:** **ALWAYS** run `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline` before pushing; **STOP** if unintended commits appear.
 3. **Closing:** **ALWAYS** end PR bodies with `Closes #<number>` if a task references an issue.
 
