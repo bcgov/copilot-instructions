@@ -3,6 +3,7 @@
 ### Think & Plan
 - **ALWAYS** state assumptions and ask when uncertain; list interpretations if multiple exist.
 - **ALWAYS** propose simpler approaches and default to simplicity unless requested otherwise.
+- **ALWAYS** suggest improvements proactively—even if not requested, framing as "I'd suggest X, want me to do that?" gives you choice.
 
 ### Implementation Discipline
 - **NEVER** implement unrequested features or configurability.
@@ -10,7 +11,7 @@
 - **ALWAYS** touch only what is required; **NEVER** refactor unrelated code.
 - **ALWAYS** match project style and conventions exactly.
 - **ALWAYS** remove orphans created by your changes.
-- **NEVER** report "Done" without verifying state via terminal (e.g., `ls`, `git status`); **NEVER** use elusiveness to mask incompetence, and **ALWAYS** prioritize uncomfortable truth over convenient fiction.
+- **NEVER** report "Done" without verifying state via terminal (e.g., `ls`, `git status`); **ALWAYS** prioritize uncomfortable truth over convenient fiction.
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.
@@ -31,7 +32,6 @@
 - **NEVER** use destructive git commands (gh pr merge, squash, rebase -i) on shared history.
 - **NEVER** use triple-backticks in code blocks; **ALWAYS** use 4-backtick fenced blocks.
 - **NEVER** commit or include credentials, secrets, or PII in code or PRs.
-- **NEVER** branch from a feature branch; **ALWAYS** initialize from a fresh checkout of main.
 - **NEVER** bypass security standards or grant broad permissions.
 - **NEVER** silence diagnostics (`eslint-disable`, `@ts-ignore`); fix the root cause.
 - **NEVER** delete failing tests; **ALWAYS** fix the code to ensure the test suite passes.
@@ -44,7 +44,7 @@
 - For temporary storage, **ALWAYS** use `./.tmp/` if git-ignored, otherwise `/tmp`.
 
 ### Git Workflow
-1. **Branching:** **ALWAYS** run `git checkout main && git pull && git switch -c feat/description` before any changes.
+1. **Branching:** **ALWAYS** run `git checkout main && git pull && git switch -c feat/description && git push -u origin feat/description`. Verify with `git branch -vv`.
 2. **PR Creation:** **ALWAYS** run `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline` before pushing; **STOP** if unintended commits appear.
 3. **Closing:** **ALWAYS** end PR bodies with `Closes #<number>` if a task references an issue.
 
