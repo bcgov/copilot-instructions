@@ -229,6 +229,108 @@ See `../quickstart-openshift` for reference implementations:
 - **OWASP Agentic Security (ASI)** - AI agent security
 - **CMM** - Capability Maturity Model
 
+## Automated Assessment (Tier 2)
+
+Run the maturity check script to automatically assess a repository:
+
+```bash
+./maturity-check.sh /path/to/repo
+```
+
+### Output
+
+```
+================================================================================
+                    REPOSITORY MATURITY ASSESSMENT
+================================================================================
+Repo: owner/repo-name
+Date: 2025-04-15
+
+--------------------------------------------------------------------------------
+                            DIMENSION SCORES
+--------------------------------------------------------------------------------
+CI/CD & Automation      [################    ] 15/25 (60%) - Level 3
+Code Quality           [##########        ] 12/20 (60%) - Level 3
+Security               [############     ] 14/20 (70%) - Level 4
+GitHub Hygiene         [#############   ] 11/15 (73%) - Level 4
+Dependency Management  [#######          ] 7/10 (70%) - Level 3
+Documentation          [####              ] 2/5 (40%) - Level 2
+Deployment             [#####             ] 3/5 (60%) - Level 3
+
+--------------------------------------------------------------------------------
+                            OVERALL SCORE
+--------------------------------------------------------------------------------
+Total: 64/100 (64%) - Level 3 (Defined)
+
+--------------------------------------------------------------------------------
+                         CRITERION DETAILS
+--------------------------------------------------------------------------------
+[✓] PR workflow with test + lint
+[✓] ESLint flat config
+[✓] Test coverage >50%
+[✓] Renovate configured
+[✓] Branch protection (require reviews)
+[ ] Test coverage >80%
+[ ] Trivy in CI workflow
+[ ] CODEOWNERS file
+[ ] SECURITY.md
+
+--------------------------------------------------------------------------------
+                         IMPROVEMENT CHECKLIST
+--------------------------------------------------------------------------------
+High Impact:
+  [ ] Add test coverage >80% (+12 pts) - Target: Level 4
+  [ ] Add Trivy security scan to CI (+5 pts)
+  [ ] Add CODEOWNERS file (+3 pts)
+
+Medium Impact:
+  [ ] Add SECURITY.md contact info (+2 pts)
+  [ ] Update to ESLint flat config (+3 pts)
+
+Low Impact:
+  [ ] Add CONTRIBUTING.md (+1 pt)
+
+================================================================================
+```
+
+### CI Integration
+
+Add to your workflow to enforce minimum maturity:
+
+```yaml
+name: Maturity Check
+
+on: [pull_request]
+
+jobs:
+  maturity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run maturity check
+        run: |
+          wget -q -O maturity-check.sh \
+            https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/skills/repo-maturity/maturity-check.sh
+          chmod +x maturity-check.sh
+          ./maturity-check.sh . --min-level 3
+
+      - name: Check results
+        run: |
+          if [ -f .maturity/score.txt ]; then
+            SCORE=$(cat .maturity/score.txt)
+            LEVEL=$(cat .maturity/level.txt)
+            echo "Maturity Level: $LEVEL (Score: $SCORE)"
+          fi
+```
+
+### Minimum Thresholds
+
+| Level | Use Case |
+|-------|---------|
+| 2 | Minimum for any new repo |
+| 3 | Production-ready |
+| 4 | Full compliance |
+
 ## Usage
 
 Use this skill when:
@@ -237,6 +339,7 @@ Use this skill when:
 - Creating improvement roadmaps
 - Comparing repositories for consistency
 - Identifying technical debt
+- Enforcing CI quality gates
 
 ### Quick Assessment
 
