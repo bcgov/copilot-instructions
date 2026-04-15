@@ -81,7 +81,10 @@ For example:
 > ln -s ~/Repos/copilot-instructions/.github/skills ~/.kilocode/skills
 > 
 > # Or Kilo Code via config in kilo.jsonc:
-> "paths": ["~/Repos/copilot-instructions/.github/skills/"]
+> ```jsonc
+> "skills": {
+>   "paths": ["~/Repos/copilot-instructions/.github/skills/"]
+> }
 > ```
 > 
 > Kilo also supports loading skills directly from URLs, allowing auto-updates without copying:
