@@ -67,6 +67,12 @@ curl -Lo .github/skills/issue-worktree/SKILL.md --create-dirs \
 
 Skills are not slash commands. You invoke them by describing the job in plain language in Chat.
 
+> [!NOTE]
+> These skills work across multiple AI coding assistants. VS Code Copilot, Kilo Code, and Google Antigravity all support the same `.github/skills/` path. For other tools, create a symlink:
+> ```bash
+> ln -s /path/to/copilot-instructions/.github/skills ~/.gemini/antigravity/skills
+> ```
+
 ## Safety Setup (Recommended)
 
 The Copilot instructions tell the AI "never push to main", "never merge PRs", and "never run git config." This installer enforces those rules with git hooks and shell wrappers:
