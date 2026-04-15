@@ -67,6 +67,30 @@ curl -Lo .github/skills/issue-worktree/SKILL.md --create-dirs \
 
 Skills are not slash commands. You invoke them by describing the job in plain language in Chat.
 
+For example:
+> **You:** "Can you run a security review on the auth module?"
+> **Copilot:** *loads security-review skill* "I'll scan the auth module for vulnerabilities..."
+
+> [!NOTE]
+> These skills work across multiple AI coding assistants. VS Code Copilot, Kilo Code, and Google Antigravity all support the same `.github/skills/` path. Kilo and Antigravity can also use them globally via symlink or config:
+> ```bash
+> # Antigravity global skills
+> ln -s ~/Repos/copilot-instructions/.github/skills ~/.gemini/antigravity/skills
+> 
+> # Kilo Code global skills (symlink)
+> ln -s ~/Repos/copilot-instructions/.github/skills ~/.kilocode/skills
+> 
+> # Or Kilo Code via config in kilo.jsonc:
+> "paths": ["~/Repos/copilot-instructions/.github/skills/"]
+> ```
+> 
+> Kilo also supports loading skills directly from URLs, allowing auto-updates without copying:
+> ```json
+> "skills": {
+>   "urls": ["https://raw.githubusercontent.com/github/awesome-copilot/main/skills/security-review/SKILL.md"]
+> }
+> ```
+
 ## Safety Setup (Recommended)
 
 The Copilot instructions tell the AI "never push to main", "never merge PRs", and "never run git config." This installer enforces those rules with git hooks and shell wrappers:
@@ -102,6 +126,7 @@ curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scri
 
 The Behavioral Guidelines section in our copilot instructions is adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang.
 The recommended Git configuration settings in `git-setup.sh` are based on [How Git core developers configure Git](https://blog.gitbutler.com/how-git-core-devs-configure-git) by GitButler.
+Skills documentation and patterns are adapted from [awesome-copilot](https://github.com/github/awesome-copilot).
 
 ## Contributing
 
