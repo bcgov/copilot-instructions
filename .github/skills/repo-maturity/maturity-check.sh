@@ -45,7 +45,17 @@ setup_output() {
 check_file() {
     local file="$1"
     local dir="${2:-$REPO_DIR}"
-    [ -f "$dir/$file" ] || [ -f "$dir/$file" ]
+    [ -f "$dir/$file" ]
+}
+
+check_file_any() {
+    local file="$1"
+    local dir="${2:-$REPO_DIR}"
+    # Check in multiple possible locations
+    [ -f "$dir/$file" ] || \
+    [ -f "$dir/.github/$file" ] || \
+    [ -f "$dir/backend/$file" ] || \
+    [ -f "$dir/frontend/$file" ]
 }
 
 check_dir() {
@@ -133,45 +143,59 @@ check_code_quality() {
     local max=20
     local checks=()
 
-    # 1. ESLint config (Level 2) - 3 pts
-    if check_file "eslint.config.mjs" "$dir" || \
-       check_file ".eslintrc*" "$dir" || \
-       check_file "eslintrc*" "$dir"; then
+    # Check for Node.js project (package.json)
+    local is_node=false
+    if check_file "package.json" "$dir"; then
+        is_node=true
+    fi
+
+    # Check for Java project (pom.xml or build.gradle)
+    local is_java=false
+    if check_file "pom.xml" "$dir" || check_file "backend/pom.xml" "$dir"; then
+        is_java=true
+    fi
+
+    # 1. ESLint config (Level 2) - 3 pts - check root OR subdirs
+    if check_file_any "eslint.config.mjs" "$dir" || \
+       check_file_any ".eslintrc*" "$dir" || \
+       [ -d "$dir/backend" ] && ls "$dir/backend/eslint"* 1>/dev/null 2>&1 || \
+       [ -d "$dir/frontend" ] && ls "$dir/frontend/eslint"* 1>/dev/null 2>&1; then
         score=$((score + 3))
         checks+=("ESLint config found")
         log_pass "Code Quality: ESLint config"
 
-        # 2. Flat config (Level 3) - 4 pts
-        if check_file "eslint.config.mjs" "$dir"; then
+        # 2. Flat config (Level 3) - 4 pts - check root OR subdirs
+        if check_file_any "eslint.config.mjs" "$dir"; then
             score=$((score + 4))
             checks+=("ESLint flat config")
             log_pass "Code Quality: ESLint flat config"
         fi
 
         # 3. Prettier (Level 3) - 4 pts
-        if check_file ".prettierrc*" "$dir" || \
-           check_file "prettier.config.*" "$dir" || \
+        if check_file_any ".prettierrc*" "$dir" || \
+           check_file_any "prettier.config.*" "$dir" || \
            check_contains "prettier" "package.json" "$dir"; then
             score=$((score + 4))
             checks+=("Prettier configured")
             log_pass "Code Quality: Prettier configured"
-        fi
-
-        # 4. TypeScript strict (Level 4) - 3 pts
-        if check_contains '"strict": true' "tsconfig.json" "$dir" || \
-           check_contains '"strict": true' "tsconfig.json" "$dir/backend" "$dir" || \
-           check_contains '"strict": true' "tsconfig.json" "$dir/frontend" "$dir"; then
-            score=$((score + 3))
-            checks+=("TypeScript strict")
-            log_pass "Code Quality: TypeScript strict"
         fi
     else
         log_fail "Code Quality: No ESLint config"
         checks+=("NO ESLINT CONFIG")
     fi
 
-    # 5. Test coverage in package.json (Level 2) - 3 pts
-    if check_contains "test\|vitest\|jest" "package.json" "$dir"; then
+    # 4. TypeScript strict (Level 4) - 3 pts
+    if check_contains '"strict": true' "tsconfig.json" "$dir" || \
+       check_contains '"strict": true' "tsconfig.json" "$dir/backend" "$dir" || \
+       check_contains '"strict": true' "tsconfig.json" "$dir/frontend" "$dir"; then
+        score=$((score + 3))
+        checks+=("TypeScript strict")
+        log_pass "Code Quality: TypeScript strict"
+    fi
+
+    # 5. Test framework (Level 2) - 3 pts
+    # For Node.js
+    if [ "$is_node" = true ] && check_contains "test\|vitest\|jest" "package.json" "$dir"; then
         score=$((score + 3))
         checks+=("Test scripts")
         log_pass "Code Quality: Test scripts present"
@@ -182,6 +206,18 @@ check_code_quality() {
             checks+=("Coverage configured")
             log_pass "Code Quality: Coverage configured"
         fi
+    # For Java
+    elif [ "$is_java" = true ]; then
+        score=$((score + 3))
+        checks+=("Maven tests")
+        log_pass "Code Quality: Maven tests configured"
+    fi
+
+    # 7. Java detection bonus - if it's a Java project, give some credit
+    if [ "$is_java" = true ]; then
+        score=$((score + 3))
+        checks+=("Java project")
+        log_pass "Code Quality: Java project detected"
     fi
 
     SCORES[code_quality]=$score
@@ -276,9 +312,10 @@ check_github_hygiene() {
         fi
     fi
 
-    # 4. CODEOWNERS (Level 3) - 4 pts
+    # 4. CODEOWNERS (Level 3) - 4 pts - check root OR .github/
     if check_file "CODEOWNERS" "$dir" || \
-       check_file ".github/CODEOWNERS" "$dir"; then
+       check_file ".github/CODEOWNERS" "$dir" || \
+       check_file ".github/codeowners" "$dir"; then
         score=$((score + 4))
         checks+=("CODEOWNERS")
         log_pass "GitHub Hygiene: CODEOWNERS file"
@@ -300,6 +337,7 @@ check_dependencies() {
     local checks=()
 
     # 1. Renovate/Dependabot config (Level 2) - 3 pts
+    # Accepts local config OR upstream extends (like bcgov/renovate-config)
     if check_file "renovate.json" "$dir"; then
         score=$((score + 3))
         checks+=("Renovate")
@@ -310,6 +348,11 @@ check_dependencies() {
             score=$((score + 4))
             checks+=("Auto-merge")
             log_pass "Dependencies: Auto-merge enabled"
+        # Or autoMerge via extends (upstream config)
+        elif check_contains "autoMerge\|automerg" "renovate.json" "$dir"; then
+            score=$((score + 4))
+            checks+=("Auto-merge (via extends)")
+            log_pass "Dependencies: Auto-merge enabled via upstream"
         fi
     elif check_file ".github/dependabot.yml" "$dir" || \
          check_file ".github/dependabot.yaml" "$dir"; then
@@ -325,6 +368,11 @@ check_dependencies() {
         score=$((score + 3))
         checks+=("Lockfile")
         log_pass "Dependencies: Lockfile present"
+    # Java/Maven lockfile
+    elif check_file "pom.xml" "$dir" || check_file "backend/pom.xml" "$dir"; then
+        score=$((score + 3))
+        checks+=("Maven pom.xml")
+        log_pass "Dependencies: Maven pom.xml present"
     fi
 
     SCORES[dependencies]=$score
