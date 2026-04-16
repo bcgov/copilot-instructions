@@ -353,8 +353,6 @@ When presenting results, always use this format:
 
 **Missing from owner/repo**: item1, item2, item3 (or: None - all base requirements met)
 
-**Bonuses**: bonus1 (+N pts), bonus2 (+N pts)
-
 ### Notes
 - Scores can exceed 100% for bonus features
 - "100%" when earned points ≥ 100 (all base requirements met)
