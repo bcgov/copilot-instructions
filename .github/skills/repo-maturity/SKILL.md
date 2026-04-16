@@ -336,9 +336,9 @@ When presenting results, always use this format:
 ```
 ## Final Report
 
-| Repo | Score | Compliant | Level | Status |
-|------|-------|---------|-----------|-------|--------|
-| **owner/repo** | pts/max (percent%) | 100%/N% | Level N | Status |
+| Repo | Score | Level | Status |
+|------|-------|---------|-------|--------|
+| **owner/repo** | pts/max (percent%) | Level N | Status |
 
 ### owner/repo (score/max - percent%)
 | Category | Score | Max | % | Level |
@@ -351,12 +351,12 @@ When presenting results, always use this format:
 | Documentation | X | N | N% | N |
 | Deployment | X | N | N% | N |
 
-**Missing from owner/repo**: item1, item2, item3 (or: score ≥ 100 = None - fully compliant)
+**Missing from owner/repo**: item1, item2, item3 (or: 100% when pts ≥ 100)
 
 ### Notes
 - Scores can exceed 100% for bonus features
-- "Compliant: 100%" means earned points ≥ 100 (base requirements met)
-- Example: 121pts earned = 100% compliant, shown as 121/124 (97%) because max includes bonuses
+- "100%" when earned points ≥ 100 (all base requirements met)
+- Example: 121pts earned = 100%, shown as 121/124 (97%) because max includes bonuses
 ```
 
 ### Minimum Thresholds
