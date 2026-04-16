@@ -660,17 +660,26 @@ check_deployment() {
 # ============================================================================
 calculate_results() {
     local total=0
+    local base_max=0
     for dim in ci_cd code_quality security github_hygiene dependencies documentation deployment; do
-        total=$((total + ${SCORES[$dim]:-0}))
+        local dim_score=${SCORES[$dim]:-0}
+        local dim_max=${WEIGHTS[$dim]}
+        base_max=$((base_max + dim_max))
+        # Cap at max for totals
+        [ "$dim_score" -gt "$dim_max" ] && dim_score=$dim_max
+        total=$((total + dim_score))
     done
     
     TOTAL_SCORE=$total
     
-    # Calculate percentage
+    # Calculate percentage - base_max is 100 (sum of weights)
     local percent=0
-    if [ "$MAX_SCORE" -gt 0 ]; then
-        percent=$((total * 100 / MAX_SCORE))
+    if [ "$base_max" -gt 0 ]; then
+        percent=$((total * 100 / base_max))
     fi
+    
+    # For display, show base max (100) not bonus max (124)
+    MAX_SCORE=$base_max
     
     # Determine level
     local level=1
@@ -734,6 +743,8 @@ print_report() {
     for dim in ci_cd code_quality security github_hygiene dependencies documentation deployment; do
         local score=${SCORES[$dim]:-0}
         local max=${WEIGHTS[$dim]}
+        # Cap score at max for display
+        [ "$score" -gt "$max" ] && score=$max
         local dim_pct=$((score * 100 / max))
         local bar_len=$((score * 20 / max))
         local bar=""
