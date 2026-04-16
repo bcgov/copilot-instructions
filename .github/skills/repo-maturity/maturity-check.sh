@@ -212,10 +212,18 @@ check_code_quality() {
         # 3. Prettier (Level 3) - 4 pts
         if check_file_any ".prettierrc*" "$dir" || \
            check_file_any "prettier.config.*" "$dir" || \
-           check_contains "prettier" "package.json" "$dir"; then
+           check_contains "prettier" "package.json" "$dir" || \
+           check_contains "prettier" "backend/package.json" "$dir" || \
+           check_contains "prettier" "frontend/package.json" "$dir"; then
             score=$((score + 4))
             checks+=("Prettier configured")
             log_pass "Code Quality: Prettier configured"
+            
+            # Check if Prettier is enforced in CI (included in score above)
+            if check_contains "format:check" ".github/workflows" "$dir"; then
+                checks+=("Prettier in CI")
+                log_pass "Code Quality: Prettier enforced in CI"
+            fi
         fi
     else
         log_fail "Code Quality: No ESLint config"
@@ -286,6 +294,10 @@ check_code_quality() {
     fi
 
     SCORES[code_quality]=$score
+    # Cap at max
+    if [ "$score" -gt "$max" ]; then
+        score=$max
+    fi
     MAX_SCORE=$((MAX_SCORE + max))
     echo "$score/$max" > "$REPO_DIR/$OUTPUT_DIR/code_quality.txt"
     echo "$score" > "$REPO_DIR/$OUTPUT_DIR/code_quality_score.txt"
