@@ -213,6 +213,7 @@ check_code_quality() {
 
     # 1. ESLint config (Level 2) - 3 pts - check root OR subdirs
     if check_file_any "eslint.config.mjs" "$dir" || \
+       check_file_any "eslint.config.js" "$dir" || \
        check_file_any ".eslintrc*" "$dir" || \
        [ -d "$dir/backend" ] && ls "$dir/backend/eslint"* 1>/dev/null 2>&1 || \
        [ -d "$dir/frontend" ] && ls "$dir/frontend/eslint"* 1>/dev/null 2>&1; then
@@ -221,7 +222,8 @@ check_code_quality() {
         log_pass "Code Quality: ESLint config"
 
         # 2. Flat config (Level 3) - 4 pts - check root OR subdirs
-        if check_file_any "eslint.config.mjs" "$dir"; then
+        if check_file_any "eslint.config.mjs" "$dir" || \
+           check_file_any "eslint.config.js" "$dir"; then
             score=$((score + 4))
             checks+=("ESLint flat config")
             log_pass "Code Quality: ESLint flat config"
@@ -609,6 +611,11 @@ check_deployment() {
         score=$((score + 3))
         checks+=("OC templates")
         log_pass "Deployment: OpenShift templates"
+    # 4. GitHub Action (Level 3) - 3 pts - action.yml or action.js
+    elif check_file "action.yml" "$dir" || check_file "action.yaml" "$dir" || check_file "action.js" "$dir"; then
+        score=$((score + 3))
+        checks+=("GitHub Action")
+        log_pass "Deployment: GitHub Action"
     fi
 
     # 2. Rolling update strategy (Level 4) - 2 pts
