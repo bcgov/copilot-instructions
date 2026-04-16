@@ -154,6 +154,8 @@ Each dimension is scored as a percentage (earned_points / max_points), then weig
 Total Score = Σ(dimension_percent × dimension_weight)
 ```
 
+> **Note:** Scores can exceed 100% when repos implement bonus features beyond the base checklist. However, **missing items are more important than bonuses** — focus on the improvement checklist to close gaps before adding extra features.
+
 ### 6. Determine Maturity Level
 
 | Score Range | Level |
@@ -280,6 +282,8 @@ Total: 64/100 (64%) - Level 3 (Defined)
 --------------------------------------------------------------------------------
                          IMPROVEMENT CHECKLIST
 --------------------------------------------------------------------------------
+> **Priority:** Address missing items (unchecked) before adding bonus features. High impact items offer the biggest score improvements.
+
 High Impact:
   [ ] Add test coverage >80% (+12 pts) - Target: Level 4
   [ ] Add Trivy security scan to CI (+5 pts)
