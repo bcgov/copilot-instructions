@@ -68,7 +68,7 @@ check_contains() {
     local pattern="$1"
     local file="$2"
     local base="${3:-$REPO_DIR}"
-    grep -rq "$pattern" "$base/$file" 2>/dev/null
+    grep -rqE "$pattern" "$base/$file" 2>/dev/null
 }
 
 # ============================================================================
@@ -82,27 +82,29 @@ check_ci_cd() {
 
     # 1. PR workflow exists (Level 2) - 3 pts
     if check_dir ".github/workflows" "$dir"; then
-        if ls "$dir/.github/workflows/"*.yml "$dir"/.github/workflows/*.yaml 2>/dev/null | head -1 | grep -q .; then
+        local wf_count=0
+        wf_count=$(find "$dir/.github/workflows" -maxdepth 1 -type f \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null | wc -l)
+        if [ "$wf_count" -gt 0 ]; then
             score=$((score + 3))
             checks+=("PR workflow exists")
-            log_pass "CI/CD: PR workflow found"
+            log_pass "CI/CD: PR workflow found ($wf_count workflows)"
 
             # 2. Workflow has lint + test (Level 3) - 4 pts
-            if check_contains "npm.*lint\|eslint\|pnpm.*lint" ".github/workflows" "$dir" && \
-               check_contains "test\|vitest\|jest" ".github/workflows" "$dir"; then
+            if check_contains "lint|eslint" ".github/workflows" "$dir" && \
+               check_contains "test|vitest|jest|mvn.*test" ".github/workflows" "$dir"; then
                 score=$((score + 4))
                 checks+=("Workflow includes lint + test")
                 log_pass "CI/CD: Workflow has lint + test"
             fi
 
             # 3. Workflow runs on push + checks (Level 4) - 4 pts
-            if check_contains "on:.*push\|push:.*branches" ".github/workflows" "$dir"; then
+            if check_contains "on:.*push|push:.*branches" ".github/workflows" "$dir"; then
                 score=$((score + 4))
                 checks+=("Run on push to branches")
             fi
 
             # 4. Auto-merge capability (Level 5) - 4 pts
-            if check_contains "auto-merge\|automerg" ".github/workflows" "$dir"; then
+            if check_contains "auto-merge|automerg" ".github/workflows" "$dir"; then
                 score=$((score + 4))
                 checks+=("Auto-merge configured")
             fi
@@ -121,8 +123,8 @@ check_ci_cd() {
         log_pass "CI/CD: Dependabot/Renovate configured"
     fi
 
-    # 6. Deployment workflow (Level 3) - 4 pts
-    if check_contains "deploy\|oc\|openshift\|kubernetes\|k8s" ".github/workflows" "$dir"; then
+    # 6. Deployment workflow (Level 3) - 4 pts (counts toward CI/CD)
+    if check_contains "deploy|oc|openshift" ".github/workflows" "$dir"; then
         score=$((score + 4))
         checks+=("Deployment workflow")
         log_pass "CI/CD: Deployment workflow"
@@ -434,11 +436,18 @@ check_deployment() {
     local max=5
     local checks=()
 
-    # 1. Deployment workflow (Level 3) - 3 pts
-    if check_contains "deploy\|oc\|openshift" ".github/workflows" "$dir"; then
+    # 1. Rolling update strategy in Helm charts (Level 3) - 3 pts
+    if check_contains "RollingUpdate|rollingUpdate" "charts" "$dir" 2>/dev/null; then
         score=$((score + 3))
-        checks+=("Deployment workflow")
-        log_pass "Deployment: Workflow found"
+        checks+=("Rolling updates")
+        log_pass "Deployment: Rolling updates in charts"
+    fi
+
+    # 2. Environment separation (Level 4) - 2 pts
+    if [ -d "$dir/charts" ] && ls "$dir/charts"/*/values*.yaml 2>/dev/null | wc -l | grep -q "2"; then
+        score=$((score + 2))
+        checks+=("Multi-env values")
+        log_pass "Deployment: Multiple environment values"
     fi
 
     # 2. Rolling update strategy (Level 4) - 2 pts
