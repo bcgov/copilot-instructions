@@ -122,15 +122,24 @@ check_ci_cd() {
     fi
 
     # 6. Sandbox/Dev Environment (Level 3) - 4 pts
-    # Check for .devcontainer, .vscode/devcontainer.json, or GitHub Codespaces config
+    # Check for: .devcontainer, codespaces, docker-compose, OR PR-deploy workflow
+    # PR-based deployments to sandbox environments count as sandbox
     if [ -d "$dir/.devcontainer" ] || \
        [ -f "$dir/.devcontainer.json" ] || \
        [ -f "$dir/.vscode/devcontainer.json" ] || \
        check_file ".github/codespaces*" "$dir" || \
-       check_file "devcontainer.json" "$dir"; then
+       check_file "devcontainer.json" "$dir" || \
+       check_file "docker-compose.yml" "$dir" || \
+       check_file "docker-compose.yaml" "$dir"; then
         score=$((score + 4))
         checks+=("Sandbox environment")
-        log_pass "CI/CD: Dev container/sandbox configured"
+        log_pass "CI/CD: Dev environment configured"
+    # Also check for PR-based deployer that creates sandbox environments
+    elif check_contains "omit for PR|PR.*environment|pr-.*deploy" ".github/workflows" "$dir" || \
+         [ -f "$dir/.github/workflows/.deployer.yml" ]; then
+        score=$((score + 4))
+        checks+=("PR sandbox environments")
+        log_pass "CI/CD: PR sandbox environments via deployer"
     fi
 
     # 5. Dependency updates (Level 2) - 3 pts
