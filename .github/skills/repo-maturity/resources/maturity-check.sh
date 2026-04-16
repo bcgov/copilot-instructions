@@ -327,7 +327,7 @@ check_code_quality() {
 check_security() {
     local dir="$REPO_DIR"
     local score=0
-    local max=25
+    local max=30
     local checks=()
 
     # 1. GitHub secret scanning (Level 2) - 3 pts
@@ -373,7 +373,22 @@ check_security() {
         log_pass "Security: bcgov action with supply chain scanning"
     fi
 
-    # 6. ZAP scanning (Level 4) - 5 pts
+    # 6. Knip - unused dependency checker (Level 4) - 5 pts
+    if check_contains "knip" "package.json" "$dir"; then
+        score=$((score + 5))
+        checks+=("Knip unused dependency checker")
+        log_pass "Security: Knip unused dependency checker"
+    elif check_contains "knip" ".github/workflows" "$dir"; then
+        score=$((score + 5))
+        checks+=("Knip unused dependency checker")
+        log_pass "Security: Knip unused dependency checker"
+    elif check_contains "action-test-and-analyse" ".github/workflows" "$dir"; then
+        score=$((score + 5))
+        checks+=("Knip (via action-test-and-analyse)")
+        log_pass "Security: Knip unused dependency checker"
+    fi
+
+    # 7. ZAP scanning (Level 4) - 5 pts
     if check_contains "zap|ZAP" ".github/workflows" "$dir"; then
         score=$((score + 5))
         checks+=("ZAP security scan")
