@@ -78,7 +78,7 @@ check_contains() {
 check_ci_cd() {
     local dir="$REPO_DIR"
     local score=0
-    local max=25
+    local max=32
     local checks=()
 
     # 1. PR workflow exists (Level 2) - 3 pts
@@ -163,7 +163,25 @@ check_ci_cd() {
         log_pass "CI/CD: Deployment workflow"
     fi
 
+    # 7. Reusable workflow templates (Level 3) - 3 pts
+    if ls "$dir/.github/workflows/"*.yml 2>/dev/null | wc -l | grep -q "^[2-9]$\|^[1-9][0-9]$"; then
+        score=$((score + 3))
+        checks+=("Multiple workflows")
+        log_pass "CI/CD: Multiple reusable workflows"
+    fi
+
+    # 8. bcgov shared actions (Level 4) - 4 pts
+    if check_contains "bcgov/action" ".github/workflows" "$dir"; then
+        score=$((score + 4))
+        checks+=("bcgov shared actions")
+        log_pass "CI/CD: Uses bcgov shared actions"
+    fi
+
     SCORES[ci_cd]=$score
+    # Cap at max
+    if [ "$score" -gt "$max" ]; then
+        score=$max
+    fi
     MAX_SCORE=$((MAX_SCORE + max))
     echo "$score/$max" > "$REPO_DIR/$OUTPUT_DIR/ci_cd.txt"
     echo "$score" > "$REPO_DIR/$OUTPUT_DIR/ci_cd_score.txt"
@@ -309,7 +327,7 @@ check_code_quality() {
 check_security() {
     local dir="$REPO_DIR"
     local score=0
-    local max=20
+    local max=25
     local checks=()
 
     # 1. GitHub secret scanning (Level 2) - 3 pts
@@ -355,7 +373,18 @@ check_security() {
         log_pass "Security: bcgov action with supply chain scanning"
     fi
 
+    # 6. ZAP scanning (Level 4) - 5 pts
+    if check_contains "zap|ZAP" ".github/workflows" "$dir"; then
+        score=$((score + 5))
+        checks+=("ZAP security scan")
+        log_pass "Security: ZAP penetration testing"
+    fi
+
     SCORES[security]=$score
+    # Cap at max
+    if [ "$score" -gt "$max" ]; then
+        score=$max
+    fi
     MAX_SCORE=$((MAX_SCORE + max))
     echo "$score/$max" > "$REPO_DIR/$OUTPUT_DIR/security.txt"
     echo "$score" > "$REPO_DIR/$OUTPUT_DIR/security_score.txt"
@@ -446,7 +475,20 @@ check_dependencies() {
         log_pass "Dependencies: Lockfile present"
     fi
 
+    # 4. knip dependency checking (Level 4) - 3 pts
+    if check_contains "knip" "package.json" "$dir" || \
+       check_contains "knip" "backend/package.json" "$dir" || \
+       check_contains "knip" "frontend/package.json" "$dir"; then
+        score=$((score + 3))
+        checks+=("knip unused dep detection")
+        log_pass "Dependencies: knip unused dependency checking"
+    fi
+
     SCORES[dependencies]=$score
+    # Cap at max
+    if [ "$score" -gt "$max" ]; then
+        score=$max
+    fi
     MAX_SCORE=$((MAX_SCORE + max))
     echo "$score/$max" > "$REPO_DIR/$OUTPUT_DIR/dependencies.txt"
     echo "$score" > "$REPO_DIR/$OUTPUT_DIR/dependencies_score.txt"
