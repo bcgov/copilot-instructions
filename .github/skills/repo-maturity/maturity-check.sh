@@ -522,8 +522,9 @@ check_deployment() {
         score=$((score + 3))
         checks+=("Helm charts")
         log_pass "Deployment: Helm charts found"
-    # 3. OC Templates (Level 3) - 3 pts
-    elif ls "$dir"/*-template*.yaml "$dir"/templates/*.yaml 2>/dev/null | head -1 | grep -q .; then
+    # 3. OC Templates (Level 3) - 3 pts - root OR in subdirs like backend/openshift/
+    elif ls "$dir"/*-template*.yaml "$dir"/templates/*.yaml 2>/dev/null | head -1 | grep -q . || \
+         ls "$dir/backend/openshift/"*.yaml "$dir/frontend/openshift/"*.yaml 2>/dev/null | head -1 | grep -q .; then
         score=$((score + 3))
         checks+=("OC templates")
         log_pass "Deployment: OpenShift templates"
