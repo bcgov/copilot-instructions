@@ -433,10 +433,14 @@ check_dependencies() {
         log_pass "Dependencies: Auto-merge enabled in GitHub settings"
     fi
 
-    # 3. Lockfile present (Level 2) - 3 pts (npm/yarn/pnpm only - not Java pom.xml)
+    # 3. Lockfile present (Level 2) - 3 pts (npm/yarn/pnpm - root OR subdirs)
     if check_file "package-lock.json" "$dir" || \
        check_file "pnpm-lock.yaml" "$dir" || \
-       check_file "yarn.lock" "$dir"; then
+       check_file "yarn.lock" "$dir" || \
+       check_file "backend/package-lock.json" "$dir" || \
+       check_file "frontend/package-lock.json" "$dir" || \
+       check_file "backend/pnpm-lock.yaml" "$dir" || \
+       check_file "frontend/pnpm-lock.yaml" "$dir"; then
         score=$((score + 3))
         checks+=("Lockfile")
         log_pass "Dependencies: Lockfile present"
