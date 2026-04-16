@@ -396,7 +396,7 @@ check_security() {
 check_github_hygiene() {
     local dir="$REPO_DIR"
     local score=0
-    local max=15
+    local max=22
     local checks=()
 
     # 1. Branch protection (Level 3) - 4 pts
@@ -433,7 +433,31 @@ check_github_hygiene() {
         log_pass "GitHub Hygiene: CODEOWNERS file"
     fi
 
+    # 5. PR workflow enforcement (Level 4) - 4 pts
+    # Flag if workflows don't run on pull_request - risky pattern
+    if check_contains "pull_request" ".github/workflows" "$dir"; then
+        score=$((score + 4))
+        checks+=("PR workflow enforcement")
+        log_pass "GitHub Hygiene: Workflows run on PR (prevents direct main pushes)"
+    else
+        log_warn "GitHub Hygiene: No PR workflow detected - risky!"
+    fi
+
+    # 6. Stale branch automation (Level 3) - 3 pts
+    # Detect stale branch management (14 day threshold)
+    if check_file ".github/workflows/stale.yml" "$dir" || \
+       check_file ".github/workflows/stale.yaml" "$dir" || \
+       check_contains "actions/stale" ".github/workflows" "$dir"; then
+        score=$((score + 3))
+        checks+=("Stale branch automation")
+        log_pass "GitHub Hygiene: Stale branch automation configured"
+    fi
+
     SCORES[github_hygiene]=$score
+    # Cap at max
+    if [ "$score" -gt "$max" ]; then
+        score=$max
+    fi
     MAX_SCORE=$((MAX_SCORE + max))
     echo "$score/$max" > "$REPO_DIR/$OUTPUT_DIR/github_hygiene.txt"
     echo "$score" > "$REPO_DIR/$OUTPUT_DIR/github_hygiene_score.txt"
