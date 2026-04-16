@@ -338,9 +338,9 @@ When presenting results, always use this format:
 
 | Repo | Score | Level | Status |
 |------|-------|---------|-------|--------|
-| **owner/repo** | pts/max% (or 100% if ≥100) | Level N | Status |
+| **owner/repo** | earned/max (display 100% if earned≥100) | Level N | Status |
 
-### owner/repo (score/max% - percent%)
+### owner/repo (earned/max - display%)
 | Category | Score | Max | % | Level |
 |----------|-------|-----|---|-------|
 | CI/CD | X | N | N% | N |
