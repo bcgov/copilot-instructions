@@ -316,9 +316,9 @@ jobs:
 
       - name: Check results
         run: |
-          if [ -f .maturity/score.txt ]; then
-            SCORE=$(cat .maturity/score.txt)
-            LEVEL=$(cat .maturity/level.txt)
+          if [ -f .tmp/maturity/score.txt ]; then
+            SCORE=$(cat .tmp/maturity/score.txt)
+            LEVEL=$(cat .tmp/maturity/level.txt)
             echo "Maturity Level: $LEVEL (Score: $SCORE)"
           fi
 ```

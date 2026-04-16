@@ -8,7 +8,7 @@ set -euo pipefail
 
 REPO_DIR="${1:-.}"
 MIN_LEVEL="${2:-1}"
-OUTPUT_DIR=".maturity"
+OUTPUT_DIR=".tmp/maturity"
 
 # Colors
 RED='\033[0;31m'
