@@ -78,7 +78,7 @@ check_contains() {
 check_ci_cd() {
     local dir="$REPO_DIR"
     local score=0
-    local max=15
+    local max=25
     local checks=()
 
     # 1. PR workflow exists (Level 2) - 3 pts
@@ -109,9 +109,10 @@ check_ci_cd() {
             fi
 
             # 4. Workflow runs on push + checks (Level 4) - 4 pts
-            if check_contains "on:.*push|push:.*branches" ".github/workflows" "$dir"; then
+            if check_contains "^\s+push:|push:\s+branches" ".github/workflows" "$dir"; then
                 score=$((score + 4))
                 checks+=("Run on push to branches")
+                log_pass "CI/CD: Runs on push to branches"
             fi
 
             # 5. Auto-merge capability (Level 5) - 4 pts
