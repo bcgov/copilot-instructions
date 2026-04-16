@@ -113,7 +113,7 @@ ls -la .github/ISSUE_TEMPLATE/
 ls -la CODEOWNERS
 ls -la eslint.config.mjs  # or .eslintrc*
 ls -la package.json
-ls -la renovate.json     # or .github/dependabot.yml
+ls -la renovate.json     # or .github/dependabot.yml   # either is fine
 ls -la .gitignore
 
 # Check branch protection (via GitHub CLI or web)
