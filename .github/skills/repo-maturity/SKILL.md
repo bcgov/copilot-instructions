@@ -338,7 +338,7 @@ When presenting results, always use this format:
 
 | Repo | Score | Level | Status |
 |------|-------|-------|--------|
-| **owner/repo** | score/max (percent%) | Level N | Status |
+| **owner/repo** | pts/max (percent%) [earned≥100=compliant] | Level N | Status |
 
 ### owner/repo (score/max - percent%)
 | Category | Score | Max | % | Level |
@@ -354,9 +354,9 @@ When presenting results, always use this format:
 **Missing from owner/repo**: item1, item2, item3 (or: score ≥ 100 = None - fully compliant)
 
 ### Notes
-- Scores can exceed 100% for bonus features (e.g., 121/124 = 97% because max includes bonuses)
-- "Missing: None" means fully compliant with all required checks
-- Missing items are more important than bonuses
+- Scores can exceed 100% for bonus features
+- "Missing: None - fully compliant" means earned points ≥ 100 (base requirements met, regardless of bonus max)
+- Example: 121 pts earned ≥ 100 base = fully compliant, even though shown as 121/124 (97%)
 ```
 
 ### Minimum Thresholds
