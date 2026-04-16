@@ -351,7 +351,7 @@ When presenting results, always use this format:
 | Documentation | X | N | N% | N |
 | Deployment | X | N | N% | N |
 
-**Missing from owner/repo**: item1, item2, item3 (or: None - fully compliant)
+**Missing from owner/repo**: item1, item2, item3 (or: score ≥ 100 = None - fully compliant)
 
 ### Notes
 - Scores can exceed 100% for bonus features (e.g., 121/124 = 97% because max includes bonuses)
