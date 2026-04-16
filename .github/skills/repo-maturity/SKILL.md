@@ -329,6 +329,35 @@ jobs:
           fi
 ```
 
+### Standardized Summary
+
+When presenting results, always use this format:
+
+```
+## Final Report
+
+| Repo | Score | Level | Status |
+|------|-------|-------|--------|
+| **owner/repo** | score/max (percent%) | Level N | Status |
+
+### owner/repo (score/max - percent%)
+| Category | Score | Max | % | Level |
+|----------|-------|-----|---|-------|
+| CI/CD | X | N | N% | N |
+| Code Quality | X | N | N% | N |
+| Security | X | N | N% | N |
+| GitHub Hygiene | X | N | N% | N |
+| Dependencies | X | N | N% | N |
+| Documentation | X | N | N% | N |
+| Deployment | X | N | N% | N |
+
+**Missing from owner/repo**: item1, item2, item3
+
+### Notes
+- Scores can exceed 100% for bonus features
+- Missing items are more important than bonuses
+```
+
 ### Minimum Thresholds
 
 | Level | Use Case |
