@@ -234,7 +234,7 @@ See `../quickstart-openshift` for reference implementations:
 Run the maturity check script to automatically assess a repository:
 
 ```bash
-./maturity-check.sh /path/to/repo
+./resources/maturity-check.sh /path/to/repo
 ```
 
 ### Output
@@ -310,9 +310,9 @@ jobs:
       - name: Run maturity check
         run: |
           wget -q -O maturity-check.sh \
-            https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/skills/repo-maturity/maturity-check.sh
+            https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/skills/repo-maturity/resources/maturity-check.sh
           chmod +x maturity-check.sh
-          ./maturity-check.sh . --min-level 3
+          ./resources/maturity-check.sh . --min-level 3
 
       - name: Check results
         run: |
