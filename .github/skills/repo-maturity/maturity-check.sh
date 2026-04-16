@@ -382,18 +382,13 @@ check_dependencies() {
         log_pass "Dependencies: Dependabot configured"
     fi
 
-    # 3. Lockfile present (Level 2) - 3 pts
+    # 3. Lockfile present (Level 2) - 3 pts (npm/yarn/pnpm only - not Java pom.xml)
     if check_file "package-lock.json" "$dir" || \
        check_file "pnpm-lock.yaml" "$dir" || \
        check_file "yarn.lock" "$dir"; then
         score=$((score + 3))
         checks+=("Lockfile")
         log_pass "Dependencies: Lockfile present"
-    # Java/Maven lockfile
-    elif check_file "pom.xml" "$dir" || check_file "backend/pom.xml" "$dir"; then
-        score=$((score + 3))
-        checks+=("Maven pom.xml")
-        log_pass "Dependencies: Maven pom.xml present"
     fi
 
     SCORES[dependencies]=$score
