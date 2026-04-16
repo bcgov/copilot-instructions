@@ -62,7 +62,7 @@ The model is influenced by CMM (Capability Maturity Model) and SLSA (Supply-chai
 |-----------|---------|---------|---------|---------|
 | Branch protection | None | Require reviews | + status checks | All protected |
 | PR templates | None | Basic template | Multiple templates | Auto-labeling |
-| Issue templates | None | Bug/Feature | Full suite | Task/dc |
+| Issue templates | None | Bug/Feature | Full suite | Full suite + task template |
 | CODEOWNERS | None | Present | Review required | All paths |
 | Issue workflow | None | Labels | Projects | Automation |
 
@@ -113,7 +113,7 @@ ls -la .github/ISSUE_TEMPLATE/
 ls -la CODEOWNERS
 ls -la eslint.config.mjs  # or .eslintrc*
 ls -la package.json
-ls -la renovate.json     # or dependabot.yml
+ls -la renovate.json     # or .github/dependabot.yml
 ls -la .gitignore
 
 # Check branch protection (via GitHub CLI or web)
@@ -148,8 +148,10 @@ For each dimension, tally points based on criterion completion:
 
 ### 5. Calculate Weighted Score
 
+Each dimension is scored as a percentage (earned_points / max_points), then weighted:
+
 ```
-Total Score = Σ(dimension_score × dimension_weight)
+Total Score = Σ(dimension_percent × dimension_weight)
 ```
 
 ### 6. Determine Maturity Level
@@ -175,14 +177,14 @@ Total Score = Σ(dimension_score × dimension_weight)
 - [x] PR workflow (Level 3) - 2 pts
 - [ ] Dependency updates (Level 2) - 1 pt
 - [x] Deployment (Level 3) - 2 pts
-**Subtotal: 10/15 pts (67%)**
+**Subtotal: 10/20 pts (50%)**
 
 ### Code Quality (20%)
 - [x] ESLint config (Level 4) - 3 pts
 - [ ] Formatting (Level 2) - 1 pt
 - [x] TypeScript (Level 3) - 2 pts
 - [ ] Test coverage (Level 2) - 1 pt
-**Subtotal: 7/20 pts (35%)**
+**Subtotal: 6/16 pts (38%)**
 
 ... (continue for all dimensions)
 
@@ -212,15 +214,15 @@ Total Score = Σ(dimension_score × dimension_weight)
 
 ## Reference Patterns
 
-See `../quickstart-openshift` for reference implementations:
+See the [quickstart-openshift](https://github.com/bcgov/quickstart-openshift) repository for reference implementations:
 
-- `.github/workflows/analysis.yml` - CI with lint, test, security scans
-- `.github/workflows/merge.yml` - Deployment promotion
-- `.github/trivy.yaml` - Trivy configuration
-- `renovate.json` - Renovate configuration
-- `eslint-base.config.mjs` - ESLint flat config
-- `.github/ISSUE_TEMPLATE/` - Issue templates
-- `.github/pull_request_template.md` - PR template
+- [.github/workflows/analysis.yml](https://github.com/bcgov/quickstart-openshift/blob/main/.github/workflows/analysis.yml) - CI with lint, test, security scans
+- [.github/workflows/merge.yml](https://github.com/bcgov/quickstart-openshift/blob/main/.github/workflows/merge.yml) - Deployment promotion
+- [.github/trivy.yaml](https://github.com/bcgov/quickstart-openshift/blob/main/.github/trivy.yaml) - Trivy configuration
+- [renovate.json](https://github.com/bcgov/quickstart-openshift/blob/main/renovate.json) - Renovate configuration
+- [eslint.config.mjs](https://github.com/bcgov/quickstart-openshift/blob/main/eslint.config.mjs) - ESLint flat config
+- [.github/ISSUE_TEMPLATE/](https://github.com/bcgov/quickstart-openshift/tree/main/.github/ISSUE_TEMPLATE) - Issue templates
+- [.github/pull_request_template.md](https://github.com/bcgov/quickstart-openshift/blob/main/.github/pull_request_template.md) - PR template
 
 ## Related Standards
 
