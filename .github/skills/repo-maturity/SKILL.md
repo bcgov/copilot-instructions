@@ -351,10 +351,11 @@ When presenting results, always use this format:
 | Documentation | X | N | N% | N |
 | Deployment | X | N | N% | N |
 
-**Missing from owner/repo**: item1, item2, item3
+**Missing from owner/repo**: item1, item2, item3 (or: None - fully compliant)
 
 ### Notes
-- Scores can exceed 100% for bonus features
+- Scores can exceed 100% for bonus features (e.g., 121/124 = 97% because max includes bonuses)
+- "Missing: None" means fully compliant with all required checks
 - Missing items are more important than bonuses
 ```
 
