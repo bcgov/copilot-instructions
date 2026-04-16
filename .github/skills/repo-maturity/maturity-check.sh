@@ -436,18 +436,52 @@ check_deployment() {
     local max=5
     local checks=()
 
-    # 1. Rolling update strategy in Helm charts (Level 3) - 3 pts
-    if check_contains "RollingUpdate|rollingUpdate" "charts" "$dir" 2>/dev/null; then
+    # 1. Docker Compose (Level 3) - 3 pts - valid compose file with services
+    if check_file "docker-compose.yml" "$dir" || check_file "docker-compose.yaml" "$dir"; then
+        # Check if it's valid (has services)
+        if grep -q "services:" "$dir/docker-compose.yml" "$dir/docker-compose.yaml" 2>/dev/null; then
+            score=$((score + 3))
+            checks+=("Docker Compose")
+            log_pass "Deployment: Docker Compose with services"
+        else
+            # Still counts but just basic
+            score=$((score + 2))
+            log_pass "Deployment: Docker Compose file"
+        fi
+    # 2. Helm charts (Level 3) - 3 pts
+    elif [ -d "$dir/charts" ] && ls "$dir/charts"/*/Chart.yaml 2>/dev/null | head -1 | grep -q .; then
         score=$((score + 3))
-        checks+=("Rolling updates")
-        log_pass "Deployment: Rolling updates in charts"
+        checks+=("Helm charts")
+        log_pass "Deployment: Helm charts found"
+    # 3. OC Templates (Level 3) - 3 pts
+    elif ls "$dir"/*-template*.yaml "$dir"/templates/*.yaml 2>/dev/null | head -1 | grep -q .; then
+        score=$((score + 3))
+        checks+=("OC templates")
+        log_pass "Deployment: OpenShift templates"
     fi
 
-    # 2. Environment separation (Level 4) - 2 pts
-    if [ -d "$dir/charts" ] && ls "$dir/charts"/*/values*.yaml 2>/dev/null | wc -l | grep -q "2"; then
+    # 2. Rolling update strategy (Level 4) - 2 pts
+    # Check for rolling updates in charts OR compose
+    if check_contains "RollingUpdate|rollingUpdate" "charts" "$dir" 2>/dev/null; then
         score=$((score + 2))
-        checks+=("Multi-env values")
-        log_pass "Deployment: Multiple environment values"
+        checks+=("Rolling updates")
+        log_pass "Deployment: Rolling update strategy"
+    elif check_contains "recreate|rolling" "docker-compose" "$dir" 2>/dev/null; then
+        score=$((score + 2))
+        checks+=("Update strategy")
+        log_pass "Deployment: Update strategy defined"
+    fi
+
+    # 3. Environment values (Level 4) - 2 pts
+    # Check for multiple env values files (dev, test, prod)
+    if [ -d "$dir/charts" ]; then
+        local env_count
+        env_count=$(ls "$dir/charts"/*/values*.yaml 2>/dev/null | wc -l)
+        if [ "$env_count" -ge 2 ]; then
+            score=$((score + 2))
+            checks+=("Multi-env values")
+            log_pass "Deployment: Multiple environment values ($env_count)"
+        fi
     fi
 
     # 2. Rolling update strategy (Level 4) - 2 pts
