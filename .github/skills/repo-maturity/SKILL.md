@@ -351,7 +351,9 @@ When presenting results, always use this format:
 | Documentation | X | N | N% | N |
 | Deployment | X | N | N% | N |
 
-**Missing from owner/repo**: item1, item2, item3 (or: 100% when pts ≥ 100)
+**Missing from owner/repo**: item1, item2, item3 (or: None - all base requirements met)
+
+**Bonuses**: bonus1 (+N pts), bonus2 (+N pts)
 
 ### Notes
 - Scores can exceed 100% for bonus features
