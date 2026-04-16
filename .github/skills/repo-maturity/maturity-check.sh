@@ -68,7 +68,8 @@ check_contains() {
     local pattern="$1"
     local file="$2"
     local base="${3:-$REPO_DIR}"
-    grep -rqE "$pattern" "$base/$file" 2>/dev/null
+    # Works with files OR directories - search recursively
+    [ -e "$base/$file" ] && grep -rqE "$pattern" "$base/$file" 2>/dev/null
 }
 
 # ============================================================================
@@ -90,8 +91,11 @@ check_ci_cd() {
             log_pass "CI/CD: PR workflow found ($wf_count workflows)"
 
             # 2. Workflow has lint + test (Level 3) - 4 pts
-            if check_contains "lint|eslint" ".github/workflows" "$dir" && \
-               check_contains "test|vitest|jest|mvn.*test" ".github/workflows" "$dir"; then
+            local has_lint=false
+            local has_test=false
+            check_contains "lint|eslint" ".github/workflows" "$dir" && has_lint=true
+            check_contains "test|vitest|jest|mvn.*test" ".github/workflows" "$dir" && has_test=true
+            if [ "$has_lint" = true ] && [ "$has_test" = true ]; then
                 score=$((score + 4))
                 checks+=("Workflow includes lint + test")
                 log_pass "CI/CD: Workflow has lint + test"
@@ -173,9 +177,12 @@ check_code_quality() {
     local max=20
     local checks=()
 
-    # Check for Node.js project (package.json)
+    # Check for Node.js project - check root AND common subdirs
     local is_node=false
-    if check_file "package.json" "$dir"; then
+    if check_file "package.json" "$dir" || \
+       check_file "backend/package.json" "$dir" || \
+       check_file "frontend/package.json" "$dir" || \
+       check_file "app/package.json" "$dir"; then
         is_node=true
     fi
 
@@ -223,18 +230,45 @@ check_code_quality() {
         log_pass "Code Quality: TypeScript strict"
     fi
 
-    # 5. Test framework (Level 2) - 3 pts
-    # For Node.js
-    if [ "$is_node" = true ] && check_contains "test\|vitest\|jest" "package.json" "$dir"; then
-        score=$((score + 3))
-        checks+=("Test scripts")
-        log_pass "Code Quality: Test scripts present"
+# 5. Test framework + coverage (Level 2-3) - 6 pts
+    # For Node.js - check root AND subdirs (monorepo support)
+    if [ "$is_node" = true ]; then
+        # Check for test scripts in root OR subdirs
+        local has_tests=false
+        if check_contains "test|vitest|jest" "package.json" "$dir" || \
+           check_contains "test|vitest|jest" "backend/package.json" "$dir" || \
+           check_contains "test|vitest|jest" "frontend/package.json" "$dir"; then
+            has_tests=true
+        fi
 
-        # 6. Coverage configured (Level 3) - 3 pts
-        if check_contains "coverage\|cov" "package.json" "$dir"; then
+        if [ "$has_tests" = true ]; then
             score=$((score + 3))
-            checks+=("Coverage configured")
-            log_pass "Code Quality: Coverage configured"
+            checks+=("Test scripts")
+            log_pass "Code Quality: Test scripts present"
+
+            # Check coverage in root OR subdirs
+            local has_coverage=false
+            if check_contains "coverage|cov" "package.json" "$dir" || \
+               check_contains "coverage|cov" "backend/package.json" "$dir" || \
+               check_contains "coverage|cov" "frontend/package.json" "$dir"; then
+                has_coverage=true
+            fi
+
+            if [ "$has_coverage" = true ]; then
+                score=$((score + 3))
+                checks+=("Coverage configured")
+                log_pass "Code Quality: Coverage configured"
+            # Check for bcgov action-test-and-analyse
+            elif check_contains "action-test-and-analyse" ".github/workflows" "$dir"; then
+                score=$((score + 3))
+                checks+=("BCGov test & analyse action")
+                log_pass "Code Quality: bcgov action-test-and-analyse"
+            fi
+        # Just the action without npm test scripts
+        elif check_contains "action-test-and-analyse" ".github/workflows" "$dir"; then
+            score=$((score + 6))
+            checks+=("BCGov test & analyse action")
+            log_pass "Code Quality: bcgov action-test-and-analyse"
         fi
     # For Java
     elif [ "$is_java" = true ]; then
@@ -295,11 +329,17 @@ check_security() {
         log_pass "Security: Dependency scanning enabled"
     fi
 
-    # 5. Supply chain (Level 4) - 5 pts
-    if check_contains "auditable\|audit" "package.json" "$dir"; then
+# 5. Supply chain (Level 4) - 5 pts
+    # Check for audit, depscan, OR bcgov action with supply_chain
+    if check_contains "auditable|audit" "package.json" "$dir"; then
         score=$((score + 5))
         checks+=("Supply chain audit")
         log_pass "Security: Supply chain audit"
+    # bcgov action-test-and-analyse includes supply chain scanning
+    elif check_contains "action-test-and-analyse" ".github/workflows" "$dir"; then
+        score=$((score + 5))
+        checks+=("Supply chain (via action)")
+        log_pass "Security: bcgov action with supply chain scanning"
     fi
 
     SCORES[security]=$score
