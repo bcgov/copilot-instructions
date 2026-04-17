@@ -338,9 +338,9 @@ When presenting results, always use this format:
 
 | Repo | Score | Level | Status |
 |------|-------|---------|-------|--------|
-| **owner/repo** | pts/max (percent%) | Level N | Status |
+| **owner/repo** | earned/max (display 100% if earned≥100) | Level N | Status |
 
-### owner/repo (score/max - percent%)
+### owner/repo (earned/max - display%)
 | Category | Score | Max | % | Level |
 |----------|-------|-----|---|-------|
 | CI/CD | X | N | N% | N |
@@ -354,9 +354,8 @@ When presenting results, always use this format:
 **Missing from owner/repo**: item1, item2, item3 (or: None - all base requirements met)
 
 ### Notes
-- Scores can exceed 100% for bonus features
-- "100%" when earned points ≥ 100 (all base requirements met)
-- Example: 121pts earned = 100%, shown as 121/124 (97%) because max includes bonuses
+- If earned points ≥ 100, show 100% (not percentage of max with bonuses)
+- Example: 121/124 (97%) → show 100% because 121 ≥ 100
 ```
 
 ### Minimum Thresholds
