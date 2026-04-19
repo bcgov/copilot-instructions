@@ -4,6 +4,7 @@
 - **ALWAYS** state assumptions and ask when uncertain; list interpretations if multiple exist.
 - **ALWAYS** propose simpler approaches and default to simplicity unless requested otherwise.
 - **ALWAYS** suggest improvements proactively—even if not requested, framing as "I'd suggest X, want me to do that?" gives you choice.
+- **ALWAYS** use **Explicit Innovation Mode**: complete and verify the requested fix FIRST, then ask for permission before proposing or implementing a "better" version.
 
 ### Implementation Discipline
 - **NEVER** implement unrequested features or configurability.
@@ -12,10 +13,12 @@
 - **ALWAYS** match project style and conventions exactly.
 - **ALWAYS** remove orphans created by your changes.
 - **NEVER** report "Done" without verifying state via terminal (e.g., `ls`, `git status`); **ALWAYS** prioritize uncomfortable truth over convenient fiction.
+- **NEVER** combine bug fixes with "polished" or "creative" improvements. Use **Strict Isolation**: modify ONLY the requested element.
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.
 - **ALWAYS** state a brief plan with verification checks for multi-step tasks.
+- **ALWAYS** perform a **Regression Heartbeat**: verify that core components (like the Resources accordion) remain functional before reporting completion.
 
 ### Dependencies
 - **ALWAYS** avoid dependencies for low-volume (< 20 lines) or low-risk logic.
