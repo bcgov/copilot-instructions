@@ -170,10 +170,23 @@ Effect:
 
 ## StorageClass
 
+Choose based on access mode and workload type:
+
+| StorageClass | Access mode | Best for |
+|---|---|---|
+| `netapp-file-standard` | RWX (multi-pod) | Shared file storage, build artefacts, config mounts |
+| `netapp-block-standard` | RWO (single-pod) | Databases, stateful workloads requiring higher IOPS |
+
 ```yaml
-storageClassName: netapp-file-standard   # ✅ correct for Emerald PVCs
-# netapp-block-standard                  # ❌ single-pod access only — avoid
+# For shared / file-based workloads:
+storageClassName: netapp-file-standard
+
+# For databases and stateful workloads (preferred for block I/O performance):
+storageClassName: netapp-block-standard
 ```
+
+> `netapp-block-standard` is single-pod (RWO) — do not use for workloads that require
+> concurrent access from multiple pods.
 
 ---
 

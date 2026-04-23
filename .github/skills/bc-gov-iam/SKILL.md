@@ -72,9 +72,9 @@ npm install oidc-client-ts react-oidc-context
 ```js
 // src/auth/authConfig.js — OIDC UserManager config
 export const oidcConfig = {
-  authority:                process.env.VITE_OIDC_AUTHORITY,
+  authority:                import.meta.env.VITE_OIDC_AUTHORITY,
   // e.g. https://loginproxy.gov.bc.ca/auth/realms/standard
-  client_id:                process.env.VITE_OIDC_CLIENT_ID,
+  client_id:                import.meta.env.VITE_OIDC_CLIENT_ID,
   redirect_uri:             `${window.location.origin}/callback`,
   post_logout_redirect_uri: `${window.location.origin}/`,
   response_type:            'code',
@@ -132,15 +132,18 @@ Create `/public/silent-callback.html`:
 
 ### Using the token in API calls
 ```js
-// src/api/AuthConfig.js — axios interceptor to inject access token
-import { getUser } from 'oidc-client-ts';
+// src/api/apiClient.js — axios interceptor using shared UserManager instance
+import { UserManager } from 'oidc-client-ts';
+import { oidcConfig } from '../auth/authConfig';
 import axios from 'axios';
 
-const apiClient = axios.create({ baseURL: window.__env__?.apiUrl });
+// Share the same UserManager instance used by AuthProvider
+export const userManager = new UserManager(oidcConfig);
+
+const apiClient = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL });
 
 apiClient.interceptors.request.use(async (config) => {
-  const user = getUser({ authority: import.meta.env.VITE_OIDC_AUTHORITY,
-                          client_id:  import.meta.env.VITE_OIDC_CLIENT_ID });
+  const user = await userManager.getUser();
   if (user?.access_token) {
     config.headers.Authorization = `Bearer ${user.access_token}`;
   }
@@ -149,6 +152,10 @@ apiClient.interceptors.request.use(async (config) => {
 
 export default apiClient;
 ```
+
+> Alternatively, if you are inside a React component or hook, read the token directly from
+> `auth.user?.access_token` (via `useAuth()` from `react-oidc-context`) rather than
+> creating a second `UserManager` instance.
 
 ---
 

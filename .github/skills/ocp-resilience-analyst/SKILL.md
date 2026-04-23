@@ -38,9 +38,10 @@ namespace <license-plate>-prod. Log in to the Silver cluster before running.
 
 ```bash
 NS=<license-plate>-prod
+mkdir -p working/$NS
 
-# Deployments with replica counts
-oc get deployment,statefulset,daemonset -n $NS -o yaml > working/$NS/workloads.yaml
+# Deployments with replica counts (include DeploymentConfig for Silver/Gold namespaces)
+oc get dc,deployment,statefulset,daemonset -n $NS -o yaml > working/$NS/workloads.yaml
 
 # Current pod status
 oc get pods -n $NS -o wide > working/$NS/pods.txt
@@ -103,7 +104,7 @@ Grade each check: **Pass** / **Warn** / **Fail**
 | R12 | PVC uses appropriate StorageClass | Medium | PS-01 | Block PVCs on `netapp-block-standard`; avoid RWX for stateful |
 | R13 | NetworkPolicy default-deny egress present | High | PS-02 | At minimum one default-deny egress NetworkPolicy per namespace |
 | R14 | Startup probe for slow-starting containers | Low | K8S-07 | `startupProbe` present for Java / .NET apps with long initialisation |
-| R15 | Image pull policy is `IfNotPresent` or pinned digest | Medium | SEC-01 | `imagePullPolicy: Always` combined with mutable tags is a restart risk |
+| R15 | Production images use digest pinning (no mutable tags) | Medium | SEC-01 | Images in prod must reference a digest or immutable tag; mutable tags with `imagePullPolicy: Always` cause silent version drift and unpredictable restarts |
 
 ### Grade Scoring
 

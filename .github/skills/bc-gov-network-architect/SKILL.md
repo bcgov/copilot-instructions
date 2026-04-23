@@ -24,7 +24,7 @@ Synthesises three skill layers into a single connectivity reasoning workflow.
 For every connectivity question, follow these steps in order:
 
 1. **Classify the data** — What ISCF classification does the workload handle?
-2. **Assign the zone** — Map classification to SDN zone (Public / Protected-A / B / C)
+2. **Assign the zone** — Map classification to SDN zone (Low / Medium / High) — see `bc-gov-sdn-zones`
 3. **Validate adjacency** — Are source and destination zones directly adjacent? No zone-hopping.
 4. **Determine egress path** — Direct internet / Forward Proxy / blocked / 3PG for external partners
 5. **Author NetworkPolicy objects** — Apply the two-policy rule (egress sender + ingress receiver)
@@ -34,14 +34,16 @@ For every connectivity question, follow these steps in order:
 
 ## Quick Reference: Zone Adjacency
 
-| From zone | May connect to |
-|---|---|
-| Public (Low) | Public only |
-| Protected-A (Medium) | Protected-A, Public |
-| Protected-B (High) | Protected-B, Protected-A |
-| Protected-C (Restricted) | Protected-C only — no adjacency to other zones |
+Uses the SDN Low/Medium/High model (see `bc-gov-sdn-zones` for full ISCF → zone mapping).
+
+| SDN zone | ISCF class | May connect to |
+|---|---|---|
+| Low | Unclassified / Public | Low only |
+| Medium | Protected A / Protected B (lower) | Medium, Low |
+| High | Protected B (higher) / Protected C | High, Medium |
 
 Crossing a non-adjacent boundary requires a 3PG or ALB mediation layer.
+Protected C maps to High — there is no separate SDN zone for Protected C.
 
 ---
 

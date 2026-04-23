@@ -47,12 +47,20 @@ spec:
   podSelector: {}          # applies to all pods in namespace
   policyTypes: [Egress]
   egress:
-    - ports:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: openshift-dns
+      ports:
         - protocol: UDP
           port: 53
         - protocol: TCP
           port: 53
 ```
+
+> The `to: namespaceSelector` targeting `openshift-dns` is required — Conftest hard-denies
+> egress rules without a `to:` peer selector. This also keeps DNS egress least-privilege
+> (only the DNS service pods, not all pods on port 53).
 
 > Add this first. Without it, nothing will work regardless of other policies.
 

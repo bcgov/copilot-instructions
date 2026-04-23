@@ -37,7 +37,10 @@ Run these commands for each environment (dev, test, prod, tools) in the namespac
 Substitute `<NS>` with the environment namespace (e.g. `abc123-prod`).
 
 ```bash
-# Workload inventory
+# Create working directory first
+mkdir -p working/<NS>
+
+# Workload inventory (dc covers DeploymentConfig still used on Silver/Gold)
 oc get dc,deployment,statefulset,daemonset -n <NS> -o yaml > working/<NS>/workloads.yaml
 
 # Services and Routes
