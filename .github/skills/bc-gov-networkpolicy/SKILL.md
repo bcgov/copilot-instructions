@@ -2,6 +2,9 @@
 name: bc-gov-networkpolicy
 description: Kubernetes / OpenShift NetworkPolicy authoring for BC Gov Private Cloud (Silver, Gold, Emerald). Use when writing, reviewing, or debugging NetworkPolicy YAML — two-policy rule, ag-helm intent API, DNS egress, CIDR-based egress to external systems, inter-namespace flows, and common port patterns. Applies across all BC Gov OCP clusters; Emerald-specific enforcement is in bc-gov-emerald.
 tools: Read, Grep, Glob
+metadata:
+  author: Ryan Loiselle
+  version: "1.1"
 compatibility: All BC Gov Private Cloud clusters (Silver, Gold, Emerald). Emerald is the strictest — default-deny both ingress AND egress.
 ---
 
@@ -194,7 +197,7 @@ spec:
           port: 1521               # Oracle; see port reference below
 ```
 
-> ⚠️ For **Medium/High workloads** on Emerald, direct internet egress is silently dropped at
+> ⚠️ For **Medium/High workloads** on Emerald, direct internet egress is silently dropped at 
 > the SDN guardrail even if the NetworkPolicy object is applied.
 > Internet = use Forward Proxy. External partner = use 3PG CIDR.
 > See `bc-gov-sdn-zones` for zone egress constraints.
@@ -221,7 +224,7 @@ When using the `ag-helm-templates` library chart, use `ag-template.networkpolicy
 # In your Helm template (e.g. templates/networkpolicy.yaml)
 {{- $np := dict "Values" .Values -}}
 {{- $_ := set $np "ApplicationGroup" .Values.project -}}
-{{- $_ := set $np "Name" "my-service" -}}
+{{- $_ := set $np "Name" "jrcc-loader" -}}
 {{- $_ := set $np "Namespace" $.Release.Namespace -}}
 {{- $_ := set $np "PolicyTypes" (list "Ingress" "Egress") -}}
 
@@ -306,17 +309,17 @@ When a flow is not working:
 
 ```bash
 # View NetworkPolicies in namespace
-oc get networkpolicy -n <license-plate>-dev
+oc get networkpolicy -n be808f-dev
 
 # Describe a specific policy
-oc describe networkpolicy <name> -n <license-plate>-dev
+oc describe networkpolicy <name> -n be808f-dev
 
 # Test egress from a running pod
-oc exec <pod> -n <license-plate>-dev -- curl -v <destination>:<port>
+oc exec <pod> -n be808f-dev -- curl -v <destination>:<port>
 
 # Launch a debug pod (if pod has no shell)
-oc debug -n <license-plate>-dev deployment/<name> -- curl -v <destination>:<port>
+oc debug -n be808f-dev deployment/<name> -- curl -v <destination>:<port>
 
 # Check pod labels (to validate selector match)
-oc get pod <pod> -n <license-plate>-dev --show-labels
+oc get pod <pod> -n be808f-dev --show-labels
 ```

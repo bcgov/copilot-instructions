@@ -1,8 +1,11 @@
 ---
 name: ocp-migration-analyst
-description: Orchestrates a full OpenShift platform migration analysis — namespace discovery, repo inspection, gap analysis against target platform requirements, network flow mapping, migration task planning, and PDF report generation. Input: OCP namespace prefix + source cluster + GitHub repo + target platform. Output: a structured migration analysis report (markdown + PDF). Invoke when asked to analyse any OCP project for platform migration readiness, or to generate a migration report.
+description: Orchestrates a full OpenShift platform migration analysis — namespace discovery, repo inspection, gap analysis against target platform requirements, network flow mapping, migration task planning, and PDF report generation. Input: OCP namespace prefix + source cluster + GitHub repo + target platform. Output: a JUSTINRCC-style migration analysis report (markdown + PDF). Invoke when asked to analyse any OCP project for platform migration readiness, or to generate a migration report.
 tools: Bash, Read, Write, Grep, Glob
 user-invocable: true
+metadata:
+  author: Ryan Loiselle
+  version: "1.0"
 compatibility: >
   Source platforms: OCP Silver, Gold, or any OCP 4.x cluster.
   Target platforms: OCP Emerald, AWS ECS/EKS, or comparable.
@@ -13,7 +16,10 @@ compatibility: >
 # OCP Migration Analyst
 
 Produces a structured migration analysis report for any OpenShift project being moved to a
-new platform. Follow the five-phase workflow below.
+new platform. The analysis matches the depth and structure of the JUSTINRCC Migration Analysis
+(April 2026) which is the reference implementation for this workflow.
+
+**Reference output:** `justinrcc-analysis/report/JUSTINRCC-Migration-Analysis.md` and PDF.
 
 ---
 
@@ -34,10 +40,10 @@ Phase 5  PDF RENDER       — pandoc + Chrome → final PDF artefact
 ### 1.1 OCP Namespace Collection
 
 Run these commands for each environment (dev, test, prod, tools) in the namespace prefix.
-Substitute `<NS>` with the environment namespace (e.g. `abc123-prod`).
+Substitute `<NS>` with the environment namespace (e.g. `f1b263-prod`).
 
 ```bash
-# Create working directory first
+# Create working directory first (avoids redirect failures on fresh workstations)
 mkdir -p working/<NS>
 
 # Workload inventory (dc covers DeploymentConfig still used on Silver/Gold)
@@ -46,8 +52,9 @@ oc get dc,deployment,statefulset,daemonset -n <NS> -o yaml > working/<NS>/worklo
 # Services and Routes
 oc get svc,route -n <NS> -o yaml > working/<NS>/network-svc-routes.yaml
 
-# Persistent storage
-oc get pvc,storageclass -n <NS> -o yaml > working/<NS>/storage.yaml
+# Persistent storage (storageclass is cluster-scoped — split from namespace-scoped pvc)
+oc get pvc -n <NS> -o yaml > working/<NS>/pvcs.yaml
+oc get storageclass -o yaml > working/<NS>/storageclasses.yaml  # requires cluster read; omit if RBAC restricts
 
 # Secret names (no values — security boundary)
 oc get secret -n <NS> --no-headers | awk '{print $1, $2}' > working/<NS>/secret-names.txt
@@ -89,13 +96,13 @@ find working/repo -maxdepth 4 \( -name 'pom.xml' -o -name 'build.gradle' \
 
 # Helm charts or raw k8s YAML
 find working/repo -name 'Chart.yaml' -o -name 'values.yaml' | sort
-find working/repo -name '*.yaml' | xargs grep -l 'kind: Deployment\|kind: DeploymentConfig' 2>/dev/null | head -20
+find working/repo -name '*.yaml' -print0 | xargs -0 grep -l 'kind: Deployment\|kind: DeploymentConfig' 2>/dev/null | head -20
 
 # Existing health probe definitions
 grep -r 'livenessProbe\|readinessProbe\|startupProbe' working/repo --include='*.yaml' -l
 
 # NetworkPolicy files
-find working/repo -name '*.yaml' | xargs grep -l 'kind: NetworkPolicy' 2>/dev/null
+find working/repo -name '*.yaml' -print0 | xargs -0 grep -l 'kind: NetworkPolicy' 2>/dev/null
 ```
 
 ### 1.3 Use `ocp-migration-toolkit` for Automated Collection
@@ -106,9 +113,9 @@ run the collection script instead of the manual commands above:
 ```bash
 cd ocp-migration-toolkit
 ./collect/collect.sh \
-  --namespace <license-plate> \
+  --namespace f1b263 \
   --cluster silver \
-  --repo <OWNER/REPO> \
+  --repo bcgov-c/justinrcc \
   --target emerald \
   --output working/
 ```
@@ -126,10 +133,10 @@ Apply the following skill knowledge bases when interpreting collected data:
 | Platform requirements | `bc-gov-emerald` | AVI InfraSettings, DataClass/owner/environment labels, StorageClass, PriorityClass, edge Route |
 | NetworkPolicy | `bc-gov-networkpolicy` | Default-deny egress, DNS policy, CIDR-based external flows, ag-template intent API |
 | CI/CD and Helm | `bc-gov-devops` | Policy-as-code gate, ag-helm-templates, Artifactory, ArgoCD, deployment checklist |
-| Secrets | your secrets management skill | Vault + ESO ExternalSecret, no plain Secrets for sensitive values |
-| Observability | your observability skill | Structured logging, health probes, Prometheus annotations, OpenTelemetry |
-| Security | your security skill | Pod security contexts, OWASP, image CVE scanning, action SHA pinning |
-| SDN / Zone flows | `bc-gov-sdn-zones` | Zone A/B/C egress constraints, CSBC FWCR requirements |
+| Secrets | `vault-secrets` | Vault + ESO ExternalSecret, no plain Secrets for sensitive values |
+| Observability | `observability` | Structured logging, health probes, Prometheus annotations, OpenTelemetry |
+| Security | `security-architect` | Pod security contexts, OWASP, image CVE scanning, action SHA pinning |
+| SDN / Zone flows | `bc-gov-sdn-zones` | Zone A/B/C egress constraints, CSBC FWCR requirements, MCCS |
 
 ### Critical gap categories (always evaluate)
 
@@ -171,7 +178,29 @@ For Zone B services (SFTP, ORDS, MQ, etc.) — see `bc-gov-sdn-zones` for FWCR p
 
 ## Phase 4 — Report Generation
 
-Generate all 12 sections from the collected data.
+### 4.0 Document Header (REQUIRED)
+
+Every migration report must open with this header block. **Each metadata line must end with two trailing spaces** (`  `) to force a Markdown line break — omit them and all fields collapse onto one line in the rendered PDF.
+
+```markdown
+# <APP_NAME> — Migration Analysis Report
+## OpenShift <SOURCE_PLATFORM> (<NAMESPACE>) → <TARGET_PLATFORM> Platform Migration
+
+**Classification:** Protected B — Internal Use  
+**Prepared by:** Ryan Loisell, Developer / Solution Architect Consultant (BC Gov AG/PSSG) — Migration analysis, architecture review, and implementation planning  
+**Prepared for:** <PRODUCT_OWNER_NAME>, Product Owner — for review and handoff to the implementation team  
+**AI Analysis by:** GitHub Copilot (Claude Sonnet 4.6) — Technical analysis, gap identification, and documentation  
+**Date:** <DATE> (v<N> — <brief description>)  
+**Previous version:** v<N-1> (<DATE> — <what changed>) ← omit on v1  
+**Namespace:** <NAMESPACE> (<envs>) — <SOURCE_PLATFORM>, Kamloops DC  
+**Repository:** <REPO_URL>  
+**Analysis scope:** Read-only — no changes made to repo, deployments, or environments.
+
+<div style="page-break-after: always"></div>
+```
+
+Use the templates in `ocp-migration-toolkit/templates/report-sections.md` to generate each section.
+The reference JUSTINRCC report has 12 sections:
 
 | Section | Key content |
 |---------|-------------|
@@ -182,7 +211,7 @@ Generate all 12 sections from the collected data.
 | 5. Gap Analysis | Platform differences table + detailed gaps by category (G1–G12 above) |
 | 6. Network Flow Analysis | Flow table with protocols, CIDRs, FWCR status |
 | 7. Resilience and Availability | Replica counts, PDB, StatefulSet quorum, failover paths |
-| 8. Resource and Capacity Planning | Current resource requests/limits, quota analysis, target equivalents |
+| 8. Resource and Capacity Planning | Current resource requests/limits, quota analysis, Emerald equivalents |
 | 9. Migration Plan — Task List | HELM-XX, NP-XX, CI-XX, APP-XX, VAULT-XX, DATA-XX tasks |
 | 10. Effort Estimation | Table: task × AI-assist level × estimated hours |
 | 11. Diagrams | PlantUML architecture diagram (source state + target state) |
@@ -209,6 +238,60 @@ Generate all 12 sections from the collected data.
 | 💼 | Admin action (GitHub Secrets, Vault namespace, CSBC FWCR) |
 | 🔎 | Investigation required before task can begin |
 
+### 4.1 Copilot Setup Guidance for Migration Projects
+
+Include a dedicated **Section 9.6 GitHub Copilot Utilization** in every migration report, and an **Appendix F / 12.G rl-agents-n-skills Integration Guide**. These sections tell the implementation team:
+
+1. What Copilot will and will not do for each task category (table with icons + effort reduction estimates)
+2. How to set up Copilot with the `rl-agents-n-skills` submodule before starting the work
+3. Which specific agents to invoke for each phase
+
+**Standard Section 9.6 content (adapt task IDs to match the project):**
+
+```markdown
+### 9.6 GitHub Copilot Utilization — Setup and Usage Guide
+
+#### 9.6.1 What Copilot Will Do For You
+
+| Category | Tasks | Copilot Coverage | Est. Effort Reduction |
+|---|---|---|---|
+| Helm chart authoring | HELM-01 to HELM-XX | 🤖 High — fully generatable from existing specs | 60–70% reduction |
+| NetworkPolicy suite | NP-XX (via HELM-11) | 🤝 Medium — external CIDRs depend on FWCR results | 50% reduction |
+| ExternalSecret CRDs | VAULT-02 | 🤖 High — fully templated | 80% reduction |
+| CI/CD workflow updates | CI-XX | 🤖/🤝 depends on complexity | 40–60% reduction |
+| Application code changes | APP-XX | 🤝 Medium | 30–40% reduction |
+| Administrative / stakeholder | PRE tasks, admin tasks | 💼 None | Not applicable |
+| End-to-end validation | ENV/VAL tasks | 👤 Low | 10–15% (test scaffolding only) |
+
+**Estimated overall effort reduction with Copilot:** approximately **35–45%** of total developer-hours.
+
+#### 9.6.2 Prerequisites — How to Set Up Copilot for This Migration
+
+**Option A — VS Code + GitHub Copilot (recommended)**
+```bash
+git submodule add https://github.com/rloisell/rl-agents-n-skills.git .github/agents
+git submodule update --init --recursive
+```
+
+**Option B — npx skills add (quickstart)**
+```bash
+npx skills add rloisell/rl-agents-n-skills
+```
+
+**Option C — Claude Code CLI:** Configure `.claude/settings.json` to point at the `agents/` folder.
+
+#### 9.6.3 How to Use the AI Assist Indicators
+
+| Icon | Meaning | What you should do |
+|---|---|---|
+| 🤖 | Copilot can generate this fully | Load the relevant agent (Appendix F), paste the Example Invocation |
+| 🤝 | Copilot drafts, you review | Validate against the live system before applying |
+| 👤 | Requires developer hands-on | Live access or security-sensitive; Copilot cannot help |
+| 💼 | Administrative / stakeholder | Human process only; engage the Product Owner |
+```
+
+**Standard Appendix F / 12.G content:** A table mapping each agent to its domain coverage, the migration task IDs it assists with, and a project-specific example invocation. Use the table from the reference JUSTINRCC-Migration-Analysis-v6.md Appendix F as the template, adapting task IDs for the project under analysis.
+
 ---
 
 ## Phase 5 — PDF Rendering
@@ -216,9 +299,9 @@ Generate all 12 sections from the collected data.
 ```bash
 # Render HTML intermediate (run from the report directory so image paths resolve)
 cd <report-dir>
-pandoc <APP>-Migration-Analysis.md \
+/opt/homebrew/bin/pandoc <APP>-Migration-Analysis.md \
   --from=markdown --to=html5 --standalone \
-  --css=report-style.css --embed-resources \
+  --css=/tmp/report-style-v2.css --embed-resources \
   --output=/tmp/report.html \
   --metadata title="<APP> — Migration Analysis"
 
@@ -250,18 +333,18 @@ CSS template: `ocp-migration-toolkit/templates/style/report-style.css`
 
 ```
 Use the ocp-migration-analyst skill to generate a full migration analysis for
-namespace <license-plate>, repo <OWNER/REPO>, source platform Silver, target Emerald.
+namespace f1b263, repo bcgov-c/justinrcc, source platform Silver, target Emerald.
 ```
 
 ### Via ocp-migration-toolkit (automated)
 
 ```bash
 # Step 1: collect data
-./collect/collect.sh --namespace <license-plate> --cluster silver \
-  --repo <OWNER/REPO> --target emerald --output working/
+./collect/collect.sh --namespace f1b263 --cluster silver \
+  --repo bcgov-c/justinrcc --target emerald --output working/
 
 # Step 2: open VS Code, invoke AI analysis
-# Copilot reads working/<namespace>/manifest-summary.md + runs gap analysis + generates report
+# Copilot reads working/f1b263/manifest-summary.md + runs gap analysis + generates report
 
 # Step 3: render PDF
 ./render/render.sh --input report/<APP>-Migration-Analysis.md --output report/
@@ -272,9 +355,9 @@ namespace <license-plate>, repo <OWNER/REPO>, source platform Silver, target Eme
 ```yaml
 - uses: rloisell/ocp-migration-toolkit@main
   with:
-    namespace: <license-plate>
+    namespace: f1b263
     cluster: silver
-    repo: <OWNER/REPO>
+    repo: bcgov-c/justinrcc
     target: emerald
     oc-token: ${{ secrets.OC_SA_TOKEN }}
     gh-token: ${{ secrets.GITHUB_TOKEN }}
@@ -287,6 +370,7 @@ namespace <license-plate>, repo <OWNER/REPO>, source platform Silver, target Eme
 ```
 <APP-NAME>-Migration-Analysis.md     # Master analysis report
 <APP-NAME>-Migration-Analysis.pdf    # Rendered PDF
+<APP-NAME>-AWS-Cloud-Options.md      # Optional: cloud alternatives analysis
 diagrams/
   plantuml/
     <app>-current-state.puml         # Source platform architecture
@@ -296,10 +380,21 @@ diagrams/
 
 ---
 
+## PLATFORM_KNOWLEDGE
+
+- 2026-04-16: [JUSTINRCC] Reference analysis took ~4 sessions across 3 topics (platform, networking, CI/CD). Structured collect-then-analyze approach would reduce this to ~1 session.
+- 2026-04-16: [JUSTINRCC] The two most time-consuming gap areas were NetworkPolicy (external CIDR discovery requires CSBC input) and Helm authoring (no existing charts). Flag these as `ARCH-XX` pre-tasks in every report.
+- 2026-04-16: [JUSTINRCC] DeploymentConfig → Deployment conversion is always task HELM-01. It is prerequisite for all other Helm tasks.
+- 2026-04-16: [JUSTINRCC] Zone B external services (SFTP, ORDS) always require CSBC FWCRs — create `ARCH-01 CSBC FWCR request` as the first blocking task whenever these flows are present.
+- 2026-04-16: Report PDF rendering must run from the report directory (not workspace root) so relative image paths in markdown resolve correctly.
+
+---
+
 ## Sources and References
 
 Every gap finding (G1–G12) and recommendation must cite the applicable standard ID so
-readers can trace guidance back to its authoritative source.
+readers can trace guidance back to its authoritative source. This is what distinguishes
+an evidence-based analysis from a generic checklist.
 
 ### BC Gov Platform Services
 

@@ -3,6 +3,9 @@ name: bc-gov-devops
 description: BC Government Emerald OpenShift deployment patterns — Artifactory image registry setup, Helm chart requirements, health check standards, Common SSO authentication integration, OpenShift oc command reference, secrets management, and ArgoCD GitOps CRDs. Use when deploying, configuring, or troubleshooting services on the Emerald OpenShift platform.
 tools: Read, Grep, Glob
 user-invocable: false
+metadata:
+  author: Ryan Loiselle
+  version: "1.1"
 compatibility: Emerald OpenShift 4.x. BC Gov GitHub Actions. Requires Artifactory account from BC Gov DevExchange.
 ---
 
@@ -10,10 +13,10 @@ compatibility: Emerald OpenShift 4.x. BC Gov GitHub Actions. Requires Artifactor
 
 Drives deployment onto the BC Government Emerald OpenShift platform.
 
-**Companion skills:**
-- AVI InfraSettings, DataClass labels, NetworkPolicy model, StorageClass → `bc-gov-emerald`
-- Full NetworkPolicy YAML patterns → `bc-gov-networkpolicy`
-- Zone model and internet egress constraints → `bc-gov-sdn-zones`
+**Shared skills referenced by this agent:**
+- Container image standards → [`../containerfile-standards/SKILL.md`](../containerfile-standards/SKILL.md)
+- AVI InfraSettings, DataClass labels, NetworkPolicy model, StorageClass → [`../bc-gov-emerald/SKILL.md`](../bc-gov-emerald/SKILL.md)
+- Full NetworkPolicy YAML examples → [`references/networkpolicy-patterns.md`](references/networkpolicy-patterns.md)
 
 ---
 
@@ -25,7 +28,7 @@ Drives deployment onto the BC Government Emerald OpenShift platform.
 | Gold DR | `https://api.golddr.devops.gov.bc.ca:6443` | same |
 | Silver | `https://api.silver.devops.gov.bc.ca:6443` | `https://loginproxy.gov.bc.ca/auth/realms/standard` |
 
-**Namespace pattern:** `<license-plate>-<env>` (e.g. `abc123-dev`)
+**Namespace pattern:** `<license-plate>-<env>` (e.g. `be808f-dev`)
 
 ---
 
@@ -36,7 +39,8 @@ Drives deployment onto the BC Government Emerald OpenShift platform.
    - `ARTIFACTORY_URL` = `artifacts.developer.gov.bc.ca`
    - `ARTIFACTORY_SERVICE_ACCOUNT` = service account name
    - `ARTIFACTORY_SERVICE_ACCOUNT_TOKEN` = token
-3. In workflow, use the Artifactory URL as the registry prefix for image build and push steps.
+3. In workflow, use the Artifactory URL as the registry prefix — see
+   `../ci-cd-pipeline/SKILL.md` for full build/push steps.
 
 ---
 
@@ -194,7 +198,7 @@ charts/<service>/
     deployment.yaml
     service.yaml
     route.yaml
-    networkpolicy.yaml     ← required; see bc-gov-networkpolicy skill
+    networkpolicy.yaml     ← required; see references/networkpolicy-patterns.md
     _helpers.tpl
 ```
 
@@ -209,7 +213,7 @@ appVersion: "1.0.0"
 ```
 
 For AVI InfraSettings and `app.kubernetes.io/part-of` + DataClass labels,
-see `bc-gov-emerald`.
+see [`../bc-gov-emerald/SKILL.md`](../bc-gov-emerald/SKILL.md).
 
 ---
 
@@ -251,7 +255,7 @@ app.MapHealthChecks("/health/ready", new HealthCheckOptions
 
 ## Common SSO Authentication
 
-BC Gov uses DIAM/Keycloak via `loginproxy.gov.bc.ca`. See the `bc-gov-iam` skill for detailed OIDC flows.
+BC Gov uses DIAM/Keycloak via `loginproxy.gov.bc.ca`. See `jag-diam-documentation/` in the workspace for detailed OIDC flows.
 
 **Realms:**
 | Realm | Use |
@@ -309,8 +313,7 @@ oc scale deployment/<name> --replicas=0 -n <namespace>
 
 ## Secrets Management
 
-**Never commit secrets.** Store in OpenShift Secrets (or Vault + ESO for sensitive values),
-reference via env vars.
+**Never commit secrets.** Store in OpenShift Secrets, reference via env vars.
 
 ```yaml
 # In Helm deployment.yaml
@@ -347,7 +350,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/<org>/gitops-<license-plate>.git
+    repoURL: https://github.com/<org>/gitops-be<id>.git
     targetRevision: HEAD
     path: environments/<env>/<service>
     helm:
@@ -369,7 +372,9 @@ spec:
 
 ## Deployment Checklist
 
-- [ ] Containerfile uses port 8080 and `USER 1001` (non-root)
+- [ ] Containerfile at `src/<service>/Containerfile` — see `containerfile-standards`
+- [ ] Port 8080 used throughout
+- [ ] Non-root `USER 1001` in Containerfile
 - [ ] Health probes configured (`/health/live`, `/health/ready`)
 - [ ] AVI InfraSettings annotation on every Route (`aviinfrasetting.ako.vmware.com/name`)
 - [ ] Pod labels: `DataClass`, `owner`, `environment` on every Deployment/StatefulSet
@@ -381,3 +386,16 @@ spec:
 - [ ] `imagePullPolicy: Always` set on all containers
 - [ ] Artifactory secrets in namespace
 - [ ] ArgoCD Application CRD syncing
+
+---
+
+## PLATFORM_KNOWLEDGE
+
+> Append new Emerald / OpenShift / Helm discoveries here.
+> Format: `YYYY-MM-DD: <discovery>`
+
+- 2026-04-16: ag-devops Conftest hard-denies Deployments without a matching NetworkPolicy — render all resources into one YAML file so cross-resource checks work.
+- 2026-04-16: Required pod labels are DataClass + owner + environment (all three enforced by Datree/Conftest). owner = team name or ticket; environment = production|test|development.
+- 2026-04-16: Polaris priorityClassNotSet check requires every Deployment/StatefulSet to set spec.template.spec.priorityClassName.
+- 2026-04-16: Edge-terminated Routes need label app.kubernetes.io/component=frontend OR annotation isb.gov.bc.ca/edge-termination-approval — else Conftest denies.
+- 2026-04-16: Internet-wide egress (0.0.0.0/0) in NetworkPolicy requires justification + approvedBy annotations or Conftest denies. Prefer specific CIDRs to avoid this requirement.

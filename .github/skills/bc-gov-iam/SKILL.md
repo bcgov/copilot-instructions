@@ -3,7 +3,10 @@ name: bc-gov-iam
 description: BC Government Identity and Access Management — DIAM/Keycloak OIDC PKCE integration, realm selection, React oidc-client-ts setup, token lifecycle, backchannel logout, Common SSO vs DIAM comparison, and user attribute mapping. Use when implementing authentication, configuring an OIDC client, troubleshooting token refresh, or choosing between identity providers.
 tools: Read, Grep, Glob
 user-invocable: false
-compatibility: DIAM Keycloak. Common SSO (loginproxy.gov.bc.ca). React oidc-client-ts v3+. .NET ASP.NET Core.
+metadata:
+  author: Ryan Loiselle
+  version: "1.0"
+compatibility: DIAM Keycloak. Common SSO (loginproxy.gov.bc.ca). React oidc-client-ts v3+. .NET 10 ASP.NET Core.
 ---
 
 # BC Gov IAM Agent
@@ -12,8 +15,8 @@ Implements authentication and authorisation for BC Government applications using
 Identity and Access Management) or Common SSO Keycloak.
 
 **Related skills:**
-- Security controls → see your project's security skill
-- Vault for storing OIDC client secrets → see your project's secrets management skill
+- Security controls → [`../security-architect/SKILL.md`](../security-architect/SKILL.md)
+- Vault for storing OIDC client secrets → [`../vault-secrets/SKILL.md`](../vault-secrets/SKILL.md)
 
 ---
 
@@ -71,6 +74,8 @@ npm install oidc-client-ts react-oidc-context
 ### Auth config
 ```js
 // src/auth/authConfig.js — OIDC UserManager config
+// Author: Ryan Loiselle | Date: <date>
+
 export const oidcConfig = {
   authority:                import.meta.env.VITE_OIDC_AUTHORITY,
   // e.g. https://loginproxy.gov.bc.ca/auth/realms/standard
@@ -234,6 +239,7 @@ public async Task<IActionResult> BackchannelLogout([FromForm] string logout_toke
 {
     // 1. Validate logout_token JWT: issuer, audience, iat, jti
     // 2. Extract 'sub' or 'sid' claim
+    var sub = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "(unknown)";
     // 3. Invalidate any server-side session or cached token for that sub/sid
     // 4. Return 200 OK or 400 Bad Request
     _logger.LogInformation("Backchannel logout received for sub={Sub}", sub);
@@ -243,11 +249,19 @@ public async Task<IActionResult> BackchannelLogout([FromForm] string logout_toke
 
 ---
 
-## Common Pitfalls
+## IAM_KNOWLEDGE
 
-- Do NOT store `access_token` in `localStorage` — use `oidc-client-ts` in-memory store
-- Set `ClockSkew` to at least 30–60s to tolerate server timing differences with Keycloak
-- `post_logout_redirect_uri` must be registered in Keycloak or logout will fail silently
-- Bearer token audience validation: Keycloak issues `account` audience by default — configure an **Add Audience** mapper in the client
-- `automaticSilentRenew` uses a hidden iframe — may fail in Safari with ITP; use `refresh_token_grant` as fallback
-- DIAM adds a ministry-specific brokering layer on top of Common SSO — confirm which provider your project requires before registering a client
+```yaml
+confirmed_facts:
+  - "Common SSO 'standard' realm brokers IDIR, BCeID Basic, and BCeID Business"
+  - "PKCE with S256 is mandatory for public clients — implicit flow is disabled on Common SSO"
+  - "automaticSilentRenew uses a hidden iframe; may fail in Safari with ITP — use refresh_token_grant as fallback"
+  - "Keycloak sub claim = user's UUID in the realm — use as the canonical user identifier"
+  - "DIAM adds a JAG-specific brokering layer on top of Common SSO for JAG ministry projects"
+  - "Vault path for OIDC client secret: secret/<license>/<env>/oidc-client-secret"
+common_pitfalls:
+  - "do NOT store access_token in localStorage — use oidc-client-ts in-memory store"
+  - "ClockSkew must be set to at least 30s to tolerate server timing differences with Keycloak"
+  - "Post logout redirect URI must be registered in Keycloak or the logout will fail silently"
+  - "Bearer token audience validation: Keycloak issues 'account' audience by default — configure 'Add Audience' mapper"
+```

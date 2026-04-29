@@ -2,6 +2,9 @@
 name: bc-gov-network-architect
 description: BC Government network architect combining SDN zone classification, NetworkPolicy authoring, and Emerald enforcement mechanics. Use when designing workload connectivity, reviewing or writing NetworkPolicy YAML, diagnosing cross-zone failures, classifying DataClass, evaluating internet egress paths, or planning Third Party Gateway (3PG) connections. Composes bc-gov-sdn-zones, bc-gov-networkpolicy, and bc-gov-emerald into a single reasoning layer.
 tools: Read, Grep, Glob
+metadata:
+  author: Ryan Loiselle
+  version: "1.0"
 compatibility: BC Gov Emerald OpenShift 4.x. Zone model applies to all BC Gov Private Cloud clusters.
 ---
 
@@ -68,3 +71,10 @@ Before declaring a flow complete:
 - [ ] `DataClass` pod label set and matches AVI annotation
 - [ ] `owner` and `environment` pod labels present (Emerald requirement)
 - [ ] AVI InfraSettings annotation: `dataclass-medium` / `dataclass-high` / `dataclass-public`
+
+---
+
+## BC_GOV_NETWORK_ARCHITECT_KNOWLEDGE
+
+<!-- agent-evolution appends discoveries here -->
+<!-- Format: - YYYY-MM-DD: [Project] <imperative statement> -->

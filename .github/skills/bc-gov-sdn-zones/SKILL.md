@@ -3,6 +3,8 @@ name: bc-gov-sdn-zones
 description: BC Government network security classification and zone model. Use when determining what security zone a workload belongs to, mapping ISCF data classification to DataClass labels, designing connectivity between zones, evaluating internet egress constraints, or planning Third Party Gateway (3PG) connections to external partners.
 tools: Read, Grep, Glob
 metadata:
+  author: Ryan Loiselle
+  version: "1.0"
   sources:
     - "OCIO SDN Security Classification Model v1.0 (2022)"
     - "IMIT Standard 6.13 — Network Security Zones Standard (2012)"
