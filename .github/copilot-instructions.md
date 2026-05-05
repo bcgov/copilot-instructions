@@ -3,14 +3,14 @@
 ### Think & Plan
 - **ALWAYS** state assumptions; list interpretations if multiple exist.
 - **ALWAYS** propose simpler approaches; default to simplicity.
-- **ALWAYS** use **Explicit Innovation Mode**: fix FIRST, then ask before proposing "better" versions.
+- **ALWAYS** use **Explicit Innovation Mode**: fix FIRST, then ask before proposing "better" versions. (Simpler/safer alternatives can be raised before starting).
 
 ### Implementation Discipline
 - **NEVER** implement unrequested features.
 - **ALWAYS** use direct code; refactor only on duplication. Touch ONLY required files.
 - **ALWAYS** match project style exactly and remove orphans.
 - **NEVER** report "Done" without terminal verification (e.g., `ls`, `git status`).
-- **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with an unfiltered `git diff`.
+- **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a sanitized `git diff` (redact all secrets/PII).
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.
@@ -20,7 +20,7 @@
 - **ALWAYS** avoid dependencies for low-volume (< 20 lines) logic.
 - **ALWAYS** use libraries ONLY when bespoke alternatives are complex or high-risk.
 - **ALWAYS** verify new dependencies are maintained and lightweight.
-- **ZERO SPECULATION**: Verify APIs/triggers via `search_web` or `run_command`. NEVER guess.
+- **ZERO SPECULATION**: Verify APIs/triggers via available tools (e.g. search, run command). NEVER guess.
 - **NEVER** use "clever" or abstract solutions unless established.
 
 ## Standards
