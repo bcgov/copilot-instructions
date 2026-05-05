@@ -1,43 +1,37 @@
 ## Behavioral Guidelines
 
 ### Think & Plan
-- **ALWAYS** state assumptions and ask when uncertain; list interpretations if multiple exist.
-- **ALWAYS** propose simpler approaches and default to simplicity unless requested otherwise.
-- **ALWAYS** use **Explicit Innovation Mode**: complete and verify the requested fix FIRST, then ask for permission before proposing or implementing a "better" version.
+- **ALWAYS** state assumptions; list interpretations if multiple exist.
+- **ALWAYS** propose simpler approaches; default to simplicity.
+- **ALWAYS** use **Explicit Innovation Mode**: fix FIRST, then ask before proposing "better" versions.
 
 ### Implementation Discipline
-- **NEVER** implement unrequested features or configurability.
-- **ALWAYS** use direct, single-use code; refactor only when duplication appears.
-- **ALWAYS** touch only what is required; **NEVER** refactor unrelated code.
-- **ATOMIC SCOPE ONLY**: You are forbidden from modifying any file that is not technically required for the specific request.
-- **ALWAYS** match project style and conventions exactly.
-- **ALWAYS** remove orphans created by your changes.
-- **NEVER** report "Done" without verifying state via terminal (e.g., `ls`, `git status`); **ALWAYS** prioritize uncomfortable truth over convenient fiction.
-- **DIFF-AS-RECEIPT**: Every turn containing a file edit MUST end with an unfiltered `git diff` of the changes.
+- **NEVER** implement unrequested features.
+- **ALWAYS** use direct code; refactor only on duplication. Touch ONLY required files.
+- **ALWAYS** match project style exactly and remove orphans.
+- **NEVER** report "Done" without terminal verification (e.g., `ls`, `git status`).
+- **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with an unfiltered `git diff`.
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.
 - **ALWAYS** state a brief plan with verification checks for multi-step tasks.
 
 ### Dependencies
-- **ALWAYS** avoid dependencies for low-volume (< 20 lines) or low-risk logic.
-- **ALWAYS** use battle-tested libraries only when bespoke alternatives are complex, security-sensitive, or high-risk.
-- **ALWAYS** verify new dependencies are maintained, compatible, non-duplicative, and lightweight.
-- **ALWAYS** explain trade-offs for proposed architectural choices.
-- **ZERO SPECULATION**: If you are unsure of an API or trigger, you must use `search_web` or `run_command` to verify. NEVER say "This should work."
-- **NEVER** use "clever" or overly abstract solutions unless already established.
+- **ALWAYS** avoid dependencies for low-volume (< 20 lines) logic.
+- **ALWAYS** use libraries ONLY when bespoke alternatives are complex or high-risk.
+- **ALWAYS** verify new dependencies are maintained and lightweight.
+- **ZERO SPECULATION**: Verify APIs/triggers via `search_web` or `run_command`. NEVER guess.
+- **NEVER** use "clever" or abstract solutions unless established.
 
 ## Standards
 
 ### Hard Stops (Never)
-- **NEVER** branch from a feature branch; **ALWAYS** initialize from a fresh checkout of main.
-- **NEVER** push to main or merge PRs; leave merging to humans.
-- **NEVER** use destructive git commands (gh pr merge, squash, rebase -i) on shared history.
-- **NEVER** use triple-backticks in code blocks; **ALWAYS** use 4-backtick fenced blocks.
-- **NEVER** commit or include credentials, secrets, or PII in code or PRs.
-- **NEVER** bypass security standards or grant broad permissions.
-- **NEVER** silence diagnostics (`eslint-disable`, `@ts-ignore`); fix the root cause.
-- **NEVER** delete failing tests; **ALWAYS** fix the code to ensure the test suite passes.
+- **NEVER** branch from a feature branch; **ALWAYS** use a fresh `main`.
+- **NEVER** push to main, merge PRs, or use destructive git commands on shared history.
+- **NEVER** use triple-backticks in code; **ALWAYS** use 4-backtick blocks.
+- **NEVER** commit secrets, PII, or grant broad permissions.
+- **NEVER** silence diagnostics (`eslint-disable`); fix the root cause.
+- **NEVER** delete failing tests; **ALWAYS** fix the code.
 
 ### Operational Guardrails
 - **ALWAYS** push and open PRs to feature branches without asking.
@@ -47,9 +41,9 @@
 - For temporary storage, **ALWAYS** use `./.tmp/` if git-ignored, otherwise `/tmp`.
 
 ### Git Workflow
-1. **Branching:** **ALWAYS** run `git checkout main && git pull && git switch -c feat/description && git push -u origin feat/description`. Verify with `git branch -vv`.
-2. **PR Creation:** **ALWAYS** run `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline` before pushing; **STOP** if unintended commits appear.
-3. **Closing:** **ALWAYS** end PR bodies with `Closes #<number>` if a task references an issue.
+1. **Branching:** `git checkout main && git pull && git switch -c feat/name && git push -u origin feat/name`.
+2. **PR Creation:** `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline`.
+3. **Closing:** **ALWAYS** end PR bodies with `Closes #<number>`.
 
 ### Project Standards
 - **ALWAYS** use Conventional Commits with scoped, descriptive messages.
@@ -58,6 +52,6 @@
 - **ALWAYS** use GitHub Releases; **NEVER** add manual version tracking artifacts.
 
 ## Macros
-- **Green #number**: **ALWAYS** rebase onto `main`, review `gh pr view --comments` and `gh pr checks`. Address feedback and CI errors before pushing.
-- **Audit #target**: **ALWAYS** scan for pattern regressions, orphan code, and style inconsistencies relative to project standards. Report findings before fixing.
-- **Stabilize #workflow**: **ALWAYS** review for minimum permissions (`permissions: {}`), `set -euo pipefail` settings, and `&&` chaining. Fix reliability gaps.
+- **Green #number**: Rebase on `main`, review `gh pr view/checks`. Fix CI errors before pushing.
+- **Audit #target**: Scan for regressions, orphans, and style issues. Report before fixing.
+- **Stabilize #workflow**: Check permissions, `set -euo pipefail`, and `&&` chaining.
