@@ -34,7 +34,7 @@ If you want to maintain your own personality settings or technical preferences w
 2.  **Create your profile:** Create a file in `.github/profiles/your-GITHUB-id.md` (use `DerekRoberts.md` as a template).
 3.  **Bundle and install:** Run the bundle script:
     ```bash
-    ./scripts/bundle.sh ~/.copilot.md
+    ./scripts/bundle.sh <destination_file> <GitHubID>
     ```
     *The script automatically detects your GitHub ID, validates Org-compliance, and bundles everything into your destination file.*
 
