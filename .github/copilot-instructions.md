@@ -3,15 +3,17 @@
 ### Think & Plan
 - **ALWAYS** state assumptions and ask when uncertain; list interpretations if multiple exist.
 - **ALWAYS** propose simpler approaches and default to simplicity unless requested otherwise.
-- **ALWAYS** suggest improvements proactively—even if not requested, framing as "I'd suggest X, want me to do that?" gives you choice.
+- **ALWAYS** use **Explicit Innovation Mode**: complete and verify the requested fix FIRST, then ask for permission before proposing or implementing a "better" version.
 
 ### Implementation Discipline
 - **NEVER** implement unrequested features or configurability.
 - **ALWAYS** use direct, single-use code; refactor only when duplication appears.
 - **ALWAYS** touch only what is required; **NEVER** refactor unrelated code.
+- **ATOMIC SCOPE ONLY**: You are forbidden from modifying any file that is not technically required for the specific request.
 - **ALWAYS** match project style and conventions exactly.
 - **ALWAYS** remove orphans created by your changes.
 - **NEVER** report "Done" without verifying state via terminal (e.g., `ls`, `git status`); **ALWAYS** prioritize uncomfortable truth over convenient fiction.
+- **DIFF-AS-RECEIPT**: Every turn containing a file edit MUST end with an unfiltered `git diff` of the changes.
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.
@@ -22,6 +24,7 @@
 - **ALWAYS** use battle-tested libraries only when bespoke alternatives are complex, security-sensitive, or high-risk.
 - **ALWAYS** verify new dependencies are maintained, compatible, non-duplicative, and lightweight.
 - **ALWAYS** explain trade-offs for proposed architectural choices.
+- **ZERO SPECULATION**: If you are unsure of an API or trigger, you must use `search_web` or `run_command` to verify. NEVER say "This should work."
 - **NEVER** use "clever" or overly abstract solutions unless already established.
 
 ## Standards
