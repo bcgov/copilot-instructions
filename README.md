@@ -34,9 +34,9 @@ If you want to maintain your own personality settings or technical preferences w
 2.  **Create your profile:** Create a file in `.github/profiles/your-GITHUB-id.md` (use `DerekRoberts.md` as a template).
 3.  **Bundle and install:** Run the bundle script:
     ```bash
-    ./scripts/bundle.sh <destination_file> <GitHubID>
+    ./scripts/bundle.sh <destination_file> [GitHubID]
     ```
-    *The script automatically detects your GitHub ID, validates Org-compliance, and bundles everything into your destination file.*
+    *If you omit `GitHubID`, the script automatically detects it, verifies that your profile exists, warns if the bundled output exceeds GitHub's 4,000 character limit, and bundles everything into your destination file.*
 
 ### Option 3: Per-Project Instructions
 
