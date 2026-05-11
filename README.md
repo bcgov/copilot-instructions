@@ -100,14 +100,14 @@ The Copilot instructions tell the AI "never push to main", "never merge PRs", an
 
 ### Option 1: Quick Install (curl)
 ```bash
-curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/install-hooks.sh | bash
+curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/setup.sh | bash
 ```
 
 ### Option 2: Clone and Run
 ```bash
 git clone https://github.com/bcgov/copilot-instructions.git
 cd copilot-instructions
-./scripts/install-hooks.sh
+./scripts/setup.sh
 ```
 
 **What it installs:**
