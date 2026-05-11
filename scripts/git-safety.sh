@@ -10,9 +10,19 @@ git() {
             echo "BLOCKED: git config is not allowed. Talk to the user." >&2
             return 1
         fi
+        # Block releases and tags
+        if [[ "$*" =~ ^tag ]]; then
+            echo "BLOCKED: Tagging is restricted. AI is not allowed to cut releases. Talk to the user." >&2
+            return 1
+        fi
         # Block destructive squashing operations
         if [[ "$*" =~ (rebase.*squash|merge.*squash|rebase.*fixup|rebase.*-i) ]]; then
             echo "BLOCKED: Squashing commits destroys history and makes change review difficult. Never squash commits in PR branches." >&2
+            return 1
+        fi
+        # Block tag pushes
+        if [[ "$*" =~ (push.*--tags) ]]; then
+            echo "BLOCKED: Pushing tags is restricted. AI is not allowed to cut releases. Talk to the user." >&2
             return 1
         fi
     fi
@@ -25,8 +35,8 @@ export -f git
 gh() {
     # Skip during tab completion
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
-        if [[ "$*" =~ ^(pr merge|repo delete|secret) ]]; then
-            echo "BLOCKED: Command not allowed. Talk to the user." >&2
+        if [[ "$*" =~ ^(pr merge|repo delete|secret|release) ]]; then
+            echo "BLOCKED: Release operations are restricted. AI is not allowed to cut releases. Talk to the user." >&2
             return 1
         fi
         # Block squash merge variants
