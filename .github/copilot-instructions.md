@@ -28,7 +28,7 @@
 ### Hard Stops (Never)
 - **NEVER** branch from a feature branch; **ALWAYS** use a fresh `main`.
 - **NEVER** push to main, merge PRs, or use destructive git commands on shared history.
-- **NEVER** use triple-backticks in code; **ALWAYS** use 4-backtick blocks.
+- **NEVER** use triple-backticks; **ALWAYS** wrap code, manifests, and copy-paste blocks in 4-backtick blocks.
 - **NEVER** commit secrets, PII, or grant broad permissions.
 - **NEVER** silence diagnostics (`eslint-disable`); fix the root cause.
 - **NEVER** delete failing tests; **ALWAYS** fix the code.
