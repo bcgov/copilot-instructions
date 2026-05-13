@@ -34,9 +34,9 @@ If you want to maintain your own personality settings or technical preferences w
 2.  **Create your profile:** Create a file in `.github/profiles/your-GITHUB-id.md` (use `DerekRoberts.md` as a template).
 3.  **Bundle and install:** Run the bundle script:
     ```bash
-    ./scripts/bundle.sh ~/.copilot.md
+    ./scripts/bundle.sh <destination_file> [GitHubID]
     ```
-    *The script automatically detects your GitHub ID, validates Org-compliance, and bundles everything into your destination file.*
+    *If you omit `GitHubID`, the script automatically detects it, verifies that your profile exists, warns if the bundled output exceeds GitHub's 4,000 character limit, and bundles everything into your destination file.*
 
 ### Option 3: Per-Project Instructions
 
@@ -100,20 +100,33 @@ The Copilot instructions tell the AI "never push to main", "never merge PRs", an
 
 ### Option 1: Quick Install (curl)
 ```bash
-curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/install-hooks.sh | bash
+curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/setup.sh | bash
 ```
 
 ### Option 2: Clone and Run
 ```bash
 git clone https://github.com/bcgov/copilot-instructions.git
 cd copilot-instructions
-./scripts/install-hooks.sh
+./scripts/setup.sh
 ```
 
-**What it installs:**
-1. **Global Git Hooks** (all repos on your machine)
-2. **GitHub CLI Safety** (blocks `gh pr merge`, etc.)
-3. **Git Config Protection** (blocks AI from running `git config`)
+### What it installs:
+
+1. **Global Git Hooks**: Pre-commit and pre-push hooks that scan for secrets and prevent direct pushes to protected branches (e.g., `main`).
+2. **Shell Safety Wrappers**: Hardened `git` and `gh` functions that intercept dangerous operations in your terminal *before* they reach the network or modify local state.
+
+#### Blocked Operations & Rationale
+
+| Tool | Blocked Command | Rationale |
+| :--- | :--- | :--- |
+| **Git** | `tag` | Prevents AI from autonomously cutting releases or spawning version tags. |
+| **Git** | `config` | Prevents AI from tampering with your identity (name/email) or security settings. |
+| **Git** | `push --tags` | Prevents exfiltration of local tags that might trigger automated CI/CD deployments. |
+| **Git** | `rebase --squash` | Prevents history destruction. Squashing makes review and forensic auditing difficult. |
+| **GitHub CLI** | `release` | Complete block on creating or managing GitHub Releases via the CLI. |
+| **GitHub CLI** | `pr merge` | Prevents AI from bypassing human review to merge its own code. |
+| **GitHub CLI** | `repo delete` | Catastrophic failure prevention. AI should never have the power to delete repositories. |
+| **GitHub CLI** | `secret` | Prevents AI from viewing or modifying organizational/repository secrets. |
 
 ## Optional Enhancements
 
