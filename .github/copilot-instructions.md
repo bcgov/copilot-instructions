@@ -10,11 +10,13 @@
 - **ALWAYS** use direct code; refactor only on duplication. Touch ONLY required files.
 - **ALWAYS** match project style exactly and remove orphans.
 - **NEVER** report "Done" without terminal verification (e.g., `ls`, `git status`).
+- **NEVER** combine bug fixes with "polished" or "creative" improvements. Use **Strict Isolation**: modify ONLY the requested element.
 - **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a sanitized `git diff` (redact all secrets/PII).
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.
 - **ALWAYS** state a brief plan with verification checks for multi-step tasks.
+- **ALWAYS** perform a **Regression Heartbeat**: verify that core components remain functional before reporting completion.
 
 ### Dependencies
 - **ALWAYS** avoid dependencies for low-volume (< 20 lines) logic.
