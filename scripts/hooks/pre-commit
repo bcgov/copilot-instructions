@@ -8,3 +8,32 @@ if ! command -v gitleaks >/dev/null 2>&1; then
 fi
 
 gitleaks protect --staged --redact --no-banner
+
+# ─── General Regression Guardian ───────────────────────────────────────────
+# Detects and blocks accidental version downgrades in config files.
+# Supports Docker (FROM), Node (package.json), Actions (uses), and Python (requires-python).
+
+STAGED_FILES=$(git diff --cached --name-only)
+
+# Heuristic check for version regressions
+# We look for lines removed with a higher version and lines added with a lower version.
+for file in $STAGED_FILES; do
+    if [[ "$file" =~ (package.json|Containerfile|Dockerfile|compose.yml|docker-compose.yml|pyproject.toml|.github/workflows/.*\.yml)$ ]]; then
+        # Check for common versioning patterns
+        # Look for -node:20 / +node:18 style regressions
+        REGRESSION=$(git diff --cached "$file" | grep -E "^\-(.*)([0-9]+\.[0-9]+)" | grep -oE "[0-9]+\.[0-9]+" | head -n 1)
+        NEW_VERSION=$(git diff --cached "$file" | grep -E "^\+(.*)([0-9]+\.[0-9]+)" | grep -oE "[0-9]+\.[0-9]+" | head -n 1)
+
+        if [[ -n "$REGRESSION" ]] && [[ -n "$NEW_VERSION" ]]; then
+            # Simple numeric comparison for major.minor
+            # Requires 'bc' for floating point comparison. If missing, this check is skipped.
+            if command -v bc >/dev/null 2>&1; then
+                if (( $(echo "$NEW_VERSION < $REGRESSION" | bc -l) )); then
+                    echo -e "\033[0;31mERROR: Version regression detected in $file ($REGRESSION -> $NEW_VERSION)!\033[0m" >&2
+                    echo "AI Agents are FORBIDDEN from downgrading versions without explicit user discussion." >&2
+                    exit 1
+                fi
+            fi
+        fi
+    fi
+done
