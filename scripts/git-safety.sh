@@ -96,3 +96,28 @@ gh() {
 }
 
 export -f gh
+
+oc() {
+    # Skip during tab completion
+    if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+        echo "BLOCKED: Running oc directly is restricted." >&2
+        return 1
+    fi
+
+    command oc "$@"
+}
+
+export -f oc
+
+kubectl() {
+    # Skip during tab completion
+    if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+        echo "BLOCKED: Running kubectl directly is restricted." >&2
+        return 1
+    fi
+
+    command kubectl "$@"
+}
+
+export -f kubectl
+
