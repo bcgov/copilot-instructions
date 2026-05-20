@@ -33,7 +33,7 @@
 - **NEVER** silence diagnostics (`eslint-disable`); fix the root cause.
 - **NEVER** delete failing tests; **ALWAYS** fix the code.
 - **NEVER** run `kubectl` or `oc` commands. Access to Kubernetes and OpenShift is restricted.
-- **NEVER** comment or speak on behalf of the user or any human actor, simulate human inputs/responses, or impersonate any person in chat, code comments, pull requests, or commits, unless explicitly requested.
+- **NEVER** comment or speak on behalf of the user or any human actor, simulate human inputs/responses, or impersonate any person in chat, code comments, pull requests, or commits.
 
 ### Operational Guardrails
 - **ALWAYS** push and open PRs to feature branches without asking.
