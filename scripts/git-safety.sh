@@ -98,8 +98,13 @@ gh() {
 export -f gh
 
 oc() {
-    # Skip during tab completion
-    if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+    # Treat as completion ONLY if both variables are non-empty and it is a completion call
+    local is_completion=false
+    if [[ -n "${COMP_LINE:-}" && -n "${COMP_POINT:-}" && "$1" == "__complete" ]]; then
+        is_completion=true
+    fi
+
+    if [[ "$is_completion" != "true" ]]; then
         echo "BLOCKED: Running oc directly is restricted." >&2
         return 1
     fi
@@ -110,8 +115,13 @@ oc() {
 export -f oc
 
 kubectl() {
-    # Skip during tab completion
-    if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+    # Treat as completion ONLY if both variables are non-empty and it is a completion call
+    local is_completion=false
+    if [[ -n "${COMP_LINE:-}" && -n "${COMP_POINT:-}" && "$1" == "__complete" ]]; then
+        is_completion=true
+    fi
+
+    if [[ "$is_completion" != "true" ]]; then
         echo "BLOCKED: Running kubectl directly is restricted." >&2
         return 1
     fi
