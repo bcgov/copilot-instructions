@@ -32,6 +32,7 @@
 - **NEVER** commit secrets, PII, or grant broad permissions.
 - **NEVER** silence diagnostics (`eslint-disable`); fix the root cause.
 - **NEVER** delete failing tests; **ALWAYS** fix the code.
+- **NEVER** run `kubectl` or `oc` commands. Access to Kubernetes and OpenShift is restricted.
 
 ### Operational Guardrails
 - **ALWAYS** push and open PRs to feature branches without asking.

@@ -96,3 +96,38 @@ gh() {
 }
 
 export -f gh
+
+oc() {
+    # Treat as completion ONLY if both variables are non-empty and it is a completion call
+    local is_completion=false
+    if [[ -n "${COMP_LINE:-}" && -n "${COMP_POINT:-}" && "$1" == "__complete" ]]; then
+        is_completion=true
+    fi
+
+    if [[ "$is_completion" != "true" ]]; then
+        echo "BLOCKED: Running oc directly is restricted." >&2
+        return 1
+    fi
+
+    command oc "$@"
+}
+
+export -f oc
+
+kubectl() {
+    # Treat as completion ONLY if both variables are non-empty and it is a completion call
+    local is_completion=false
+    if [[ -n "${COMP_LINE:-}" && -n "${COMP_POINT:-}" && "$1" == "__complete" ]]; then
+        is_completion=true
+    fi
+
+    if [[ "$is_completion" != "true" ]]; then
+        echo "BLOCKED: Running kubectl directly is restricted." >&2
+        return 1
+    fi
+
+    command kubectl "$@"
+}
+
+export -f kubectl
+
