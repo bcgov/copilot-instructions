@@ -643,7 +643,32 @@ check_deployment() {
     fi
 
     # 2. Rolling update strategy (Level 4) - 2 pts
-    if check_contains "RollingUpdate\|rolling" ".github" "$dir"; then
+    local has_rolling=false
+    if check_contains "RollingUpdate|rolling" ".github" "$dir"; then
+        has_rolling=true
+    else
+        # Dynamic discovery of deployment manifest files (Helm, OpenShift, K8s)
+        local manifests=()
+        if [ -d "$dir/charts" ]; then
+            while IFS= read -r f; do
+                manifests+=("$f")
+            done < <(find "$dir/charts" -type f \( -name "*.yaml" -o -name "*.yml" \) 2>/dev/null)
+        fi
+        while IFS= read -r f; do
+            manifests+=("$f")
+        done < <(find "$dir" -maxdepth 3 -type f \( -name "*openshift*.yml" -o -name "*openshift*.yaml" -o -name "*template*.yml" -o -name "*template*.yaml" -o -name "*deploy*.yml" -o -name "*deploy*.yaml" \) 2>/dev/null)
+
+        for manifest in "${manifests[@]}"; do
+            if [[ "$manifest" != *"node_modules"* && "$manifest" != *".tmp"* && -f "$manifest" ]]; then
+                if grep -qE "RollingUpdate|rolling" "$manifest" 2>/dev/null; then
+                    has_rolling=true
+                    break
+                fi
+            fi
+        done
+    fi
+
+    if [ "$has_rolling" = true ]; then
         score=$((score + 2))
         checks+=("Rolling updates")
         log_pass "Deployment: Rolling updates"
