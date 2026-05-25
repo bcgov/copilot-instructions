@@ -646,8 +646,8 @@ check_deployment() {
     if check_contains "RollingUpdate|rolling" ".github" "$dir" || \
        check_contains "RollingUpdate|rolling" "charts" "$dir" || \
        check_contains "RollingUpdate|rolling" "openshift" "$dir" || \
-       check_contains "RollingUpdate|rolling" "backend" "$dir" || \
-       check_contains "RollingUpdate|rolling" "frontend" "$dir"; then
+       check_contains "RollingUpdate|rolling" "backend/openshift.deploy.yml" "$dir" || \
+       check_contains "RollingUpdate|rolling" "frontend/openshift.deploy.yml" "$dir"; then
         score=$((score + 2))
         checks+=("Rolling updates")
         log_pass "Deployment: Rolling updates"
