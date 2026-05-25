@@ -643,7 +643,11 @@ check_deployment() {
     fi
 
     # 2. Rolling update strategy (Level 4) - 2 pts
-    if check_contains "RollingUpdate\|rolling" ".github" "$dir"; then
+    if check_contains "RollingUpdate|rolling" ".github" "$dir" || \
+       check_contains "RollingUpdate|rolling" "charts" "$dir" || \
+       check_contains "RollingUpdate|rolling" "openshift" "$dir" || \
+       check_contains "RollingUpdate|rolling" "backend" "$dir" || \
+       check_contains "RollingUpdate|rolling" "frontend" "$dir"; then
         score=$((score + 2))
         checks+=("Rolling updates")
         log_pass "Deployment: Rolling updates"
