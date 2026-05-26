@@ -38,7 +38,7 @@ git() {
         fi
 
         # Block destructive squashing operations
-        if [[ "$*" =~ (rebase.*squash|merge.*squash|rebase.*fixup|rebase.*-i) ]]; then
+        if echo "$*" | grep -qE "(rebase.*squash|merge.*squash|rebase.*fixup|rebase.*-i)"; then
             echo "BLOCKED: Squashing commits destroys history and makes change review difficult. Never squash commits in PR branches." >&2
             return 1
         fi
@@ -46,7 +46,7 @@ git() {
         # Block tag pushes in all forms
         if [[ "$sub" == "push" ]]; then
             for arg in "$@"; do
-                if [[ "$arg" =~ ^(--tags|--follow-tags|refs/tags/|.*:refs/tags/) ]]; then
+                if echo "$arg" | grep -qE "^(--tags|--follow-tags|refs/tags/|.*:refs/tags/)"; then
                     echo "BLOCKED: Pushing tags is restricted. AI is not allowed to cut releases. Talk to the user." >&2
                     return 1
                 fi
@@ -86,7 +86,7 @@ gh() {
         esac
 
         # Block squash merge variants
-        if [[ "$*" =~ squash ]]; then
+        if echo "$*" | grep -q "squash"; then
             echo "BLOCKED: Squashing commits destroys history and makes review difficult. Use regular merge or rebase instead." >&2
             return 1
         fi
@@ -130,4 +130,32 @@ kubectl() {
 }
 
 export -f kubectl
+
+npm() {
+    # Skip during tab completion
+    if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+        if echo "$*" | grep -qi "legacy-peer-deps"; then
+            echo "BLOCKED: npm with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+            return 1
+        fi
+    fi
+
+    command npm "$@"
+}
+
+export -f npm
+
+npx() {
+    # Skip during tab completion
+    if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+        if echo "$*" | grep -qi "legacy-peer-deps"; then
+            echo "BLOCKED: npx with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+            return 1
+        fi
+    fi
+
+    command npx "$@"
+}
+
+export -f npx
 
