@@ -34,6 +34,7 @@
 - **NEVER** delete failing tests; **ALWAYS** fix the code.
 - **NEVER** run `kubectl` or `oc` commands. Access to Kubernetes and OpenShift is restricted.
 - **NEVER** comment or speak on behalf of the user or any human actor, simulate human inputs/responses, or impersonate any person in chat, code comments, pull requests, or commits.
+- **NEVER** use `--legacy-peer-deps` or `--legacy-peer-deps=true` with npm/npx under any circumstances. Always resolve peer dependency conflicts cleanly.
 
 ### Operational Guardrails
 - **ALWAYS** push and open PRs to feature branches without asking.

@@ -38,15 +38,32 @@ git() {
         fi
 
         # Block destructive squashing operations
-        if [[ "$*" =~ (rebase.*squash|merge.*squash|rebase.*fixup|rebase.*-i) ]]; then
-            echo "BLOCKED: Squashing commits destroys history and makes change review difficult. Never squash commits in PR branches." >&2
+        local is_destructive=false
+        if [[ "$sub" == "rebase" ]]; then
+            for arg in "$@"; do
+                if [[ "$arg" == "-i" || "$arg" == "--interactive" || "$arg" == "squash" || "$arg" == "fixup" || "$arg" == "--autosquash" || "$arg" =~ autosquash ]]; then
+                    is_destructive=true
+                    break
+                fi
+            done
+        elif [[ "$sub" == "merge" ]]; then
+            for arg in "$@"; do
+                if [[ "$arg" == "--squash" || "$arg" == "squash" ]]; then
+                    is_destructive=true
+                    break
+                fi
+            done
+        fi
+
+        if [[ "$is_destructive" == "true" ]]; then
+            echo "BLOCKED: Squashing or interactive rebasing destroys history and makes change review difficult. Never squash commits in PR branches." >&2
             return 1
         fi
 
         # Block tag pushes in all forms
         if [[ "$sub" == "push" ]]; then
             for arg in "$@"; do
-                if [[ "$arg" =~ ^(--tags|--follow-tags|refs/tags/|.*:refs/tags/) ]]; then
+                if echo "$arg" | grep -qE "^(--tags|--follow-tags|refs/tags/|.*:refs/tags/)"; then
                     echo "BLOCKED: Pushing tags is restricted. AI is not allowed to cut releases. Talk to the user." >&2
                     return 1
                 fi
@@ -85,11 +102,6 @@ gh() {
                 ;;
         esac
 
-        # Block squash merge variants
-        if [[ "$*" =~ squash ]]; then
-            echo "BLOCKED: Squashing commits destroys history and makes review difficult. Use regular merge or rebase instead." >&2
-            return 1
-        fi
     fi
 
     command gh "$@"
@@ -130,4 +142,50 @@ kubectl() {
 }
 
 export -f kubectl
+
+npm() {
+    # Skip during tab completion
+    if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+        # Check environment bypass vector
+        if [[ -n "${NPM_CONFIG_LEGACY_PEER_DEPS:-}" ]]; then
+            echo "BLOCKED: NPM_CONFIG_LEGACY_PEER_DEPS is set. Bypassing peer deps is forbidden." >&2
+            return 1
+        fi
+
+        # Check arguments for exact flags
+        for arg in "$@"; do
+            if [[ "$arg" == "--legacy-peer-deps" || "$arg" =~ ^--legacy-peer-deps= ]]; then
+                echo "BLOCKED: npm with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+                return 1
+            fi
+        done
+    fi
+
+    command npm "$@"
+}
+
+export -f npm
+
+npx() {
+    # Skip during tab completion
+    if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+        # Check environment bypass vector
+        if [[ -n "${NPM_CONFIG_LEGACY_PEER_DEPS:-}" ]]; then
+            echo "BLOCKED: NPM_CONFIG_LEGACY_PEER_DEPS is set. Bypassing peer deps is forbidden." >&2
+            return 1
+        fi
+
+        # Check arguments for exact flags
+        for arg in "$@"; do
+            if [[ "$arg" == "--legacy-peer-deps" || "$arg" =~ ^--legacy-peer-deps= ]]; then
+                echo "BLOCKED: npx with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+                return 1
+            fi
+        done
+    fi
+
+    command npx "$@"
+}
+
+export -f npx
 
