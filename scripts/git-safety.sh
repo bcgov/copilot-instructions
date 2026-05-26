@@ -38,8 +38,25 @@ git() {
         fi
 
         # Block destructive squashing operations
-        if echo "$*" | grep -qE "(rebase.*squash|merge.*squash|rebase.*fixup|rebase.*-i)"; then
-            echo "BLOCKED: Squashing commits destroys history and makes change review difficult. Never squash commits in PR branches." >&2
+        local is_destructive=false
+        if [[ "$sub" == "rebase" ]]; then
+            for arg in "$@"; do
+                if [[ "$arg" == "-i" || "$arg" == "--interactive" || "$arg" == "squash" || "$arg" == "fixup" || "$arg" == "--autosquash" || "$arg" =~ autosquash ]]; then
+                    is_destructive=true
+                    break
+                fi
+            done
+        elif [[ "$sub" == "merge" ]]; then
+            for arg in "$@"; do
+                if [[ "$arg" == "--squash" || "$arg" == "squash" ]]; then
+                    is_destructive=true
+                    break
+                fi
+            done
+        fi
+
+        if [[ "$is_destructive" == "true" ]]; then
+            echo "BLOCKED: Squashing or interactive rebasing destroys history and makes change review difficult. Never squash commits in PR branches." >&2
             return 1
         fi
 
@@ -85,11 +102,6 @@ gh() {
                 ;;
         esac
 
-        # Block squash merge variants
-        if echo "$*" | grep -q "squash"; then
-            echo "BLOCKED: Squashing commits destroys history and makes review difficult. Use regular merge or rebase instead." >&2
-            return 1
-        fi
     fi
 
     command gh "$@"
@@ -134,10 +146,19 @@ export -f kubectl
 npm() {
     # Skip during tab completion
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
-        if echo "$*" | grep -qi "legacy-peer-deps"; then
-            echo "BLOCKED: npm with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+        # Check environment bypass vector
+        if [[ -n "${NPM_CONFIG_LEGACY_PEER_DEPS:-}" ]]; then
+            echo "BLOCKED: NPM_CONFIG_LEGACY_PEER_DEPS is set. Bypassing peer deps is forbidden." >&2
             return 1
         fi
+
+        # Check arguments for exact flags
+        for arg in "$@"; do
+            if [[ "$arg" == "--legacy-peer-deps" || "$arg" =~ ^--legacy-peer-deps= ]]; then
+                echo "BLOCKED: npm with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+                return 1
+            fi
+        done
     fi
 
     command npm "$@"
@@ -148,10 +169,19 @@ export -f npm
 npx() {
     # Skip during tab completion
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
-        if echo "$*" | grep -qi "legacy-peer-deps"; then
-            echo "BLOCKED: npx with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+        # Check environment bypass vector
+        if [[ -n "${NPM_CONFIG_LEGACY_PEER_DEPS:-}" ]]; then
+            echo "BLOCKED: NPM_CONFIG_LEGACY_PEER_DEPS is set. Bypassing peer deps is forbidden." >&2
             return 1
         fi
+
+        # Check arguments for exact flags
+        for arg in "$@"; do
+            if [[ "$arg" == "--legacy-peer-deps" || "$arg" =~ ^--legacy-peer-deps= ]]; then
+                echo "BLOCKED: npx with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+                return 1
+            fi
+        done
     fi
 
     command npx "$@"
