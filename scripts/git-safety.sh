@@ -27,13 +27,17 @@ git() {
 
         # Block config
         if [[ "$sub" == "config" ]]; then
-            echo "BLOCKED: git config is not allowed. Talk to the user." >&2
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from modifying Git configuration." >&2
+            echo "         Changes to Git configuration could alter repository behavior and bypass safety rules." >&2
+            echo "         HALT immediately and request manual action from the USER." >&2
             return 1
         fi
 
         # Block tagging
         if [[ "$sub" == "tag" ]]; then
-            echo "BLOCKED: Tagging is restricted. AI is not allowed to cut releases. Talk to the user." >&2
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from tagging commits." >&2
+            echo "         AI is not allowed to manage git tags or cut releases." >&2
+            echo "         HALT immediately and request manual action from the USER." >&2
             return 1
         fi
 
@@ -56,7 +60,9 @@ git() {
         fi
 
         if [[ "$is_destructive" == "true" ]]; then
-            echo "BLOCKED: Squashing or interactive rebasing destroys history and makes change review difficult. Never squash commits in PR branches." >&2
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from squashing commits or interactive rebasing." >&2
+            echo "         Squashing destroys git history and makes change review difficult." >&2
+            echo "         HALT immediately and request manual action from the USER." >&2
             return 1
         fi
 
@@ -64,7 +70,9 @@ git() {
         if [[ "$sub" == "push" ]]; then
             for arg in "$@"; do
                 if echo "$arg" | grep -qE "^(--tags|--follow-tags|refs/tags/|.*:refs/tags/)"; then
-                    echo "BLOCKED: Pushing tags is restricted. AI is not allowed to cut releases. Talk to the user." >&2
+                    echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from pushing tags." >&2
+                    echo "         AI is not allowed to manage git tags or cut releases." >&2
+                    echo "         HALT immediately and request manual action from the USER." >&2
                     return 1
                 fi
             done
@@ -105,13 +113,19 @@ gh() {
         done
 
         if [[ "$cmd" == "release" ]]; then
-            echo "BLOCKED: Release operations are restricted. AI is not allowed to cut releases. Talk to the user." >&2
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from managing GitHub Releases." >&2
+            echo "         AI is not allowed to cut releases or manage git tags." >&2
+            echo "         HALT immediately and request manual action from the USER." >&2
             return 1
         elif [[ "$cmd" == "repo" && "$sub" == "delete" ]]; then
-            echo "BLOCKED: Repository deletion is restricted. Talk to the user." >&2
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from deleting repositories." >&2
+            echo "         Repository deletion is highly destructive and irreversible." >&2
+            echo "         HALT immediately and request manual action from the USER." >&2
             return 1
         elif [[ "$cmd" == "secret" ]]; then
-            echo "BLOCKED: Secret management is restricted. Talk to the user." >&2
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from managing repository secrets." >&2
+            echo "         Secret management must be handled directly by the USER." >&2
+            echo "         HALT immediately." >&2
             return 1
         elif [[ "$cmd" == "pr" ]]; then
             if [[ "$sub" == "merge" ]]; then
@@ -151,7 +165,9 @@ oc() {
     fi
 
     if [[ "$is_completion" != "true" ]]; then
-        echo "BLOCKED: Running oc directly is restricted." >&2
+        echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from running OpenShift (oc) commands directly." >&2
+        echo "         Direct cluster interaction is restricted to ensure system stability." >&2
+        echo "         HALT immediately and request manual action from the USER." >&2
         return 1
     fi
 
@@ -168,7 +184,9 @@ kubectl() {
     fi
 
     if [[ "$is_completion" != "true" ]]; then
-        echo "BLOCKED: Running kubectl directly is restricted." >&2
+        echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from running Kubernetes (kubectl) commands directly." >&2
+        echo "         Direct cluster interaction is restricted to ensure system stability." >&2
+        echo "         HALT immediately and request manual action from the USER." >&2
         return 1
     fi
 
@@ -182,14 +200,18 @@ npm() {
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
         # Check environment bypass vector
         if [[ -n "${NPM_CONFIG_LEGACY_PEER_DEPS:-}" ]]; then
-            echo "BLOCKED: NPM_CONFIG_LEGACY_PEER_DEPS is set. Bypassing peer deps is forbidden." >&2
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from bypassing peer dependencies." >&2
+            echo "         NPM_CONFIG_LEGACY_PEER_DEPS environment variable must not be set." >&2
+            echo "         HALT immediately and resolve peer dependency conflicts cleanly." >&2
             return 1
         fi
 
         # Check arguments for exact flags
         for arg in "$@"; do
             if [[ "$arg" == "--legacy-peer-deps" || "$arg" =~ ^--legacy-peer-deps= ]]; then
-                echo "BLOCKED: npm with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+                echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from bypassing peer dependencies." >&2
+                echo "         npm with --legacy-peer-deps is strictly forbidden." >&2
+                echo "         HALT immediately and resolve peer dependency conflicts cleanly." >&2
                 return 1
             fi
         done
@@ -205,14 +227,18 @@ npx() {
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
         # Check environment bypass vector
         if [[ -n "${NPM_CONFIG_LEGACY_PEER_DEPS:-}" ]]; then
-            echo "BLOCKED: NPM_CONFIG_LEGACY_PEER_DEPS is set. Bypassing peer deps is forbidden." >&2
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from bypassing peer dependencies." >&2
+            echo "         NPM_CONFIG_LEGACY_PEER_DEPS environment variable must not be set." >&2
+            echo "         HALT immediately and resolve peer dependency conflicts cleanly." >&2
             return 1
         fi
 
         # Check arguments for exact flags
         for arg in "$@"; do
             if [[ "$arg" == "--legacy-peer-deps" || "$arg" =~ ^--legacy-peer-deps= ]]; then
-                echo "BLOCKED: npx with --legacy-peer-deps is strictly forbidden. Resolve your peer dependency conflicts cleanly instead of bypassing them." >&2
+                echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from bypassing peer dependencies." >&2
+                echo "         npx with --legacy-peer-deps is strictly forbidden." >&2
+                echo "         HALT immediately and resolve peer dependency conflicts cleanly." >&2
                 return 1
             fi
         done
@@ -222,4 +248,3 @@ npx() {
 }
 
 export -f npx
-
