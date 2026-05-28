@@ -79,29 +79,58 @@ export -f git
 gh() {
     # Skip during tab completion
     if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
-        case "$1" in
-            release)
-                echo "BLOCKED: Release operations are restricted. AI is not allowed to cut releases. Talk to the user." >&2
-                return 1
-                ;;
-            pr)
-                if [[ "$2" == "merge" ]]; then
-                    echo "BLOCKED: PR merging is restricted. Talk to the user." >&2
-                    return 1
-                fi
-                ;;
-            repo)
-                if [[ "$2" == "delete" ]]; then
-                    echo "BLOCKED: Repository deletion is restricted. Talk to the user." >&2
-                    return 1
-                fi
-                ;;
-            secret)
-                echo "BLOCKED: Secret management is restricted. Talk to the user." >&2
-                return 1
-                ;;
-        esac
+        # Identify command and subcommand (skip global options like -R, --repo, etc.)
+        local cmd=""
+        local sub=""
+        local args=("$@")
+        local i=0
+        while [[ $i -lt ${#args[@]} ]]; do
+            case "${args[$i]}" in
+                -R|--repo|--app|--host)
+                    ((i+=2))
+                    ;;
+                -*)
+                    ((i+=1))
+                    ;;
+                *)
+                    if [[ -z "$cmd" ]]; then
+                        cmd="${args[$i]}"
+                    elif [[ -z "$sub" ]]; then
+                        sub="${args[$i]}"
+                        break
+                    fi
+                    ((i+=1))
+                    ;;
+            esac
+        done
 
+        if [[ "$cmd" == "release" ]]; then
+            echo "BLOCKED: Release operations are restricted. AI is not allowed to cut releases. Talk to the user." >&2
+            return 1
+        elif [[ "$cmd" == "repo" && "$sub" == "delete" ]]; then
+            echo "BLOCKED: Repository deletion is restricted. Talk to the user." >&2
+            return 1
+        elif [[ "$cmd" == "secret" ]]; then
+            echo "BLOCKED: Secret management is restricted. Talk to the user." >&2
+            return 1
+        elif [[ "$cmd" == "pr" ]]; then
+            if [[ "$sub" == "merge" ]]; then
+                echo "BLOCKED: PR merging is restricted. Talk to the user." >&2
+                return 1
+            elif [[ "$sub" == "review" ]]; then
+                local has_approve=false
+                for arg in "$@"; do
+                    if [[ "$arg" == "--approve" || "$arg" == "-a" ]]; then
+                        has_approve=true
+                        break
+                    fi
+                done
+                if [[ "$has_approve" == "true" ]]; then
+                    echo "BLOCKED: PR approval is restricted. AI is not allowed to approve PRs. Talk to the user." >&2
+                    return 1
+                fi
+            fi
+        fi
     fi
 
     command gh "$@"

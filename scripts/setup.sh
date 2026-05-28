@@ -103,19 +103,35 @@ install_hooks() {
   command git config --global core.hooksPath "$HOOKS_DIR"
 }
 
+cleanup_old_bashrc_safety() {
+  local bashrc="$HOME/.bashrc"
+  if [[ -f "$bashrc" ]]; then
+    echo "Cleaning up old safety wrapper definitions from ~/.bashrc..."
+    python3 -c '
+import sys, re
+path = sys.argv[1]
+with open(path, "r") as f:
+    content = f.read()
+
+# Remove old git/gh wrapper blocks and any duplicate AI policy blocks
+content = re.sub(r"# Git Safety.*?\nexport -f git\n*", "", content, flags=re.DOTALL)
+content = re.sub(r"# GitHub CLI Safety.*?\nexport -f gh\n*", "", content, flags=re.DOTALL)
+content = re.sub(r"# AI POLICY \(bcgov/copilot-instructions\).*?\nexport -f (gh|npx)\n*", "", content, flags=re.DOTALL)
+
+# Remove trailing empty lines or excessive newlines
+content = re.sub(r"\n{3,}", "\n\n", content)
+
+with open(path, "w") as f:
+    f.write(content)
+' "$bashrc"
+  fi
+}
+
 install_gh_safety() {
   local bashrc="$HOME/.bashrc"
   local git_safety="$SCRIPT_DIR/git-safety.sh"
   
-  if grep -q '^gh()' "$bashrc" 2>/dev/null; then
-    echo "NOTE: gh() already exists in ~/.bashrc. Remove it to re-install the safety wrapper." >&2
-    return 0
-  fi
-
-  if grep -q "AI POLICY (bcgov/copilot-instructions)" "$bashrc" 2>/dev/null; then
-    echo "NOTE: Remove the existing AI POLICY block in ~/.bashrc to re-install it." >&2
-    return 0
-  fi
+  cleanup_old_bashrc_safety
 
   if [[ ! -f "$git_safety" ]]; then
     echo "ERROR: Could not find $git_safety" >&2
@@ -123,7 +139,11 @@ install_gh_safety() {
   fi
 
   # Append the gh safety function from git-safety.sh (skip shebang)
-  tail -n +2 "$git_safety" >> "$bashrc"
+  {
+    echo ""
+    echo "# AI POLICY (bcgov/copilot-instructions)"
+    tail -n +2 "$git_safety"
+  } >> "$bashrc"
   
   echo "Added GitHub CLI safety to ~/.bashrc"
 }
