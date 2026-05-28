@@ -115,7 +115,10 @@ gh() {
             return 1
         elif [[ "$cmd" == "pr" ]]; then
             if [[ "$sub" == "merge" ]]; then
-                echo "BLOCKED: PR merging is restricted. Talk to the user." >&2
+                echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from merging Pull Requests." >&2
+                echo "         Under bcgov/copilot-instructions policy, all merges must be reviewed and executed manually by the USER." >&2
+                echo "         Do NOT attempt to bypass this block using absolute paths, alternate flags, or command overrides." >&2
+                echo "         HALT immediately and report to the user." >&2
                 return 1
             elif [[ "$sub" == "review" ]]; then
                 local has_approve=false
@@ -126,7 +129,9 @@ gh() {
                     fi
                 done
                 if [[ "$has_approve" == "true" ]]; then
-                    echo "BLOCKED: PR approval is restricted. AI is not allowed to approve PRs. Talk to the user." >&2
+                    echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from approving Pull Requests." >&2
+                    echo "         Self-approving or bypass-approving is a direct violation of repository security guardrails." >&2
+                    echo "         HALT immediately and request manual approval from the USER." >&2
                     return 1
                 fi
             fi
