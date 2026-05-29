@@ -103,27 +103,78 @@ install_hooks() {
   command git config --global core.hooksPath "$HOOKS_DIR"
 }
 
+cleanup_old_bashrc_safety() {
+  local bashrc="$HOME/.bashrc"
+  if [[ -f "$bashrc" ]]; then
+    echo "Cleaning up old safety wrapper definitions from ~/.bashrc..."
+    
+    if command -v python3 >/dev/null 2>&1; then
+      python3 -c '
+import sys, re
+path = sys.argv[1]
+with open(path, "r") as f:
+    content = f.read()
+
+# 1. Clean up the new marked block first if it exists
+content = re.sub(r"# >>> bcgov/copilot-instructions safety block >>>.*?# <<< bcgov/copilot-instructions safety block <<<\n*", "", content, flags=re.DOTALL)
+
+# 2. Clean up legacy/historical unmarked blocks safely (matching up to their specific exports)
+content = re.sub(r"# Git Safety.*?\nexport -f git\n*", "", content, flags=re.DOTALL)
+content = re.sub(r"# GitHub CLI Safety.*?\nexport -f gh\n*", "", content, flags=re.DOTALL)
+# Make sure we do not leave orphaned functions by matching through the entire old AI policy block
+content = re.sub(r"# AI POLICY \(bcgov/copilot-instructions\).*?\nexport -f (gh|npx)\n*", "", content, flags=re.DOTALL)
+
+# Remove trailing empty lines or excessive newlines
+content = re.sub(r"\n{3,}", "\n\n", content)
+
+with open(path, "w") as f:
+    f.write(content)
+' "$bashrc"
+    else
+      echo "WARNING: python3 is not available. Skipping deep regex cleanup of old safety blocks." >&2
+      echo "         Any existing marked safety block will be cleaned up using basic sed." >&2
+      
+      # Securely strip marked block using sed fallback if present
+      if grep -q "# >>> bcgov/copilot-instructions safety block >>>" "$bashrc"; then
+        local temp_file
+        temp_file=$(mktemp)
+        sed '/# >>> bcgov/copilot-instructions safety block >>>/,/# <<< bcgov/copilot-instructions safety block <<</d' "$bashrc" > "$temp_file"
+        cat "$temp_file" > "$bashrc"
+        rm -f "$temp_file"
+      fi
+    fi
+  fi
+}
+
 install_gh_safety() {
   local bashrc="$HOME/.bashrc"
   local git_safety="$SCRIPT_DIR/git-safety.sh"
+  local timestamp
+  timestamp=$(date +%s)
   
-  if grep -q '^gh()' "$bashrc" 2>/dev/null; then
-    echo "NOTE: gh() already exists in ~/.bashrc. Remove it to re-install the safety wrapper." >&2
-    return 0
-  fi
-
-  if grep -q "AI POLICY (bcgov/copilot-instructions)" "$bashrc" 2>/dev/null; then
-    echo "NOTE: Remove the existing AI POLICY block in ~/.bashrc to re-install it." >&2
-    return 0
-  fi
-
+  # 1. Pre-flight check: Verify source file exists before modifying anything
   if [[ ! -f "$git_safety" ]]; then
-    echo "ERROR: Could not find $git_safety" >&2
+    echo "ERROR: Could not find safety source script at $git_safety" >&2
     return 1
   fi
 
-  # Append the gh safety function from git-safety.sh (skip shebang)
-  tail -n +2 "$git_safety" >> "$bashrc"
+  # 2. Pre-flight check: Create a backup of ~/.bashrc first
+  if [[ -f "$bashrc" ]]; then
+    cp "$bashrc" "$bashrc.bak.$timestamp"
+    echo "NOTE: Created backup of ~/.bashrc at $bashrc.bak.$timestamp" >&2
+  fi
+
+  # 3. Purge old blocks safely
+  cleanup_old_bashrc_safety
+
+  # 4. Append the gh safety function wrapped in explicit BEGIN/END markers (skip shebang)
+  {
+    echo ""
+    echo "# >>> bcgov/copilot-instructions safety block >>>"
+    echo "# AI POLICY (bcgov/copilot-instructions)"
+    tail -n +2 "$git_safety"
+    echo "# <<< bcgov/copilot-instructions safety block <<<"
+  } >> "$bashrc"
   
   echo "Added GitHub CLI safety to ~/.bashrc"
 }
