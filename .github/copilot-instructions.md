@@ -46,7 +46,7 @@
 ### Git Workflow
 1. **Branching:** `git checkout main && git pull && git switch -c feat/name && git push -u origin feat/name`.
 2. **PR Creation:** `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline`.
-3. **Closing:** **ALWAYS** end PR bodies with `Closes #<number>`.
+3. **Closing:** Use `Closes #<issue_number>` when the PR closes an associated issue.
 
 ### Project Standards
 - **ALWAYS** use Conventional Commits with scoped, descriptive messages.
