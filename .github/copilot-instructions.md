@@ -6,9 +6,9 @@
 - **ALWAYS** use **Explicit Innovation Mode**: fix FIRST, then ask before proposing "better" versions. (Simpler/safer alternatives can be raised before starting).
 
 ### Implementation Discipline
-- **NEVER** implement unrequested features.
-- **ALWAYS** use direct code; refactor only on duplication. Touch ONLY required files.
-- **ALWAYS** match project style exactly and remove orphans.
+- **NEVER** implement unrequested features; limit changes strictly to the active prompt requirements.
+- **ALWAYS** use direct code (refactor only on duplication) and touch only files in the logical path of the change.
+- **ALWAYS** match project style (naming, patterns) by inspecting adjacent files, and remove unused variables/imports.
 - **NEVER** report "Done" without terminal verification (e.g., `ls`, `git status`).
 - **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a sanitized `git diff` (redact all secrets/PII).
 
@@ -32,9 +32,9 @@
 - **NEVER** commit secrets, PII, or grant broad permissions.
 - **NEVER** silence diagnostics (`eslint-disable`); fix the root cause.
 - **NEVER** delete failing tests; **ALWAYS** fix the code.
-- **NEVER** run `kubectl` or `oc` commands. Access to Kubernetes and OpenShift is restricted.
-- **NEVER** comment or speak on behalf of the user or any human actor, simulate human inputs/responses, or impersonate any person in chat, code comments, pull requests, or commits.
-- **NEVER** use `--legacy-peer-deps` or `--legacy-peer-deps=true` with npm/npx under any circumstances. Always resolve peer dependency conflicts cleanly.
+- **NEVER** run `kubectl` or `oc` (access is restricted).
+- **NEVER** impersonate, simulate, or speak on behalf of any human actor in chat, comments, PRs, or commits.
+- **NEVER** use `--legacy-peer-deps` with npm/npx. Always resolve peer conflicts cleanly.
 
 ### Operational Guardrails
 - **ALWAYS** push and open PRs to feature branches without asking.
@@ -49,7 +49,7 @@
 3. **Closing:** Link associated issues by adding `Closes #<issue_number>` to the PR body only when the issue number is explicitly mentioned in the branch name (e.g., `feat/123-bug`) or the user prompt.
 
 ### Project Standards
-- **ALWAYS** use Conventional Commits with scoped, descriptive messages.
+- **ALWAYS** use Conventional Commits (derive the scope from the primary directory modified, e.g., `feat(auth):`).
 - **ALWAYS** use latest stable packages; **NEVER** downgrade or edit lock files silently.
 - **ALWAYS** use minimum permissions (e.g., `permissions: {}` in GitHub Actions).
 - **ALWAYS** use GitHub Releases; **NEVER** add manual version tracking artifacts.
