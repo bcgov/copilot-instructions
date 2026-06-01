@@ -1,0 +1,46 @@
+#!/bin/bash
+# npm safety wrapper — bcgov/copilot-instructions
+# Installed to ~/.local/bin/npm by scripts/setup.sh
+# Blocks --legacy-peer-deps usage for AI agents.
+#
+# Uses PATH shadowing instead of `export -f` to avoid BASH_FUNC_*%% environment
+# variable corruption when the user shell env is forwarded through agent runners
+# that parse `env` output line-by-line.
+
+# Locate the real npm binary, skipping this wrapper's own directory.
+_real_bin() {
+    local cmd="$1"
+    local this_dir
+    this_dir="$(dirname "$(readlink -f "$0")")"
+    while IFS= read -r dir; do
+        [[ "$dir" == "$this_dir" ]] && continue
+        [[ -x "$dir/$cmd" ]] && echo "$dir/$cmd" && return 0
+    done < <(printf '%s\n' "$PATH" | tr ':' '\n')
+    echo "ERROR: Real '$cmd' not found in PATH (excluding $this_dir)" >&2
+    exit 127
+}
+
+REAL_NPM="$(_real_bin npm)" || exit $?
+
+# Skip safety checks during tab completion.
+if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+    # Block environment-based bypass vector
+    if [[ -n "${NPM_CONFIG_LEGACY_PEER_DEPS:-}" ]]; then
+        echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from bypassing peer dependencies." >&2
+        echo "         NPM_CONFIG_LEGACY_PEER_DEPS environment variable must not be set." >&2
+        echo "         HALT immediately and resolve peer dependency conflicts cleanly." >&2
+        exit 1
+    fi
+
+    # Block flag-based bypass
+    for arg in "$@"; do
+        if [[ "$arg" == "--legacy-peer-deps" || "$arg" =~ ^--legacy-peer-deps= ]]; then
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from bypassing peer dependencies." >&2
+            echo "         npm with --legacy-peer-deps is strictly forbidden." >&2
+            echo "         HALT immediately and resolve peer dependency conflicts cleanly." >&2
+            exit 1
+        fi
+    done
+fi
+
+exec "$REAL_NPM" "$@"

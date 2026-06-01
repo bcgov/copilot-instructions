@@ -1,0 +1,87 @@
+#!/bin/bash
+# gh safety wrapper — bcgov/copilot-instructions
+# Installed to ~/.local/bin/gh by scripts/setup.sh
+# Blocks dangerous GitHub CLI operations for AI agents.
+#
+# Uses PATH shadowing instead of `export -f` to avoid BASH_FUNC_*%% environment
+# variable corruption when the user shell env is forwarded through agent runners
+# that parse `env` output line-by-line.
+
+# Locate the real gh binary, skipping this wrapper's own directory.
+_real_bin() {
+    local cmd="$1"
+    local this_dir
+    this_dir="$(dirname "$(readlink -f "$0")")"
+    while IFS= read -r dir; do
+        [[ "$dir" == "$this_dir" ]] && continue
+        [[ -x "$dir/$cmd" ]] && echo "$dir/$cmd" && return 0
+    done < <(printf '%s\n' "$PATH" | tr ':' '\n')
+    echo "ERROR: Real '$cmd' not found in PATH (excluding $this_dir)" >&2
+    exit 127
+}
+
+REAL_GH="$(_real_bin gh)" || exit $?
+
+# Skip safety checks during tab completion.
+if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
+    # Identify command and subcommand (skip global options like -R, --repo, etc.)
+    cmd=""
+    sub=""
+    args=("$@")
+    i=0
+    while [[ $i -lt ${#args[@]} ]]; do
+        case "${args[$i]}" in
+            -R|--repo|--app|--host)
+                ((i+=2))
+                ;;
+            -*)
+                ((i+=1))
+                ;;
+            *)
+                if [[ -z "$cmd" ]]; then
+                    cmd="${args[$i]}"
+                elif [[ -z "$sub" ]]; then
+                    sub="${args[$i]}"
+                    break
+                fi
+                ((i+=1))
+                ;;
+        esac
+    done
+
+    if [[ "$cmd" == "release" ]]; then
+        echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from managing GitHub Releases." >&2
+        echo "         AI is not allowed to cut releases or manage git tags." >&2
+        echo "         HALT immediately and request manual action from the USER." >&2
+        exit 1
+    elif [[ "$cmd" == "repo" && "$sub" == "delete" ]]; then
+        echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from deleting repositories." >&2
+        echo "         Repository deletion is highly destructive and irreversible." >&2
+        echo "         HALT immediately and request manual action from the USER." >&2
+        exit 1
+    elif [[ "$cmd" == "secret" ]]; then
+        echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from managing repository secrets." >&2
+        echo "         Secret management must be handled directly by the USER." >&2
+        echo "         HALT immediately." >&2
+        exit 1
+    elif [[ "$cmd" == "pr" ]]; then
+        if [[ "$sub" == "merge" ]]; then
+            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from merging Pull Requests." >&2
+            echo "         Under bcgov/copilot-instructions policy, all merges must be reviewed and executed manually by the USER." >&2
+            echo "         Do NOT attempt to bypass this block using absolute paths, alternate flags, or command overrides." >&2
+            echo "         HALT immediately and report to the user." >&2
+            exit 1
+        elif [[ "$sub" == "review" ]]; then
+            for arg in "$@"; do
+                if [[ "$arg" == "--approve" || "$arg" == "-a" ]]; then
+                    echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from approving Pull Requests." >&2
+                    echo "         Self-approving or bypass-approving is a direct violation of repository security guardrails." >&2
+                    echo "         HALT immediately and request manual approval from the USER." >&2
+                    exit 1
+                fi
+            done
+        fi
+    fi
+fi
+
+exec "$REAL_GH" "$@"

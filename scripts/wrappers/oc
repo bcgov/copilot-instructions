@@ -1,0 +1,39 @@
+#!/bin/bash
+# oc safety wrapper — bcgov/copilot-instructions
+# Installed to ~/.local/bin/oc by scripts/setup.sh
+# Blocks all oc (OpenShift CLI) commands for AI agents except tab completion.
+#
+# Uses PATH shadowing instead of `export -f` to avoid BASH_FUNC_*%% environment
+# variable corruption when the user shell env is forwarded through agent runners
+# that parse `env` output line-by-line.
+
+# Locate the real oc binary, skipping this wrapper's own directory.
+_real_bin() {
+    local cmd="$1"
+    local this_dir
+    this_dir="$(dirname "$(readlink -f "$0")")"
+    while IFS= read -r dir; do
+        [[ "$dir" == "$this_dir" ]] && continue
+        [[ -x "$dir/$cmd" ]] && echo "$dir/$cmd" && return 0
+    done < <(printf '%s\n' "$PATH" | tr ':' '\n')
+    echo "ERROR: Real '$cmd' not found in PATH (excluding $this_dir)" >&2
+    exit 127
+}
+
+# Allow only cobra-style completion calls (__complete or __completeNoDesc).
+# Both COMP_LINE and COMP_POINT must be set and the first argument must be
+# the cobra completion sentinel for this to be treated as a completion call.
+is_completion=false
+if [[ -n "${COMP_LINE:-}" && -n "${COMP_POINT:-}" && "${1:-}" == "__complete" ]]; then
+    is_completion=true
+fi
+
+if [[ "$is_completion" != "true" ]]; then
+    echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from running OpenShift (oc) commands directly." >&2
+    echo "         Direct cluster interaction is restricted to ensure system stability." >&2
+    echo "         HALT immediately and request manual action from the USER." >&2
+    exit 1
+fi
+
+REAL_OC="$(_real_bin oc)" || exit $?
+exec "$REAL_OC" "$@"
