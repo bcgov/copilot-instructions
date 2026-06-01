@@ -11,12 +11,14 @@
 _real_bin() {
     local cmd="$1"
     local this_dir
-    this_dir="$(dirname "$(readlink -f "$0")")"
+    local bin_dir="$HOME/.local/bin"
+    this_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     while IFS= read -r dir; do
         [[ "$dir" == "$this_dir" ]] && continue
+        [[ "$dir" == "$bin_dir" ]] && continue
         [[ -x "$dir/$cmd" ]] && echo "$dir/$cmd" && return 0
     done < <(printf '%s\n' "$PATH" | tr ':' '\n')
-    echo "ERROR: Real '$cmd' not found in PATH (excluding $this_dir)" >&2
+    echo "ERROR: Real '$cmd' not found in PATH (excluding $this_dir and $bin_dir)" >&2
     exit 127
 }
 
@@ -24,7 +26,7 @@ _real_bin() {
 # Both COMP_LINE and COMP_POINT must be set and the first argument must be
 # the cobra completion sentinel for this to be treated as a completion call.
 is_completion=false
-if [[ -n "${COMP_LINE:-}" && -n "${COMP_POINT:-}" && "${1:-}" == "__complete" ]]; then
+if [[ -n "${COMP_LINE:-}" && -n "${COMP_POINT:-}" && ( "${1:-}" == "__complete" || "${1:-}" == "__completeNoDesc" ) ]]; then
     is_completion=true
 fi
 
