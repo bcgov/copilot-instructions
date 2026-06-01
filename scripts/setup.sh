@@ -5,6 +5,25 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 HOOKS_DIR="$HOME/.githooks"
 BIN_DIR="$HOME/.local/bin"
 
+# Locate the real git binary, bypassing ~/.local/bin/git wrapper
+_real_git() {
+  local git_bin=""
+  while IFS= read -r dir; do
+    [[ "$dir" == "$BIN_DIR" ]] && continue
+    if [[ -x "$dir/git" ]]; then
+      git_bin="$dir/git"
+      break
+    fi
+  done < <(printf '%s\n' "$PATH" | tr ':' '\n')
+
+  if [[ -z "${git_bin:-}" ]]; then
+    echo "ERROR: Real git binary not found in PATH." >&2
+    exit 127
+  fi
+
+  "$git_bin" "$@"
+}
+
 install_gitleaks() {
   mkdir -p "$BIN_DIR"
 
@@ -88,7 +107,7 @@ install_hooks() {
 
   # Check and warn about existing git config
   local current_hooks_path
-  current_hooks_path=$(command git config --global --get core.hooksPath 2>/dev/null || true)
+  current_hooks_path=$(_real_git config --global --get core.hooksPath 2>/dev/null || true)
   
   if [[ -n "${current_hooks_path:-}" ]] && [[ "$current_hooks_path" != "$HOOKS_DIR" ]]; then
     echo "WARNING: Your global git core.hooksPath is currently set to: $current_hooks_path" >&2
@@ -100,7 +119,7 @@ install_hooks() {
     fi
   fi
 
-  command git config --global core.hooksPath "$HOOKS_DIR"
+  _real_git config --global core.hooksPath "$HOOKS_DIR"
 }
 
 # Remove the old bashrc-injection approach (bash function + export -f).
@@ -194,7 +213,7 @@ echo "✅ Setup complete!"
 echo "Git hooks:        Secrets blocked (Gitleaks) + main/master push blocked"
 echo "Safety wrappers:  Installed to $BIN_DIR (git, gh, npm, npx, kubectl, oc)"
 echo "                  Blocklist enforced via PATH shadowing — no shell function exports"
-echo "Git config:       All git config commands blocked (use 'command git config' to bypass)"
+echo "Git config:       All git config commands blocked"
 echo "Kubernetes/OpenShift: All kubectl and oc commands blocked by default"
 echo ""
 echo "Restart your terminal (or run: hash -r) for wrapper changes to take effect."
