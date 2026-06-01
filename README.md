@@ -113,7 +113,7 @@ cd copilot-instructions
 ### What it installs:
 
 1. **Global Git Hooks**: Pre-commit and pre-push hooks that scan for secrets and prevent direct pushes to protected branches (e.g., `main`).
-2. **Shell Safety Wrappers**: Hardened `git` and `gh` functions that intercept dangerous operations in your terminal *before* they reach the network or modify local state.
+2. **Shell Safety Wrappers**: Hardened PATH-shadowing wrapper scripts (`git`, `gh`, `npm`, `npx`, `kubectl`, `oc`) that intercept dangerous operations in your terminal *before* they execute.
 
 #### Blocked Operations & Rationale
 
@@ -127,6 +127,9 @@ cd copilot-instructions
 | **GitHub CLI** | `pr merge` | Prevents AI from bypassing human review to merge its own code. |
 | **GitHub CLI** | `repo delete` | Catastrophic failure prevention. AI should never have the power to delete repositories. |
 | **GitHub CLI** | `secret` | Prevents AI from viewing or modifying organizational/repository secrets. |
+| **npm / npx** | `--legacy-peer-deps` | Prevents bypassing peer dependency resolution, ensuring clean package management. |
+| **kubectl** | All commands | Blocks direct Kubernetes cluster interaction to ensure system stability. |
+| **oc** | All commands | Blocks direct OpenShift cluster interaction to ensure system stability. |
 
 ## Optional Enhancements
 

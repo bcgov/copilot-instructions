@@ -5,6 +5,25 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 HOOKS_DIR="$HOME/.githooks"
 BIN_DIR="$HOME/.local/bin"
 
+# Locate the real git binary, bypassing ~/.local/bin/git wrapper
+_real_git() {
+  local git_bin=""
+  while IFS= read -r dir; do
+    [[ "$dir" == "$BIN_DIR" ]] && continue
+    if [[ -x "$dir/git" ]]; then
+      git_bin="$dir/git"
+      break
+    fi
+  done < <(printf '%s\n' "$PATH" | tr ':' '\n')
+
+  if [[ -z "${git_bin:-}" ]]; then
+    echo "ERROR: Real git binary not found in PATH." >&2
+    exit 127
+  fi
+
+  "$git_bin" "$@"
+}
+
 install_gitleaks() {
   mkdir -p "$BIN_DIR"
 
@@ -88,7 +107,7 @@ install_hooks() {
 
   # Check and warn about existing git config
   local current_hooks_path
-  current_hooks_path=$(command git config --global --get core.hooksPath 2>/dev/null || true)
+  current_hooks_path=$(_real_git config --global --get core.hooksPath 2>/dev/null || true)
   
   if [[ -n "${current_hooks_path:-}" ]] && [[ "$current_hooks_path" != "$HOOKS_DIR" ]]; then
     echo "WARNING: Your global git core.hooksPath is currently set to: $current_hooks_path" >&2
@@ -100,9 +119,11 @@ install_hooks() {
     fi
   fi
 
-  command git config --global core.hooksPath "$HOOKS_DIR"
+  _real_git config --global core.hooksPath "$HOOKS_DIR"
 }
 
+# Remove the old bashrc-injection approach (bash function + export -f).
+# This cleans up installs from before the PATH-based wrapper migration.
 cleanup_old_bashrc_safety() {
   local bashrc="$HOME/.bashrc"
   if [[ -f "$bashrc" ]]; then
@@ -138,7 +159,7 @@ with open(path, "w") as f:
       if grep -q "# >>> bcgov/copilot-instructions safety block >>>" "$bashrc"; then
         local temp_file
         temp_file=$(mktemp)
-        sed '/# >>> bcgov/copilot-instructions safety block >>>/,/# <<< bcgov/copilot-instructions safety block <<</d' "$bashrc" > "$temp_file"
+        sed '/# >>> bcgov\/copilot-instructions safety block >>>/,/# <<< bcgov\/copilot-instructions safety block <<</d' "$bashrc" > "$temp_file"
         cat "$temp_file" > "$bashrc"
         rm -f "$temp_file"
       fi
@@ -146,51 +167,53 @@ with open(path, "w") as f:
   fi
 }
 
-install_gh_safety() {
-  local bashrc="$HOME/.bashrc"
-  local git_safety="$SCRIPT_DIR/git-safety.sh"
-  local timestamp
-  timestamp=$(date +%s)
-  
-  # 1. Pre-flight check: Verify source file exists before modifying anything
-  if [[ ! -f "$git_safety" ]]; then
-    echo "ERROR: Could not find safety source script at $git_safety" >&2
-    return 1
+# Install PATH-based wrapper scripts to ~/.local/bin/.
+# These shadow the real binaries without using `export -f`, avoiding the
+# BASH_FUNC_*%% environment variable corruption that occurs when agent runners
+# forward the shell environment by parsing `env` output line-by-line.
+install_wrappers() {
+  local wrapper_src="$SCRIPT_DIR/wrappers"
+  local wrappers=(git gh npm npx kubectl oc)
+
+  # Pre-flight: verify all wrapper sources exist before touching anything
+  for cmd in "${wrappers[@]}"; do
+    if [[ ! -f "$wrapper_src/$cmd" ]]; then
+      echo "ERROR: Wrapper script not found: $wrapper_src/$cmd" >&2
+      return 1
+    fi
+  done
+
+  mkdir -p "$BIN_DIR"
+
+  for cmd in "${wrappers[@]}"; do
+    cp "$wrapper_src/$cmd" "$BIN_DIR/$cmd"
+    chmod +x "$BIN_DIR/$cmd"
+  done
+
+  # Warn if ~/.local/bin is not on PATH — wrappers won't intercept commands otherwise.
+  if [[ ":${PATH}:" != *":${BIN_DIR}:"* ]]; then
+    echo "WARNING: $BIN_DIR is not in your PATH." >&2
+    echo "         Add the following to your ~/.bashrc or ~/.profile and restart your terminal:" >&2
+    echo '         export PATH="$HOME/.local/bin:$PATH"' >&2
   fi
 
-  # 2. Pre-flight check: Create a backup of ~/.bashrc first
-  if [[ -f "$bashrc" ]]; then
-    cp "$bashrc" "$bashrc.bak.$timestamp"
-    echo "NOTE: Created backup of ~/.bashrc at $bashrc.bak.$timestamp" >&2
-  fi
-
-  # 3. Purge old blocks safely
-  cleanup_old_bashrc_safety
-
-  # 4. Append the gh safety function wrapped in explicit BEGIN/END markers (skip shebang)
-  {
-    echo ""
-    echo "# >>> bcgov/copilot-instructions safety block >>>"
-    echo "# AI POLICY (bcgov/copilot-instructions)"
-    tail -n +2 "$git_safety"
-    echo "# <<< bcgov/copilot-instructions safety block <<<"
-  } >> "$bashrc"
-  
-  echo "Added GitHub CLI safety to ~/.bashrc"
+  echo "Installed safety wrappers to $BIN_DIR: ${wrappers[*]}"
 }
 
 install_gitleaks
 install_hooks
-if ! install_gh_safety; then
-  echo "ERROR: Failed to install GitHub CLI safety." >&2
+cleanup_old_bashrc_safety
+if ! install_wrappers; then
+  echo "ERROR: Failed to install safety wrappers." >&2
   exit 1
 fi
 
 echo ""
 echo "✅ Setup complete!"
-echo "Git hooks: Secrets blocked (Gitleaks) + main/master push blocked"
-echo "GitHub CLI: Blocklist enforced (gh pr merge, repo delete, secret blocked)"
-echo "Git config: All git config commands blocked (use 'command git config' to bypass)"
+echo "Git hooks:        Secrets blocked (Gitleaks) + main/master push blocked"
+echo "Safety wrappers:  Installed to $BIN_DIR (git, gh, npm, npx, kubectl, oc)"
+echo "                  Blocklist enforced via PATH shadowing — no shell function exports"
+echo "Git config:       All git config commands blocked"
 echo "Kubernetes/OpenShift: All kubectl and oc commands blocked by default"
 echo ""
-echo "Restart your terminal or run: source ~/.bashrc"
+echo "Restart your terminal (or run: hash -r) for wrapper changes to take effect."
