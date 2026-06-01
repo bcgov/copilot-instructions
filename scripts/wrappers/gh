@@ -10,14 +10,20 @@
 # Locate the real gh binary, skipping this wrapper's own directory.
 _real_bin() {
     local cmd="$1"
-    local this_dir
-    local bin_dir="$HOME/.local/bin"
-    this_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local this_dir wrapper_path bin_dir="$HOME/.local/bin"
+    # Resolve the directory this wrapper is running from, even when invoked via PATH.
+    wrapper_path="$0"
+    if [[ "$wrapper_path" != */* ]]; then
+        wrapper_path="$(command -v -- "$wrapper_path" 2>/dev/null || true)"
+    fi
+    wrapper_path="${wrapper_path:-$0}"
+    this_dir="$(cd "$(dirname "$wrapper_path")" && pwd -P)"
     while IFS= read -r dir; do
+        dir="${dir:-.}" # empty PATH entries mean the current directory
         [[ "$dir" == "$this_dir" ]] && continue
         [[ "$dir" == "$bin_dir" ]] && continue
         [[ -x "$dir/$cmd" ]] && echo "$dir/$cmd" && return 0
-    done < <(printf '%s\n' "$PATH" | tr ':' '\n')
+    done < <(printf '%s' "$PATH" | tr ':' '\n')
     echo "ERROR: Real '$cmd' not found in PATH (excluding $this_dir and $bin_dir)" >&2
     exit 127
 }
