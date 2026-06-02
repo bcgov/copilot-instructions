@@ -54,19 +54,39 @@ install_gitleaks() {
       ;;
   esac
 
-  local latest_url
-  latest_url=$(curl -fsSL "https://api.github.com/repos/gitleaks/gitleaks/releases/latest" \
-    | grep -Eo '"browser_download_url"\s*:\s*"[^"]+"' \
-    | cut -d '"' -f 4 \
-    | grep "gitleaks_.*_${os}_${arch}\.tar\.gz" \
-    | head -n 1)
+  local latest_url=""
+  
+  # Temporarily disable pipefail and set -e to handle network issues gracefully
+  set +e +o pipefail
+  local json_data
+  json_data=$(curl -fsSL --connect-timeout 5 "https://api.github.com/repos/gitleaks/gitleaks/releases/latest" 2>/dev/null)
+  local curl_status=$?
+  set -e -o pipefail
 
-  if [[ -z "${latest_url:-}" ]]; then
-    echo "ERROR: Could not find latest gitleaks tarball for ${os}_${arch}." >&2
-    exit 1
+  if [[ $curl_status -eq 0 ]] && [[ -n "$json_data" ]]; then
+    latest_url=$(echo "$json_data" \
+      | grep -Eo '"browser_download_url"\s*:\s*"[^"]+"' \
+      | cut -d '"' -f 4 \
+      | grep "gitleaks_.*_${os}_${arch}\.tar\.gz" \
+      | head -n 1 || true)
   fi
 
-  curl -fsSL "$latest_url" | tar -xz -C "$BIN_DIR" gitleaks
+  if [[ -n "${latest_url:-}" ]]; then
+    echo "Downloading and installing latest gitleaks to $BIN_DIR..."
+    set +e
+    curl -fsSL --connect-timeout 10 "$latest_url" | tar -xz -C "$BIN_DIR" gitleaks 2>/dev/null
+    local download_status=$?
+    set -e
+    if [[ $download_status -ne 0 ]]; then
+      echo "WARNING: Failed to download or extract gitleaks. Skipping." >&2
+    fi
+  else
+    if command -v gitleaks >/dev/null 2>&1; then
+      echo "WARNING: Offline or unable to connect to api.github.com. Keeping existing gitleaks installation." >&2
+    else
+      echo "WARNING: Offline or unable to connect to api.github.com. Skipping gitleaks installation." >&2
+    fi
+  fi
 
   if ! command -v gitleaks >/dev/null 2>&1; then
     echo "NOTE: Ensure $BIN_DIR is on your PATH to use gitleaks." >&2
@@ -168,7 +188,7 @@ with open(path, "w") as f:
 }
 
 # Install safety functions to ~/.bashrc wrapped in explicit BEGIN/END markers (skipping shebang).
-install_gh_safety() {
+install_safety_functions() {
   local bashrc="$HOME/.bashrc"
   local git_safety="$SCRIPT_DIR/git-safety.sh"
   local timestamp
@@ -206,12 +226,20 @@ install_hooks
 cleanup_old_bashrc_safety
 
 # Delete any stale wrapper scripts installed in ~/.local/bin/
+# Safety: Only remove files that positively match our former wrapper signature
 echo "Cleaning up any stale wrappers in $BIN_DIR..."
 for cmd in git gh npm npx kubectl oc; do
-  rm -f "$BIN_DIR/$cmd"
+  wrapper="$BIN_DIR/$cmd"
+  if [[ -f "$wrapper" ]] \
+    && head -n 5 "$wrapper" | grep -q '^#!/bin/bash' \
+    && grep -q 'bcgov/copilot-instructions' "$wrapper" \
+    && grep -q 'safety wrapper' "$wrapper"; then
+    echo "Removing wrapper script: $wrapper"
+    rm -f "$wrapper"
+  fi
 done
 
-if ! install_gh_safety; then
+if ! install_safety_functions; then
   echo "ERROR: Failed to install safety functions." >&2
   exit 1
 fi
