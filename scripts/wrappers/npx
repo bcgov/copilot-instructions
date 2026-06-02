@@ -30,6 +30,15 @@ _real_bin() {
 
 REAL_NPX="$(_real_bin npx)" || exit $?
 
+is_agent=false
+if [[ -n "${ANTIGRAVITY_AGENT:-}" || -n "${AGENT_ID:-}" || -n "${KILO_AGENT:-}" || -n "${CURSOR_AGENT:-}" || -n "${GITHUB_COPILOT:-}" || -n "${AI_AGENT:-}" ]]; then
+    is_agent=true
+fi
+
+if [[ "$is_agent" != "true" ]]; then
+    exec "$REAL_NPX" "$@"
+fi
+
 # Skip safety checks during tab completion.
 if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
     # Block environment-based bypass vector

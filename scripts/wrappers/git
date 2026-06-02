@@ -30,6 +30,15 @@ _real_bin() {
 
 REAL_GIT="$(_real_bin git)" || exit $?
 
+is_agent=false
+if [[ -n "${ANTIGRAVITY_AGENT:-}" || -n "${AGENT_ID:-}" || -n "${KILO_AGENT:-}" || -n "${CURSOR_AGENT:-}" || -n "${GITHUB_COPILOT:-}" || -n "${AI_AGENT:-}" ]]; then
+    is_agent=true
+fi
+
+if [[ "$is_agent" != "true" ]]; then
+    exec "$REAL_GIT" "$@"
+fi
+
 # Skip safety checks during tab completion.
 if [[ -z "${COMP_LINE:-}" && -z "${COMP_POINT:-}" ]]; then
     # Identify the subcommand (skip global options like -C, -c, etc.)

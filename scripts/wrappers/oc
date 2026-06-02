@@ -28,6 +28,17 @@ _real_bin() {
     exit 127
 }
 
+REAL_OC="$(_real_bin oc)" || exit $?
+
+is_agent=false
+if [[ -n "${ANTIGRAVITY_AGENT:-}" || -n "${AGENT_ID:-}" || -n "${KILO_AGENT:-}" || -n "${CURSOR_AGENT:-}" || -n "${GITHUB_COPILOT:-}" || -n "${AI_AGENT:-}" ]]; then
+    is_agent=true
+fi
+
+if [[ "$is_agent" != "true" ]]; then
+    exec "$REAL_OC" "$@"
+fi
+
 # Allow only cobra-style completion calls (__complete or __completeNoDesc).
 # Both COMP_LINE and COMP_POINT must be set and the first argument must be
 # the cobra completion sentinel for this to be treated as a completion call.
@@ -43,5 +54,4 @@ if [[ "$is_completion" != "true" ]]; then
     exit 1
 fi
 
-REAL_OC="$(_real_bin oc)" || exit $?
 exec "$REAL_OC" "$@"
