@@ -24,7 +24,11 @@ _real_bin() {
         [[ "$dir" == "$bin_dir" ]] && continue
         [[ -x "$dir/$cmd" ]] && echo "$dir/$cmd" && return 0
     done < <(printf '%s' "$PATH" | tr ':' '\n')
-    echo "ERROR: Real '$cmd' not found in PATH (excluding $this_dir and $bin_dir)" >&2
+    if [[ "$this_dir" == "$bin_dir" ]]; then
+        echo "ERROR: Real '$cmd' not found in PATH (excluding $this_dir)" >&2
+    else
+        echo "ERROR: Real '$cmd' not found in PATH (excluding $this_dir and $bin_dir)" >&2
+    fi
     exit 127
 }
 
