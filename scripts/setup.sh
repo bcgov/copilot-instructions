@@ -167,53 +167,61 @@ with open(path, "w") as f:
   fi
 }
 
-# Install PATH-based wrapper scripts to ~/.local/bin/.
-# These shadow the real binaries without using `export -f`, avoiding the
-# BASH_FUNC_*%% environment variable corruption that occurs when agent runners
-# forward the shell environment by parsing `env` output line-by-line.
-install_wrappers() {
-  local wrapper_src="$SCRIPT_DIR/wrappers"
-  local wrappers=(git gh npm npx kubectl oc)
+# Install safety functions to ~/.bashrc wrapped in explicit BEGIN/END markers (skipping shebang).
+install_gh_safety() {
+  local bashrc="$HOME/.bashrc"
+  local git_safety="$SCRIPT_DIR/git-safety.sh"
+  local timestamp
+  timestamp=$(date +%s)
 
-  # Pre-flight: verify all wrapper sources exist before touching anything
-  for cmd in "${wrappers[@]}"; do
-    if [[ ! -f "$wrapper_src/$cmd" ]]; then
-      echo "ERROR: Wrapper script not found: $wrapper_src/$cmd" >&2
-      return 1
-    fi
-  done
-
-  mkdir -p "$BIN_DIR"
-
-  for cmd in "${wrappers[@]}"; do
-    cp "$wrapper_src/$cmd" "$BIN_DIR/$cmd"
-    chmod +x "$BIN_DIR/$cmd"
-  done
-
-  # Warn if ~/.local/bin is not on PATH — wrappers won't intercept commands otherwise.
-  if [[ ":${PATH}:" != *":${BIN_DIR}:"* ]]; then
-    echo "WARNING: $BIN_DIR is not in your PATH." >&2
-    echo "         Add the following to your ~/.bashrc or ~/.profile and restart your terminal:" >&2
-    echo '         export PATH="$HOME/.local/bin:$PATH"' >&2
+  # 1. Pre-flight check: Verify source file exists before modifying anything
+  if [[ ! -f "$git_safety" ]]; then
+    echo "ERROR: Could not find safety source script at $git_safety" >&2
+    return 1
   fi
 
-  echo "Installed safety wrappers to $BIN_DIR: ${wrappers[*]}"
+  # 2. Pre-flight check: Create a backup of ~/.bashrc first
+  if [[ -f "$bashrc" ]]; then
+    cp "$bashrc" "$bashrc.bak.$timestamp"
+    echo "NOTE: Created backup of ~/.bashrc at $bashrc.bak.$timestamp" >&2
+  fi
+
+  # 3. Purge old blocks safely
+  cleanup_old_bashrc_safety
+
+  # 4. Append the safety functions wrapped in explicit BEGIN/END markers (skip shebang)
+  {
+    echo ""
+    echo "# >>> bcgov/copilot-instructions safety block >>>"
+    echo "# AI POLICY (bcgov/copilot-instructions)"
+    tail -n +2 "$git_safety"
+    echo "# <<< bcgov/copilot-instructions safety block <<<"
+  } >> "$bashrc"
+
+  echo "Added safety functions to ~/.bashrc"
 }
 
 install_gitleaks
 install_hooks
 cleanup_old_bashrc_safety
-if ! install_wrappers; then
-  echo "ERROR: Failed to install safety wrappers." >&2
+
+# Delete any stale wrapper scripts installed in ~/.local/bin/
+echo "Cleaning up any stale wrappers in $BIN_DIR..."
+for cmd in git gh npm npx kubectl oc; do
+  rm -f "$BIN_DIR/$cmd"
+done
+
+if ! install_gh_safety; then
+  echo "ERROR: Failed to install safety functions." >&2
   exit 1
 fi
 
 echo ""
 echo "✅ Setup complete!"
 echo "Git hooks:        Secrets blocked (Gitleaks) + main/master push blocked"
-echo "Safety wrappers:  Installed to $BIN_DIR (git, gh, npm, npx, kubectl, oc)"
-echo "                  Blocklist enforced via PATH shadowing — no shell function exports"
-echo "Git config:       All git config commands blocked"
-echo "Kubernetes/OpenShift: All kubectl and oc commands blocked by default"
+echo "Safety functions: Installed to ~/.bashrc (git, gh, npm, npx)"
+echo "                  Clean, non-exported shell functions (no export -f)"
+echo "Git config:       All git config commands blocked (use 'command git config' to bypass)"
+echo "Kubernetes/OpenShift: Natively executed without safety blocks"
 echo ""
-echo "Restart your terminal (or run: hash -r) for wrapper changes to take effect."
+echo "Restart your terminal or run: source ~/.bashrc"
