@@ -46,7 +46,7 @@
 ### Git Workflow
 1. **Branching:** `git checkout main && git pull && git switch -c feat/name && git push -u origin feat/name`.
 2. **PR Creation:** `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline`.
-3. **Closing:** Link associated issues by adding `Closes #<issue_number>` to the PR body only when the issue number is explicitly mentioned in the branch name (e.g., `feat/123-bug`) or the user prompt.
+3. **Closing:** Link issues via `Closes #<issue_number>` ONLY if explicitly provided in the prompt or branch name. Never guess or hallucinate issue numbers.
 
 ### Project Standards
 - **ALWAYS** use Conventional Commits (derive the scope from the primary directory modified, e.g., `feat(auth):`).
