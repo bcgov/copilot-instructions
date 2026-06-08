@@ -25,6 +25,47 @@ git() {
             esac
         done
 
+        # Block hook circumvention (--no-verify and -n bypass)
+        local is_commit=false
+        if [[ "$sub" == "commit" ]]; then
+            is_commit=true
+        fi
+
+        for arg in "$@"; do
+            if [[ "$arg" == "--" ]]; then
+                break
+            fi
+
+            if [[ "$arg" =~ ^- ]]; then
+                if [[ "$arg" == "--no-verify" ]]; then
+                    echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from bypassing Git hooks." >&2
+                    echo "         Using --no-verify violates repository security policy." >&2
+                    echo "         HALT immediately and request manual action from the USER." >&2
+                    return 1
+                fi
+
+                # Check for commit short options containing 'n' (e.g. -n, -nam, -an)
+                if [[ "$is_commit" == "true" && "$arg" =~ ^-[^-] ]]; then
+                    local opts="${arg#\-}"
+                    local idx=0
+                    while [[ $idx -lt ${#opts} ]]; do
+                        local opt="${opts:$idx:1}"
+                        if [[ "$opt" == "n" ]]; then
+                            echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from bypassing Git hooks." >&2
+                            echo "         Using -n/--no-verify violates repository security policy." >&2
+                            echo "         HALT immediately." >&2
+                            return 1
+                        fi
+                        # Stop scanning option characters if this option consumes the rest as an argument
+                        if [[ "$opt" =~ [mFccCt] ]]; then
+                            break
+                        fi
+                        ((idx++))
+                    done
+                fi
+            fi
+        done
+
         # Block config
         if [[ "$sub" == "config" ]]; then
             echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from modifying Git configuration." >&2
