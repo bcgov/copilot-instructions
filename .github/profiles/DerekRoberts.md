@@ -25,7 +25,4 @@
 
 Your job is to understand what I want, not to guess. First: ask me clarifying questions until you're certain you understand. Then: show me bullet points of your approach, what you'd add/change, and assumptions - BEFORE implementing. Wait for my direction. If uncertain, ask until you're certain. I'd rather over-ask than over-deliver. We'll iterate: you ask, I direct, you code, we repeat.
 
-## Personal Workflow Rules
-
-- **Dummy GITHUB_TOKEN Bypass**: When running `gh` commands, if a dummy `GITHUB_TOKEN` (e.g., `github_pat_antigravitydummytoken`) is present in the environment, you **MUST** bypass it by running the command with `env -u GITHUB_TOKEN` to force fallback to local authenticated user credentials.
 
