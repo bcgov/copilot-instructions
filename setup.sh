@@ -2,6 +2,20 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# Detect if running via curl | bash (no local setup assets available)
+if [[ ! -f "$SCRIPT_DIR/scripts/git-safety.sh" ]]; then
+  echo "Installer running in standalone/curl mode. Fetching setup assets..."
+  TEMP_SETUP_DIR=$(mktemp -d)
+  
+  # Fetch and extract only the latest feature branch archive
+  curl -fsSL "https://github.com/bcgov/copilot-instructions/archive/refs/heads/feat/modularize-safety-loader.tar.gz" \
+    | tar -xz -C "$TEMP_SETUP_DIR" --strip-components=1
+    
+  SCRIPT_DIR="$TEMP_SETUP_DIR"
+  trap 'rm -rf "$TEMP_SETUP_DIR"' EXIT
+fi
+
 HOOKS_DIR="$HOME/.githooks"
 BIN_DIR="$HOME/.local/bin"
 
@@ -96,13 +110,13 @@ install_gitleaks() {
 install_hooks() {
   mkdir -p "$HOOKS_DIR"
 
-  if [[ ! -f "$SCRIPT_DIR/hooks/pre-commit" ]]; then
-    echo "ERROR: Hook file not found: $SCRIPT_DIR/hooks/pre-commit" >&2
+  if [[ ! -f "$SCRIPT_DIR/scripts/hooks/pre-commit" ]]; then
+    echo "ERROR: Hook file not found: $SCRIPT_DIR/scripts/hooks/pre-commit" >&2
     exit 1
   fi
 
-  if [[ ! -f "$SCRIPT_DIR/hooks/pre-push" ]]; then
-    echo "ERROR: Hook file not found: $SCRIPT_DIR/hooks/pre-push" >&2
+  if [[ ! -f "$SCRIPT_DIR/scripts/hooks/pre-push" ]]; then
+    echo "ERROR: Hook file not found: $SCRIPT_DIR/scripts/hooks/pre-push" >&2
     exit 1
   fi
 
@@ -120,8 +134,8 @@ install_hooks() {
     echo "NOTE: Existing pre-push hook backed up to $HOOKS_DIR/pre-push.bak.$timestamp" >&2
   fi
 
-  cp "$SCRIPT_DIR/hooks/pre-commit" "$HOOKS_DIR/pre-commit"
-  cp "$SCRIPT_DIR/hooks/pre-push" "$HOOKS_DIR/pre-push"
+  cp "$SCRIPT_DIR/scripts/hooks/pre-commit" "$HOOKS_DIR/pre-commit"
+  cp "$SCRIPT_DIR/scripts/hooks/pre-push" "$HOOKS_DIR/pre-push"
 
   chmod +x "$HOOKS_DIR/pre-commit" "$HOOKS_DIR/pre-push"
 
@@ -190,7 +204,7 @@ with open(path, "w") as f:
 # Install safety functions to ~/.bashrc wrapped in explicit BEGIN/END markers (skipping shebang).
 install_safety_functions() {
   local bashrc="$HOME/.bashrc"
-  local git_safety="$SCRIPT_DIR/git-safety.sh"
+  local git_safety="$SCRIPT_DIR/scripts/git-safety.sh"
   local timestamp
   timestamp=$(date +%s)
 
@@ -229,7 +243,7 @@ install_safety_functions() {
 }
 
 install_skills() {
-  local skills_src="$SCRIPT_DIR/../.github/skills"
+  local skills_src="$SCRIPT_DIR/.github/skills"
   local dest_dir="$HOME/.agents/skills"
 
   echo "Installing global agent skills..."
@@ -260,9 +274,22 @@ install_skills() {
   echo "✓ Skills installed to $dest_dir"
 }
 
+bundle_instructions() {
+  local bundle_script="$SCRIPT_DIR/scripts/bundle.sh"
+  local profile_id="${1:-}"
+
+  if [[ -f "$bundle_script" ]]; then
+    echo "Bundling global instructions..."
+    bash "$bundle_script" ${profile_id:+"$profile_id"}
+  else
+    echo "WARNING: Bundle script not found at $bundle_script. Skipping instructions bundling." >&2
+  fi
+}
+
 install_gitleaks
 install_hooks
 install_skills
+bundle_instructions "${1:-}"
 cleanup_old_bashrc_safety
 
 # Delete any stale wrapper scripts installed in ~/.local/bin/
@@ -287,6 +314,7 @@ fi
 echo ""
 echo "✅ Setup complete!"
 echo "Git hooks:        Secrets blocked (Gitleaks) + main/master push blocked"
+echo "Instructions:     Bundled to ~/.config/Code/User/prompts/global.instructions.md"
 echo "Safety functions: Installed to ~/.bashrc (git, gh, npm, npx)"
 echo "                  Clean, non-exported shell functions (no export -f)"
 echo "Git config:       All git config commands blocked (use 'command git config' to bypass)"
