@@ -28,12 +28,6 @@ fi
 
 PROFILE_NAME="${1:-$GH_ID_FALLBACK}"
 
-if [[ -z "${PROFILE_NAME}" ]]; then
-    if [[ -t 0 ]]; then
-        read -r -p "Enter GitHub ID for profile (leave empty to skip): " PROFILE_NAME
-    fi
-fi
-
 # Paths
 GLOBAL_FILE="${REPO_ROOT}/.github/copilot-instructions.md"
 PROFILE_DIR="${REPO_ROOT}/.github/profiles"

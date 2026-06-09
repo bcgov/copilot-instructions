@@ -35,7 +35,7 @@ If you want to maintain your own personality settings or technical preferences w
     ```bash
     ./scripts/bundle.sh [GitHubID]
     ```
-    *If you omit `GitHubID`, the script automatically detects it via the GitHub CLI (or prompts you interactively), verifies that your profile exists, warns if the bundled output exceeds GitHub's 4,000 character limit, and bundles everything directly into your global VS Code prompts location (`~/.config/Code/User/prompts/global.instructions.md`).*
+    *If you omit `GitHubID`, the script automatically detects it via the GitHub CLI, warns if the bundled output exceeds GitHub's 4,000 character limit, and bundles everything directly into your global VS Code prompts location (`~/.config/Code/User/prompts/global.instructions.md`). If it cannot resolve your ID, it defaults to bundling only the shared standards.*
 
 ### Option 3: Per-Project Instructions
 
