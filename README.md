@@ -7,7 +7,7 @@ Guidelines and tooling to help developers effectively use GitHub Copilot while m
 
 ## Quick Start: Install Everything (Recommended)
 
-To automatically bundle instructions, install our local repository maturity skill, set up global git hooks (including Gitleaks for secret scanning), and configure shell safety functions, run the setup script:
+To automatically bundle instructions, set up global git hooks (including Gitleaks for secret scanning), and configure shell safety functions, run the setup script:
 
 ````bash
 curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh | bash
@@ -30,7 +30,7 @@ If you want to maintain your own personality settings or technical preferences w
 ## What Setup Automates
 
 1. **AI Instructions Bundle**: Bundles the shared guidelines (and your personalized profile, if specified) and writes them to VS Code's global prompts directory (`~/.config/Code/User/prompts/global.instructions.md`).
-2. **Global Agent Skills**: Installs our local `repo-maturity` validation skill to `~/.agents/skills/`. For general-purpose or shared agent skills, check out the centralized [bcgov/agent-skills](https://github.com/bcgov/agent-skills) catalog, which we encourage everyone to install and use via `npx skills add bcgov/agent-skills`.
+2. **Global Agent Skills**: For shared developer or agent skills, check out the centralized [bcgov/agent-skills](https://github.com/bcgov/agent-skills) catalog. We highly encourage everyone to install and use it via `npx skills add bcgov/agent-skills`.
 3. **Global Git Hooks**: Configures global pre-commit and pre-push hooks that scan for secrets (using Gitleaks) and prevent direct pushes to protected branches (e.g. `main`).
 4. **Shell Safety Wrappers**: Injects transparent shell safety functions into `~/.bashrc` to prevent AI agents from performing destructive operations (e.g., `repo delete`, `pr merge`, etc.) while remaining fully transparent and bypassable for developers.
 
