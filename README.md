@@ -72,27 +72,8 @@ For example:
 > **Copilot:** *loads security-review skill* "I'll scan the auth module for vulnerabilities..."
 
 > [!NOTE]
-> These skills work across multiple AI coding assistants. VS Code Copilot, Kilo Code, and Google Antigravity all support the same `.github/skills/` path. Kilo and Antigravity can also use them globally via symlink or config:
-> ```bash
-> # Antigravity global skills
-> ln -s ~/Repos/copilot-instructions/.github/skills ~/.gemini/antigravity/skills
-> 
-> # Kilo Code global skills (symlink)
-> ln -s ~/Repos/copilot-instructions/.github/skills ~/.kilocode/skills
-> 
-> # Or Kilo Code via config in kilo.jsonc:
-> ```jsonc
-> "skills": {
->   "paths": ["~/Repos/copilot-instructions/.github/skills/"]
-> }
-> ```
-> 
-> Kilo also supports loading skills directly from URLs, allowing auto-updates without copying:
-> ```json
-> "skills": {
->   "urls": ["https://raw.githubusercontent.com/github/awesome-copilot/main/skills/security-review/SKILL.md"]
-> }
-> ```
+> Global agent skills are physically installed to the standard user-level agent skills directory: `~/.agents/skills/`.
+> This directory is automatically searched by VS Code Copilot to load skills globally across all workspaces.
 
 ## Safety Setup (Recommended)
 
@@ -141,6 +122,26 @@ Configure Git with recommended settings from core Git developers:
 ```bash
 curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/git-setup.sh | bash
 ```
+
+### Other AI Agents
+
+These instructions and skills are built using open standards, making them compatible with other AI coding assistants. You can configure other tools (like Google Antigravity, Cursor, or Kilo Code) to reuse the global Copilot instructions and skills:
+
+#### Google Antigravity
+
+Antigravity loads global instructions from `~/.gemini/GEMINI.md` and global skills from `~/.gemini/config/skills`. You can symlink them to your global Copilot folders:
+
+```bash
+# Link global instructions
+ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.gemini/GEMINI.md
+
+# Link global skills
+ln -sf ~/.agents/skills ~/.gemini/config/skills
+```
+
+#### Cursor & Kilo Code
+
+For other agents, configure them to reference the global instructions file at `~/.config/Code/User/prompts/global.instructions.md` or symlink their respective instructions configurations.
 
 ## Attribution
 

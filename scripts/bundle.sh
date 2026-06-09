@@ -1,9 +1,9 @@
 #!/bin/bash
 # Bundle Copilot Instructions
-# Usage: ./scripts/bundle.sh <destination> [github_id]
+# Usage: ./scripts/bundle.sh [destination] [github_id]
 #
 # Arguments:
-#   destination    Required. Path to output file.
+#   destination    Optional. Path to output file (defaults to ~/.config/Code/User/prompts/global.instructions.md).
 #   github_id      Optional. Profile in .github/profiles/ (defaults to gh api user)
 #
 
@@ -20,14 +20,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 # 1. Capture Arguments
-if [ $# -lt 1 ]; then
-    echo -e "${RED}ERROR:${NC} Missing destination path." >&2
-    echo -e "Usage: $0 <destination> [github_id]" >&2
-    exit 1
+GLOBAL_DEST="$HOME/.config/Code/User/prompts/global.instructions.md"
+OUTPUT_FILE="${1:-$GLOBAL_DEST}"
+GH_ID_FALLBACK=""
+if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    GH_ID_FALLBACK=$(gh api user --jq '.login' 2>/dev/null || true)
 fi
-
-OUTPUT_FILE="$1"
-GH_ID_FALLBACK=$(gh api user --jq '.login' 2>/dev/null || echo "${USER:-DerekRoberts}")
+GH_ID_FALLBACK="${GH_ID_FALLBACK:-$USER}"
+GH_ID_FALLBACK=$(echo "$GH_ID_FALLBACK" | tr -d '"{}[] ')
+if [[ -z "${GH_ID_FALLBACK}" || "${GH_ID_FALLBACK}" == "derek" ]]; then
+    GH_ID_FALLBACK="DerekRoberts"
+fi
 PROFILE_NAME="${2:-$GH_ID_FALLBACK}"
 
 # Paths
@@ -66,6 +69,13 @@ mkdir -p "$(dirname "$OUTPUT_FILE")"
     echo -e "\n"
     cat "$PROFILE_FILE"
 } > "$OUTPUT_FILE"
+
+# Copy to global destination if a custom path was specified
+if [[ "$OUTPUT_FILE" != "$GLOBAL_DEST" ]]; then
+    mkdir -p "$(dirname "$GLOBAL_DEST")"
+    cp "$OUTPUT_FILE" "$GLOBAL_DEST"
+    echo -e "${GREEN}✓ Copied bundled output to global location:${NC} $GLOBAL_DEST"
+fi
 
 # 5. Result Summary
 TOTAL_CHARS=$(wc -m < "$OUTPUT_FILE")
