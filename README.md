@@ -127,21 +127,32 @@ curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scri
 
 These instructions and skills are built using open standards, making them compatible with other AI coding assistants. You can configure other tools (like Google Antigravity, Cursor, or Kilo Code) to reuse the global Copilot instructions and skills:
 
-#### Google Antigravity
+#### Google Antigravity & Cursor (Automated Setup)
 
-Antigravity loads global instructions from `~/.gemini/GEMINI.md` and global skills from `~/.gemini/config/skills`. You can symlink them to your global Copilot folders:
+You can run the setup script with environment flags to automatically create symlinks for Google Antigravity and/or Cursor:
 
 ```bash
-# Link global instructions
-ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.gemini/GEMINI.md
-
-# Link global skills
-ln -sf ~/.agents/skills ~/.gemini/config/skills
+ANTIGRAVITY=true CURSOR=true ./setup.sh [GitHubID]
 ```
 
-#### Cursor & Kilo Code
+This will automatically configure:
+- **Google Antigravity**: Symlinks `~/.gemini/GEMINI.md` and skills directories to the global Copilot paths.
+- **Cursor**: Symlinks `~/.config/Cursor/User/prompts/global.instructions.md` to the global VS Code prompts directory.
 
-For other agents, configure them to reference the global instructions file at `~/.config/Code/User/prompts/global.instructions.md` or symlink their respective instructions configurations.
+#### Manual Configuration
+
+To configure other editors (like Kilo Code) or run manual setups:
+
+```bash
+# Link global instructions for Cursor manually
+mkdir -p ~/.config/Cursor/User/prompts
+ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.config/Cursor/User/prompts/global.instructions.md
+
+# Link global instructions for Antigravity manually
+mkdir -p ~/.gemini/config
+ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.gemini/GEMINI.md
+ln -sf ~/.agents/skills ~/.gemini/config/skills
+```
 
 ## Attribution
 

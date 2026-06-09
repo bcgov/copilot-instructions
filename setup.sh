@@ -286,10 +286,52 @@ bundle_instructions() {
   fi
 }
 
+configure_antigravity() {
+  if [[ "${ANTIGRAVITY:-}" == "true" || "${ANTIGRAVITY:-}" == "1" ]]; then
+    echo "Configuring Google Antigravity integration..."
+    mkdir -p "$HOME/.gemini/config"
+    mkdir -p "$HOME/.gemini/antigravity"
+
+    local global_prompt_file="$HOME/.config/Code/User/prompts/global.instructions.md"
+
+    # GEMINI.md symlink
+    if [[ -L "$HOME/.gemini/GEMINI.md" ]] || [[ ! -f "$HOME/.gemini/GEMINI.md" ]]; then
+      ln -sf "$global_prompt_file" "$HOME/.gemini/GEMINI.md"
+      echo "✓ Symlinked ~/.gemini/GEMINI.md -> $global_prompt_file"
+    fi
+
+    # Skills symlinks
+    if [[ -L "$HOME/.gemini/config/skills" ]] || [[ ! -d "$HOME/.gemini/config/skills" ]]; then
+      ln -sf "$HOME/.agents/skills" "$HOME/.gemini/config/skills"
+      echo "✓ Symlinked ~/.gemini/config/skills -> ~/.agents/skills"
+    fi
+
+    if [[ -L "$HOME/.gemini/antigravity/skills" ]] || [[ ! -d "$HOME/.gemini/antigravity/skills" ]]; then
+      ln -sf "$HOME/.gemini/config/skills" "$HOME/.gemini/antigravity/skills"
+      echo "✓ Symlinked ~/.gemini/antigravity/skills -> ~/.gemini/config/skills"
+    fi
+  fi
+}
+
+configure_cursor() {
+  if [[ "${CURSOR:-}" == "true" || "${CURSOR:-}" == "1" ]]; then
+    echo "Configuring Cursor integration..."
+    local global_prompt_file="$HOME/.config/Code/User/prompts/global.instructions.md"
+
+    mkdir -p "$HOME/.config/Cursor/User/prompts"
+    if [[ -L "$HOME/.config/Cursor/User/prompts/global.instructions.md" ]] || [[ ! -f "$HOME/.config/Cursor/User/prompts/global.instructions.md" ]]; then
+      ln -sf "$global_prompt_file" "$HOME/.config/Cursor/User/prompts/global.instructions.md"
+      echo "✓ Symlinked ~/.config/Cursor/User/prompts/global.instructions.md -> $global_prompt_file"
+    fi
+  fi
+}
+
 install_gitleaks
 install_hooks
 install_skills
 bundle_instructions "${1:-}"
+configure_antigravity
+configure_cursor
 cleanup_old_bashrc_safety
 
 # Delete any stale wrapper scripts installed in ~/.local/bin/
@@ -315,6 +357,12 @@ echo ""
 echo "✅ Setup complete!"
 echo "Git hooks:        Secrets blocked (Gitleaks) + main/master push blocked"
 echo "Instructions:     Bundled to ~/.config/Code/User/prompts/global.instructions.md"
+if [[ "${ANTIGRAVITY:-}" == "true" || "${ANTIGRAVITY:-}" == "1" ]]; then
+echo "Antigravity:      Symlinked instructions & skills successfully"
+fi
+if [[ "${CURSOR:-}" == "true" || "${CURSOR:-}" == "1" ]]; then
+echo "Cursor:           Symlinked prompts directory successfully"
+fi
 echo "Safety functions: Installed to ~/.bashrc (git, gh, npm, npx)"
 echo "                  Clean, non-exported shell functions (no export -f)"
 echo "Git config:       All git config commands blocked (use 'command git config' to bypass)"
