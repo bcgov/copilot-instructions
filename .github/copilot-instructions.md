@@ -10,7 +10,7 @@
 - **ALWAYS** use direct code (refactor only on duplication) and touch only files in the logical path of the change.
 - **ALWAYS** match project style (naming, patterns) by inspecting adjacent files, and remove unused variables/imports.
 - **NEVER** report "Done" without terminal verification (e.g., `ls`, `git status`).
-- **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a sanitized `git diff` (redact all secrets/PII).
+- **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a sanitized `git diff` (redact all secrets/PII), wrapped in a collapsible `<details>` block to avoid cluttering the response.
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.

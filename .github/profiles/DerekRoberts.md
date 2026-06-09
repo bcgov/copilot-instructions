@@ -28,14 +28,4 @@ Your job is to understand what I want, not to guess. First: ask me clarifying qu
 ## Personal Workflow Rules
 
 - **Dummy GITHUB_TOKEN Bypass**: When running `gh` commands, if a dummy `GITHUB_TOKEN` (e.g., `github_pat_antigravitydummytoken`) is present in the environment, you **MUST** bypass it by running the command with `env -u GITHUB_TOKEN` to force fallback to local authenticated user credentials.
-- **Collapsible Diff Receipts**: To satisfy the `DIFF-AS-RECEIPT` rule without cluttering the chat history with long file diffs, you **MUST** wrap the diff in a collapsible `<details>` tag like this:
-
-  <details>
-  <summary>Click to view Git Diff Receipt</summary>
-
-  ````diff
-  [diff content]
-  ````
-
-  </details>
 
