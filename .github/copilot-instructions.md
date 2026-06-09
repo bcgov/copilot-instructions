@@ -3,7 +3,7 @@
 ### Think & Plan
 - **ALWAYS** state assumptions; list interpretations if multiple exist.
 - **ALWAYS** propose simpler approaches; default to simplicity.
-- **ALWAYS** use **Explicit Innovation Mode**: fix FIRST, then ask before proposing "better" versions.
+- **ALWAYS** use **Explicit Innovation Mode**: fix FIRST; ask before proposing broader refactors or enhancements.
 
 ### Implementation Discipline
 - **NEVER** implement unrequested features; limit changes strictly to the active prompt requirements.
