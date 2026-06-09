@@ -66,7 +66,7 @@ When running the setup script, transparent shell safety wrappers intercept the f
 
 If you prefer not to use the global installer, or want to configure project-specific instructions, you can copy these files directly into individual repositories:
 
-- **Project Instructions**: Copy or download [copilot-instructions.md](/.github/copilot-instructions.md) into your project's `.copilot/instructions` file.
+- **Project Instructions**: Copy or download [copilot-instructions.md](/.github/copilot-instructions.md) into your project's `.github/copilot-instructions.md` file.
 
 ---
 
@@ -110,6 +110,7 @@ mkdir -p ~/.config/Cursor/User/prompts
 ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.config/Cursor/User/prompts/global.instructions.md
 
 # Link global instructions for Antigravity manually
+mkdir -p ~/.gemini
 ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.gemini/GEMINI.md
 ````
 

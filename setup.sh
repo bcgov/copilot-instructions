@@ -319,10 +319,10 @@ echo "✅ Setup complete!"
 echo "Git hooks:        Secrets blocked (Gitleaks) + main/master push blocked"
 echo "Instructions:     Bundled to ~/.config/Code/User/prompts/global.instructions.md"
 if [[ "${ANTIGRAVITY:-}" == "true" || "${ANTIGRAVITY:-}" == "1" ]]; then
-echo "Antigravity:      Symlinked instructions successfully"
+  echo "Antigravity:      Symlinked instructions successfully"
 fi
 if [[ "${CURSOR:-}" == "true" || "${CURSOR:-}" == "1" ]]; then
-echo "Cursor:           Symlinked prompts directory successfully"
+  echo "Cursor:           Symlinked prompts directory successfully"
 fi
 echo "Safety functions: Installed to ~/.bashrc (git, gh, npm, npx)"
 echo "                  Clean, non-exported shell functions (no export -f)"
