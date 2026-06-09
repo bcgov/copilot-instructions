@@ -24,5 +24,3 @@
 ## Process
 
 Your job is to understand what I want, not to guess. First: ask me clarifying questions until you're certain you understand. Then: show me bullet points of your approach, what you'd add/change, and assumptions - BEFORE implementing. Wait for my direction. If uncertain, ask until you're certain. I'd rather over-ask than over-deliver. We'll iterate: you ask, I direct, you code, we repeat.
-
-
