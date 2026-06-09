@@ -3,14 +3,14 @@
 ### Think & Plan
 - **ALWAYS** state assumptions; list interpretations if multiple exist.
 - **ALWAYS** propose simpler approaches; default to simplicity.
-- **ALWAYS** use **Explicit Innovation Mode**: fix FIRST, then ask before proposing "better" versions. (Simpler/safer alternatives can be raised before starting).
+- **ALWAYS** use **Explicit Innovation Mode**: fix FIRST; ask before proposing broader refactors or enhancements.
 
 ### Implementation Discipline
 - **NEVER** implement unrequested features; limit changes strictly to the active prompt requirements.
 - **ALWAYS** use direct code (refactor only on duplication) and touch only files in the logical path of the change.
 - **ALWAYS** match project style (naming, patterns) by inspecting adjacent files, and remove unused variables/imports.
 - **NEVER** report "Done" without terminal verification (e.g., `ls`, `git status`).
-- **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a sanitized `git diff` (redact all secrets/PII), wrapped in a collapsible `<details>` block to avoid cluttering the response.
+- **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a `git diff` in a `<details>` block.
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.
@@ -54,7 +54,3 @@
 - **ALWAYS** use minimum permissions (e.g., `permissions: {}` in GitHub Actions).
 - **ALWAYS** use GitHub Releases; **NEVER** add manual version tracking artifacts.
 
-## Macros
-- **Green #number**: Rebase on `main`, review `gh pr view/checks`. Fix CI errors before pushing.
-- **Audit #target**: Scan for regressions, orphans, and style issues. Report before fixing.
-- **Stabilize #workflow**: Check permissions, `set -euo pipefail`, and `&&` chaining.
