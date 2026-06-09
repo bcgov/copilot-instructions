@@ -30,9 +30,8 @@ If you want to maintain your own personality settings or technical preferences w
 ## What Setup Automates
 
 1. **AI Instructions Bundle**: Bundles the shared guidelines (and your personalized profile, if specified) and writes them to VS Code's global prompts directory (`~/.config/Code/User/prompts/global.instructions.md`).
-2. **Global Agent Skills**: For shared developer or agent skills, check out the centralized [bcgov/agent-skills](https://github.com/bcgov/agent-skills) catalog. We highly encourage everyone to install and use it via `npx skills add bcgov/agent-skills`.
-3. **Global Git Hooks**: Configures global pre-commit and pre-push hooks that scan for secrets (using Gitleaks) and prevent direct pushes to protected branches (e.g. `main`).
-4. **Shell Safety Wrappers**: Injects transparent shell safety functions into `~/.bashrc` to prevent AI agents from performing destructive operations (e.g., `repo delete`, `pr merge`, etc.) while remaining fully transparent and bypassable for developers.
+2. **Global Git Hooks**: Configures global pre-commit and pre-push hooks that scan for secrets (using Gitleaks) and prevent direct pushes to protected branches (e.g. `main`).
+3. **Shell Safety Wrappers**: Injects transparent shell safety functions into `~/.bashrc` to prevent AI agents from performing destructive operations (e.g., `repo delete`, `pr merge`, etc.) while remaining fully transparent and bypassable for developers.
 
 ### Blocked Operations & Rationale
 
@@ -53,12 +52,21 @@ If you want to maintain your own personality settings or technical preferences w
 
 ---
 
+## Looking for Agent Skills?
+
+Shared workflow and agent skills are centrally hosted in the [bcgov/agent-skills](https://github.com/bcgov/agent-skills) repository. We highly encourage developers to install and use them to extend their AI assistant's capabilities:
+
+````bash
+npx skills add bcgov/agent-skills
+````
+
+---
+
 ## Alternative and Per-Project Configurations
 
 ### Copying to Individual Repositories
 If you prefer not to use the global installer, or want to configure project-specific instructions, you can copy these files directly into individual repositories:
 - **Project Instructions**: Copy or download [copilot-instructions.md](/.github/copilot-instructions.md) into your project's `.copilot/instructions` file.
-- **Project Skills**: For team and organization-wide skills, please reference the centralized [bcgov/agent-skills](https://github.com/bcgov/agent-skills) library.
 
 ---
 
