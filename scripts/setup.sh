@@ -209,16 +209,23 @@ install_safety_functions() {
   # 3. Purge old blocks safely
   cleanup_old_bashrc_safety
 
-  # 4. Append the safety functions wrapped in explicit BEGIN/END markers (skip shebang)
+  # 4. Copy the safety script to ~/.githooks/git-safety.sh
+  cp "$git_safety" "$HOME/.githooks/git-safety.sh"
+  chmod +x "$HOME/.githooks/git-safety.sh"
+  echo "Copied safety script to ~/.githooks/git-safety.sh"
+
+  # 5. Append the safety loader block wrapped in explicit BEGIN/END markers
   {
     echo ""
     echo "# >>> bcgov/copilot-instructions safety block >>>"
     echo "# AI POLICY (bcgov/copilot-instructions)"
-    tail -n +2 "$git_safety"
+    echo "if [ -f \"\$HOME/.githooks/git-safety.sh\" ]; then"
+    echo "    . \"\$HOME/.githooks/git-safety.sh\""
+    echo "fi"
     echo "# <<< bcgov/copilot-instructions safety block <<<"
   } >> "$bashrc"
 
-  echo "Added safety functions to ~/.bashrc"
+  echo "Added safety function loader to ~/.bashrc"
 }
 
 install_gitleaks
