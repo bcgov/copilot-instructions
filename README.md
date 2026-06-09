@@ -82,7 +82,7 @@ The Copilot instructions tell the AI "never push to main", "never merge PRs", an
 ```bash
 curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh | bash
 ```
-*Note: You can pass your GitHub ID for profile bundling directly to bash, e.g. `curl -sSL ... | bash -s -- DerekRoberts`.*
+*Note: You can pass environment flags and your GitHub ID directly to bash, e.g. `curl -sSL ... | ANTIGRAVITY=true CURSOR=true bash -s -- DerekRoberts`.*
 
 ### Option 2: Clone and Run
 ```bash
