@@ -243,37 +243,7 @@ install_safety_functions() {
   echo "Added safety function loader to ~/.bashrc"
 }
 
-install_skills() {
-  local skills_src="$SCRIPT_DIR/.github/skills"
-  local dest_dir="$HOME/.agents/skills"
 
-  echo "Installing global agent skills..."
-
-  if [[ ! -d "$skills_src" ]]; then
-    echo "WARNING: Skills source directory not found at $skills_src. Skipping skills installation." >&2
-    return 0
-  fi
-
-  # Clean up any legacy symlinks
-  for path in "$dest_dir" "$HOME/.gemini/config/skills" "$HOME/.gemini/antigravity/skills"; do
-    if [[ -L "$path" ]]; then
-      echo "Removing old symlink: $path"
-      rm -f "$path"
-    fi
-  done
-
-  # Ensure target directory exists and is a physical directory
-  if [[ -d "$dest_dir" ]] && [[ ! -L "$dest_dir" ]]; then
-    echo "Cleaning up existing skills installation..."
-    rm -rf "$dest_dir"
-  fi
-
-  mkdir -p "$dest_dir"
-
-  # Copy files physically
-  cp -R "$skills_src"/* "$dest_dir/"
-  echo "✓ Skills installed to $dest_dir"
-}
 
 bundle_instructions() {
   local bundle_script="$SCRIPT_DIR/scripts/bundle.sh"
@@ -301,16 +271,7 @@ configure_antigravity() {
       echo "✓ Symlinked ~/.gemini/GEMINI.md -> $global_prompt_file"
     fi
 
-    # Skills symlinks
-    if [[ -L "$HOME/.gemini/config/skills" ]] || [[ ! -d "$HOME/.gemini/config/skills" ]]; then
-      ln -sf "$HOME/.agents/skills" "$HOME/.gemini/config/skills"
-      echo "✓ Symlinked ~/.gemini/config/skills -> ~/.agents/skills"
-    fi
 
-    if [[ -L "$HOME/.gemini/antigravity/skills" ]] || [[ ! -d "$HOME/.gemini/antigravity/skills" ]]; then
-      ln -sf "$HOME/.gemini/config/skills" "$HOME/.gemini/antigravity/skills"
-      echo "✓ Symlinked ~/.gemini/antigravity/skills -> ~/.gemini/config/skills"
-    fi
   fi
 }
 
@@ -329,7 +290,6 @@ configure_cursor() {
 
 install_gitleaks
 install_hooks
-install_skills
 bundle_instructions "${1:-}"
 configure_antigravity
 configure_cursor
@@ -359,7 +319,7 @@ echo "✅ Setup complete!"
 echo "Git hooks:        Secrets blocked (Gitleaks) + main/master push blocked"
 echo "Instructions:     Bundled to ~/.config/Code/User/prompts/global.instructions.md"
 if [[ "${ANTIGRAVITY:-}" == "true" || "${ANTIGRAVITY:-}" == "1" ]]; then
-echo "Antigravity:      Symlinked instructions & skills successfully"
+echo "Antigravity:      Symlinked instructions successfully"
 fi
 if [[ "${CURSOR:-}" == "true" || "${CURSOR:-}" == "1" ]]; then
 echo "Cursor:           Symlinked prompts directory successfully"
