@@ -1,9 +1,15 @@
-# Copilot Instructions
+# Copilot Instructions & Guardrails
 
-Guidelines and tooling to help developers effectively use GitHub Copilot while maintaining security and quality standards.
+Guidelines and tooling to help developers effectively use GitHub Copilot while maintaining security and quality standards in the BC Gov developer ecosystem.
+
+This repository provides two main components:
+- **Shared Instructions**: Guidelines and rules that help align Copilot's code generation with project conventions, formatting, and safety expectations.
+- **Automated Guardrails**: Transparent local tooling to prevent AI agents from performing destructive commands (like force pushing or deleting repositories) while remaining fully bypassable for human developers.
 
 > [!IMPORTANT]
 > GitHub enforces a **4,000 character limit** for global Copilot Instructions. All changes to the shared `.github/copilot-instructions.md` MUST stay within this limit to remain compatible with GitHub's organizational settings.
+
+---
 
 ## Quick Start: Install Everything (Recommended)
 
@@ -33,7 +39,11 @@ If you want to maintain your own personality settings or technical preferences w
 2. **Global Git Hooks**: Configures global pre-commit and pre-push hooks that scan for secrets (using Gitleaks) and prevent direct pushes to protected branches (e.g. `main`).
 3. **Shell Safety Wrappers**: Injects transparent shell safety functions into `~/.bashrc` to prevent AI agents from performing destructive operations (e.g., `repo delete`, `pr merge`, etc.) while remaining fully transparent and bypassable for developers.
 
-### Blocked Operations & Rationale
+---
+
+## Guardrails: Blocked Operations & Rationale
+
+When running the setup script, transparent shell safety wrappers intercept the following commands if run by an AI agent, preventing catastrophic mistakes:
 
 | Tool | Blocked Command | Rationale |
 | :--- | :--- | :--- |
@@ -52,6 +62,14 @@ If you want to maintain your own personality settings or technical preferences w
 
 ---
 
+## Project-Specific Instructions Setup
+
+If you prefer not to use the global installer, or want to configure project-specific instructions, you can copy these files directly into individual repositories:
+
+- **Project Instructions**: Copy or download [copilot-instructions.md](/.github/copilot-instructions.md) into your project's `.copilot/instructions` file.
+
+---
+
 ## Looking for Agent Skills?
 
 Shared workflow and agent skills are centrally hosted in the [bcgov/agent-skills](https://github.com/bcgov/agent-skills) repository. We highly encourage developers to install and use them to extend their AI assistant's capabilities:
@@ -62,17 +80,10 @@ npx skills add bcgov/agent-skills
 
 ---
 
-## Alternative and Per-Project Configurations
-
-### Copying to Individual Repositories
-If you prefer not to use the global installer, or want to configure project-specific instructions, you can copy these files directly into individual repositories:
-- **Project Instructions**: Copy or download [copilot-instructions.md](/.github/copilot-instructions.md) into your project's `.copilot/instructions` file.
-
----
-
 ## Optional Enhancements
 
 ### Git Configuration Setup
+
 Configure Git with recommended settings from core Git developers (e.g., config defaults, global gitignore, and commit signing):
 
 ````bash
@@ -80,6 +91,7 @@ curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scr
 ````
 
 ### Tolerated Editors & AI Agents (Antigravity and Cursor)
+
 While other editors and agents are not explicitly encouraged, the setup script can tolerate and link assets for them. Run the setup script with environment flags to automatically create symlinks:
 
 ````bash
@@ -112,4 +124,3 @@ Skills documentation and patterns are adapted from [awesome-copilot](https://git
 ## Contributing
 
 We welcome contributions! Submit issues or pull requests to improve these shared guidelines.
-
