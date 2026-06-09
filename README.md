@@ -10,7 +10,7 @@ Guidelines and tooling to help developers effectively use GitHub Copilot while m
 To automatically bundle instructions, install global agent workflow skills, set up global git hooks (including Gitleaks for secret scanning), and configure shell safety functions, run the setup script:
 
 ````bash
-curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh | bash
 ````
 
 ### Customizing with a Personalized Profile
