@@ -26,18 +26,22 @@ if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     GH_ID_FALLBACK=$(echo "$GH_ID_FALLBACK" | tr -d '"{}[] ')
 fi
 
-if [[ -z "${GH_ID_FALLBACK}" ]]; then
-    if [[ -t 0 ]]; then
-        read -r -p "Enter GitHub ID for profile: " GH_ID_FALLBACK
-    fi
-    GH_ID_FALLBACK="${GH_ID_FALLBACK:-DerekRoberts}"
-fi
 PROFILE_NAME="${1:-$GH_ID_FALLBACK}"
+
+if [[ -z "${PROFILE_NAME}" ]]; then
+    if [[ -t 0 ]]; then
+        read -r -p "Enter GitHub ID for profile (leave empty to skip): " PROFILE_NAME
+    fi
+fi
 
 # Paths
 GLOBAL_FILE="${REPO_ROOT}/.github/copilot-instructions.md"
 PROFILE_DIR="${REPO_ROOT}/.github/profiles"
-PROFILE_FILE="${PROFILE_DIR}/${PROFILE_NAME}.md"
+
+PROFILE_FILE=""
+if [[ -n "${PROFILE_NAME:-}" ]]; then
+    PROFILE_FILE="${PROFILE_DIR}/${PROFILE_NAME}.md"
+fi
 
 # 2. Analyze Global Instructions (CI Limit Report)
 if [[ ! -f "$GLOBAL_FILE" ]]; then
@@ -54,26 +58,37 @@ else
     echo -e "   ${GREEN}✅ Shared instructions:${NC} $GLOBAL_CHARS characters (CI Limit: 4,000)"
 fi
 
-# 3. Verify Profile
-echo -e "${BLUE}👤 Merging profile:${NC} '$PROFILE_NAME'..."
-if [[ ! -f "$PROFILE_FILE" ]]; then
-    echo -e "${RED}❌ ERROR:${NC} Profile file not found: $PROFILE_FILE" >&2
-    echo -e "   Use 'DerekRoberts' as a template for your own profile." >&2
-    exit 1
+# 3. Verify Profile if specified
+if [[ -n "${PROFILE_FILE}" ]]; then
+    echo -e "${BLUE}👤 Merging profile:${NC} '$PROFILE_NAME'..."
+    if [[ ! -f "$PROFILE_FILE" ]]; then
+        echo -e "${RED}❌ ERROR:${NC} Profile file not found: $PROFILE_FILE" >&2
+        echo -e "   Use 'DerekRoberts' as a template for your own profile." >&2
+        exit 1
+    fi
 fi
 
 # 4. Bundle
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
-{
-    cat "$GLOBAL_FILE"
-    echo -e "\n"
-    cat "$PROFILE_FILE"
-} > "$OUTPUT_FILE"
+if [[ -n "${PROFILE_FILE}" ]]; then
+    {
+        cat "$GLOBAL_FILE"
+        echo -e "\n"
+        cat "$PROFILE_FILE"
+    } > "$OUTPUT_FILE"
+else
+    echo -e "${YELLOW}⚠️  No profile specified. Bundling shared instructions only.${NC}"
+    cat "$GLOBAL_FILE" > "$OUTPUT_FILE"
+fi
 
 # 5. Result Summary
 TOTAL_CHARS=$(wc -m < "$OUTPUT_FILE")
-echo -e "${GREEN}✨ Success:${NC} Personalized instructions bundled and written directly to global VS Code prompts path:"
+if [[ -n "${PROFILE_FILE}" ]]; then
+    echo -e "${GREEN}✨ Success:${NC} Personalized instructions bundled and written directly to global VS Code prompts path:"
+else
+    echo -e "${GREEN}✨ Success:${NC} Shared instructions bundled and written directly to global VS Code prompts path:"
+fi
 echo -e "           $OUTPUT_FILE"
 
 if [ "$TOTAL_CHARS" -gt 8000 ]; then
