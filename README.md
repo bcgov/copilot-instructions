@@ -68,7 +68,7 @@ If you prefer not to use the global installer, or want to configure project-spec
 Configure Git with recommended settings from core Git developers (e.g., config defaults, global gitignore, and commit signing):
 
 ````bash
-curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/git-setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/git-setup.sh | bash
 ````
 
 ### Tolerated Editors & AI Agents (Antigravity and Cursor)
