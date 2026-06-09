@@ -156,7 +156,7 @@ ln -sf ~/.agents/skills ~/.gemini/config/skills
 
 ## Attribution
 
-The Behavioral Guidelines section in our copilot instructions is adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang.
+The Behavioral Guidelines section in our copilot instructions was originally adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang.
 The recommended Git configuration settings in `git-setup.sh` are based on [How Git core developers configure Git](https://blog.gitbutler.com/how-git-core-devs-configure-git) by GitButler.
 Skills documentation and patterns are adapted from [awesome-copilot](https://github.com/github/awesome-copilot).
 
