@@ -8,8 +8,8 @@ if [[ ! -f "$SCRIPT_DIR/scripts/git-safety.sh" ]]; then
   echo "Installer running in standalone/curl mode. Fetching setup assets..."
   TEMP_SETUP_DIR=$(mktemp -d)
   
-  # Fetch and extract only the latest feature branch archive
-  curl -fsSL "https://github.com/bcgov/copilot-instructions/archive/refs/heads/feat/modularize-safety-loader.tar.gz" \
+  # Fetch and extract only the latest main branch archive
+  curl -fsSL "https://github.com/bcgov/copilot-instructions/archive/refs/heads/main.tar.gz" \
     | tar -xz -C "$TEMP_SETUP_DIR" --strip-components=1
     
   SCRIPT_DIR="$TEMP_SETUP_DIR"
