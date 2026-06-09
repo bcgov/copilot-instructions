@@ -1,10 +1,9 @@
 #!/bin/bash
 # Bundle Copilot Instructions
-# Usage: ./scripts/bundle.sh [destination] [github_id]
+# Usage: ./scripts/bundle.sh [github_id]
 #
 # Arguments:
-#   destination    Optional. Path to output file (defaults to ~/.config/Code/User/prompts/global.instructions.md).
-#   github_id      Optional. Profile in .github/profiles/ (defaults to gh api user)
+#   github_id      Optional. Profile in .github/profiles/ (defaults to gh api user or prompt)
 #
 
 set -euo pipefail
@@ -20,18 +19,20 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 # 1. Capture Arguments
-GLOBAL_DEST="$HOME/.config/Code/User/prompts/global.instructions.md"
-OUTPUT_FILE="${1:-$GLOBAL_DEST}"
+OUTPUT_FILE="$HOME/.config/Code/User/prompts/global.instructions.md"
 GH_ID_FALLBACK=""
 if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
     GH_ID_FALLBACK=$(gh api user --jq '.login' 2>/dev/null || true)
+    GH_ID_FALLBACK=$(echo "$GH_ID_FALLBACK" | tr -d '"{}[] ')
 fi
-GH_ID_FALLBACK="${GH_ID_FALLBACK:-$USER}"
-GH_ID_FALLBACK=$(echo "$GH_ID_FALLBACK" | tr -d '"{}[] ')
-if [[ -z "${GH_ID_FALLBACK}" || "${GH_ID_FALLBACK}" == "derek" ]]; then
-    GH_ID_FALLBACK="DerekRoberts"
+
+if [[ -z "${GH_ID_FALLBACK}" ]]; then
+    if [[ -t 0 ]]; then
+        read -r -p "Enter GitHub ID for profile: " GH_ID_FALLBACK
+    fi
+    GH_ID_FALLBACK="${GH_ID_FALLBACK:-DerekRoberts}"
 fi
-PROFILE_NAME="${2:-$GH_ID_FALLBACK}"
+PROFILE_NAME="${1:-$GH_ID_FALLBACK}"
 
 # Paths
 GLOBAL_FILE="${REPO_ROOT}/.github/copilot-instructions.md"
@@ -70,16 +71,10 @@ mkdir -p "$(dirname "$OUTPUT_FILE")"
     cat "$PROFILE_FILE"
 } > "$OUTPUT_FILE"
 
-# Copy to global destination if a custom path was specified
-if [[ "$OUTPUT_FILE" != "$GLOBAL_DEST" ]]; then
-    mkdir -p "$(dirname "$GLOBAL_DEST")"
-    cp "$OUTPUT_FILE" "$GLOBAL_DEST"
-    echo -e "${GREEN}✓ Copied bundled output to global location:${NC} $GLOBAL_DEST"
-fi
-
 # 5. Result Summary
 TOTAL_CHARS=$(wc -m < "$OUTPUT_FILE")
-echo -e "${GREEN}✨ Success:${NC} Personalized instructions bundled to $OUTPUT_FILE"
+echo -e "${GREEN}✨ Success:${NC} Personalized instructions bundled and written directly to global VS Code prompts path:"
+echo -e "           $OUTPUT_FILE"
 
 if [ "$TOTAL_CHARS" -gt 8000 ]; then
     echo -e "${YELLOW}⚠️  PERFORMANCE WARNING:${NC} Total size is $TOTAL_CHARS characters."

@@ -17,14 +17,13 @@ Guidelines and tooling to help developers effectively use GitHub Copilot while m
 
 ### Option 1: Global Context (Recommended for Chat)
 
-Copy the instructions to your home directory and reference them in every chat:
+Copy the instructions to your global VS Code prompts directory:
 
 ```bash
-curl -Lo ~/.copilot.md \
+mkdir -p ~/.config/Code/User/prompts
+curl -Lo ~/.config/Code/User/prompts/global.instructions.md \
   https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
 ```
-
-Then start each chat with: `@~/.copilot.md`
 
 ### Option 2: Personalized Profiles (Highly Recommended)
 
@@ -34,9 +33,9 @@ If you want to maintain your own personality settings or technical preferences w
 2.  **Create your profile:** Create a file in `.github/profiles/your-GITHUB-id.md` (use `DerekRoberts.md` as a template).
 3.  **Bundle and install:** Run the bundle script:
     ```bash
-    ./scripts/bundle.sh <destination_file> [GitHubID]
+    ./scripts/bundle.sh [GitHubID]
     ```
-    *If you omit `GitHubID`, the script automatically detects it, verifies that your profile exists, warns if the bundled output exceeds GitHub's 4,000 character limit, and bundles everything into your destination file.*
+    *If you omit `GitHubID`, the script automatically detects it via the GitHub CLI (or prompts you interactively), verifies that your profile exists, warns if the bundled output exceeds GitHub's 4,000 character limit, and bundles everything directly into your global VS Code prompts location (`~/.config/Code/User/prompts/global.instructions.md`).*
 
 ### Option 3: Per-Project Instructions
 
