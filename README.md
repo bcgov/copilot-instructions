@@ -5,98 +5,36 @@ Guidelines and tooling to help developers effectively use GitHub Copilot while m
 > [!IMPORTANT]
 > GitHub enforces a **4,000 character limit** for global Copilot Instructions. All changes to the shared `.github/copilot-instructions.md` MUST stay within this limit to remain compatible with GitHub's organizational settings.
 
-## What's Included
+## Quick Start: Install Everything (Recommended)
 
-- **[Copilot Instructions](/.github/copilot-instructions.md)** - Behavioral guidelines and coding standards that you can load into Copilot Chat.
-- **[Skills](/.github/skills)** - Autonomous workflow playbooks loaded on-demand by VS Code Copilot.
-- **[Personalized Profiles](/.github/profiles)** (optional) - Templates to merge your personal style with shared standards.
-- **Safety Tooling** (optional) - Git hooks and shell wrappers that enforce the instructions' safety rules.
-- **Git Configuration Setup** (optional) - Recommended settings, global gitignore, and user configuration.
+To automatically bundle instructions, install global agent workflow skills, set up global git hooks (including Gitleaks for secret scanning), and configure shell safety functions, run the setup script:
 
-## Quick Start: Install Copilot Instructions
+````bash
+curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh | bash
+````
 
-### Option 1: Global Context (Recommended for Chat)
+### Customizing with a Personalized Profile
 
-Copy the instructions to your global VS Code prompts directory:
+If you want to maintain your own personality settings or technical preferences without polluting the shared standards:
 
-```bash
-mkdir -p ~/.config/Code/User/prompts
-curl -Lo ~/.config/Code/User/prompts/global.instructions.md \
-  https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
-```
+1. **Clone this repo** locally.
+2. **Create your profile**: Create a file in `.github/profiles/your-GITHUB-username.md` (use `DerekRoberts.md` as a template).
+3. **Run the installer** with your GitHub username:
+   ````bash
+   ./setup.sh [GitHubID]
+   ````
+   *If you omit the ID, the script attempts to resolve it automatically via the GitHub CLI, and falls back to only bundling the shared standards if not found.*
 
-### Option 2: Personalized Profiles (Highly Recommended)
+---
 
-If you want to maintain your own personality settings or technical preferences without polluting the shared standards, use a personalized profile.
+## What Setup Automates
 
-1.  **Clone this repo** locally.
-2.  **Create your profile:** Create a file in `.github/profiles/your-GITHUB-id.md` (use `DerekRoberts.md` as a template).
-3.  **Bundle and install:** Run the bundle script:
-    ```bash
-    ./scripts/bundle.sh [GitHubID]
-    ```
-    *If you omit `GitHubID`, the script automatically detects it via the GitHub CLI, warns if the bundled output exceeds GitHub's 4,000 character limit, and bundles everything directly into your global VS Code prompts location (`~/.config/Code/User/prompts/global.instructions.md`). If it cannot resolve your ID, it defaults to bundling only the shared standards.*
+1. **AI Instructions Bundle**: Bundles the shared guidelines (and your personalized profile, if specified) and writes them to VS Code's global prompts directory (`~/.config/Code/User/prompts/global.instructions.md`).
+2. **Global Agent Skills**: Installs shared workflow skills to `~/.agents/skills/` (discoverable globally by VS Code Copilot).
+3. **Global Git Hooks**: Configures global pre-commit and pre-push hooks that scan for secrets (using Gitleaks) and prevent direct pushes to protected branches (e.g. `main`).
+4. **Shell Safety Wrappers**: Injects transparent shell safety functions into `~/.bashrc` to prevent AI agents from performing destructive operations (e.g., `repo delete`, `pr merge`, etc.) while remaining fully transparent and bypassable for developers.
 
-### Option 3: Per-Project Instructions
-
-For integrated project-level VS Code Copilot support:
-
-```bash
-mkdir -p .copilot
-curl -Lo .copilot/instructions \
-  https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
-```
-
-## How Skills Work
-
-Copy skills into your project's `.github/skills/` folder. VS Code Copilot discovers and loads them on-demand when relevant:
-
-```bash
-curl -Lo .github/skills/issue-worktree/SKILL.md --create-dirs \
-   https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/skills/issue-worktree/SKILL.md
-```
-
-**Instructions** and **skills** are both placed under `.github/` but behave differently:
-
-| | Instructions | Skills |
-|---|---|---|
-| **Loading** | Always-on — injected into every chat | On-demand — loaded only when relevant |
-| **Purpose** | Standing rules and coding standards | Step-by-step workflows for specific tasks |
-| **Trigger** | Automatic | Natural language request |
-
-Skills are not slash commands. You invoke them by describing the job in plain language in Chat.
-
-For example:
-> **You:** "Can you run a security review on the auth module?"
-> **Copilot:** *loads security-review skill* "I'll scan the auth module for vulnerabilities..."
-
-> [!NOTE]
-> Global agent skills are physically installed to the standard user-level agent skills directory: `~/.agents/skills/`.
-> This directory is automatically searched by VS Code Copilot to load skills globally across all workspaces.
-
-## Safety Setup (Recommended)
-
-The Copilot instructions tell the AI "never push to main", "never merge PRs", and "never run git config." This installer enforces those rules with git hooks and shell wrappers:
-
-### Option 1: Quick Install (curl)
-```bash
-curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh | bash
-```
-*Note: You can pass environment flags and your GitHub ID directly to bash via subshell execution, e.g. `ANTIGRAVITY=true CURSOR=true bash -c "$(curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh)" -s -- DerekRoberts`.*
-
-### Option 2: Clone and Run
-```bash
-git clone https://github.com/bcgov/copilot-instructions.git
-cd copilot-instructions
-./setup.sh [GitHubID]
-```
-
-### What it installs:
-
-1. **Global Git Hooks**: Pre-commit and pre-push hooks that scan for secrets and prevent direct pushes to protected branches (e.g., `main`).
-2. **Shell Safety Functions**: Clean, non-exported shell-level safety functions (`git`, `gh`, `npm`, `npx`) injected into `~/.bashrc` to prevent AI agent mistakes while remaining transparent and instantly bypassable for human developers.
-
-#### Blocked Operations & Rationale
+### Blocked Operations & Rationale
 
 | Tool | Blocked Command | Rationale |
 | :--- | :--- | :--- |
@@ -113,37 +51,40 @@ cd copilot-instructions
 > [!NOTE]
 > **Kubernetes / OpenShift:** To ensure maximum developer convenience and standard workflows, `kubectl` and `oc` operate fully natively without any safety intercepts or blocks.
 
+---
+
+## Alternative and Per-Project Configurations
+
+### Copying to Individual Repositories
+If you prefer not to use the global installer, or want to configure project-specific instructions and skills, you can copy these files directly into individual repositories:
+- **Project Instructions**: Copy or download [copilot-instructions.md](/.github/copilot-instructions.md) into your project's `.copilot/instructions` file.
+- **Project Skills**: Copy skills from [.github/skills/](/.github/skills/) into your project's `.github/skills/` directory.
+
+---
+
 ## Optional Enhancements
 
 ### Git Configuration Setup
+Configure Git with recommended settings from core Git developers (e.g., config defaults, global gitignore, and commit signing):
 
-Configure Git with recommended settings from core Git developers:
+````bash
+curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/git-setup.sh | bash
+````
 
-```bash
-curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/git-setup.sh | bash
-```
+### Tolerated Editors & AI Agents (Antigravity and Cursor)
+While other editors and agents are not explicitly encouraged, the setup script can tolerate and link assets for them. Run the setup script with environment flags to automatically create symlinks:
 
-### Other AI Agents
-
-These instructions and skills are built using open standards, making them compatible with other AI coding assistants. You can configure other tools (like Google Antigravity, Cursor, or Kilo Code) to reuse the global Copilot instructions and skills:
-
-#### Google Antigravity & Cursor (Automated Setup)
-
-You can run the setup script with environment flags to automatically create symlinks for Google Antigravity and/or Cursor:
-
-```bash
+````bash
 ANTIGRAVITY=true CURSOR=true ./setup.sh [GitHubID]
-```
+````
 
 This will automatically configure:
 - **Google Antigravity**: Symlinks `~/.gemini/GEMINI.md` and skills directories to the global Copilot paths.
 - **Cursor**: Symlinks `~/.config/Cursor/User/prompts/global.instructions.md` to the global VS Code prompts directory.
 
-#### Manual Configuration
+Alternatively, you can configure them manually:
 
-To configure other editors (like Kilo Code) or run manual setups:
-
-```bash
+````bash
 # Link global instructions for Cursor manually
 mkdir -p ~/.config/Cursor/User/prompts
 ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.config/Cursor/User/prompts/global.instructions.md
@@ -152,7 +93,9 @@ ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.config/Cursor/User/
 mkdir -p ~/.gemini/config
 ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.gemini/GEMINI.md
 ln -sf ~/.agents/skills ~/.gemini/config/skills
-```
+````
+
+---
 
 ## Attribution
 
@@ -163,3 +106,4 @@ Skills documentation and patterns are adapted from [awesome-copilot](https://git
 ## Contributing
 
 We welcome contributions! Submit issues or pull requests to improve these shared guidelines.
+
