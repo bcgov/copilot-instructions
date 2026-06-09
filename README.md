@@ -79,7 +79,7 @@ ANTIGRAVITY=true CURSOR=true ./setup.sh [GitHubID]
 ````
 
 This will automatically configure:
-- **Google Antigravity**: Symlinks `~/.gemini/GEMINI.md` and skills directories to the global Copilot paths.
+- **Google Antigravity**: Symlinks `~/.gemini/GEMINI.md` to the global Copilot paths.
 - **Cursor**: Symlinks `~/.config/Cursor/User/prompts/global.instructions.md` to the global VS Code prompts directory.
 
 Alternatively, you can configure them manually:
@@ -90,9 +90,7 @@ mkdir -p ~/.config/Cursor/User/prompts
 ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.config/Cursor/User/prompts/global.instructions.md
 
 # Link global instructions for Antigravity manually
-mkdir -p ~/.gemini/config
 ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.gemini/GEMINI.md
-ln -sf ~/.agents/skills ~/.gemini/config/skills
 ````
 
 ---
