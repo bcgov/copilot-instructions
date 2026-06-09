@@ -250,13 +250,36 @@ check_code_quality() {
         checks+=("NO ESLINT CONFIG")
     fi
 
-    # 4. TypeScript strict (Level 4) - 3 pts
-    if check_contains '"strict": true' "tsconfig.json" "$dir" || \
-       check_contains '"strict": true' "tsconfig.json" "$dir/backend" "$dir" || \
-       check_contains '"strict": true' "tsconfig.json" "$dir/frontend" "$dir"; then
+    # Check if TypeScript is used
+    local uses_ts=false
+    if check_file_any "tsconfig.json" "$dir" || \
+       find "$dir" -maxdepth 5 -name "*.ts" -o -name "*.tsx" 2>/dev/null | grep -q .; then
+        uses_ts=true
+    fi
+
+    # 4. TypeScript strict compiler flags check
+    if [ "$uses_ts" = true ]; then
+        local ts_ok=true
+        # Check all three flags
+        for flag in '"strict":\s*true' '"noImplicitAny":\s*true' '"strictNullChecks":\s*true'; do
+            if ! { check_contains "$flag" "tsconfig.json" "$dir" || \
+                   check_contains "$flag" "tsconfig.json" "$dir/backend" "$dir" || \
+                   check_contains "$flag" "tsconfig.json" "$dir/frontend" "$dir"; }; then
+                ts_ok=false
+            fi
+        done
+        if [ "$ts_ok" = true ]; then
+            score=$((score + 3))
+            checks+=("TypeScript strict")
+            log_pass "Code Quality: TypeScript strict (strict, noImplicitAny, strictNullChecks all enabled)"
+        else
+            log_fail "CONTRACT VIOLATION: TypeScript is used but is missing mandatory strict compiler options (strict, noImplicitAny, or strictNullChecks)"
+        fi
+    else
+        # Auto-grant points so Java/Python projects are not docked
         score=$((score + 3))
-        checks+=("TypeScript strict")
-        log_pass "Code Quality: TypeScript strict"
+        checks+=("TypeScript strict (N/A)")
+        log_pass "Code Quality: TypeScript strict not applicable for this codebase (skipped)"
     fi
 
 # 5. Test framework + coverage (Level 2-3) - 6 pts
@@ -497,6 +520,16 @@ check_dependencies() {
         score=$((score + 3))
         checks+=("Renovate")
         log_pass "Dependencies: Renovate/Dependabot configured"
+        
+        # Check Renovate pinned version constraint
+        if [ -f "$dir/renovate.json" ]; then
+            if grep -qE '"github>bcgov/renovate-config#[0-9]{4}\.[0-9]+\.[0-9]+"' "$dir/renovate.json"; then
+                log_pass "Dependencies: Renovate configuration extends a pinned CalVer release"
+            else
+                log_fail "CONTRACT VIOLATION: renovate.json does not extend a pinned CalVer version of the shared config (e.g. github>bcgov/renovate-config#YYYY.M.D)"
+            fi
+        fi
+
         # Note: Auto-merge is configured in GitHub settings, not files - give credit
         score=$((score + 4))
         checks+=("Auto-merge (GitHub settings)")
@@ -672,6 +705,37 @@ check_deployment() {
         score=$((score + 2))
         checks+=("Rolling updates")
         log_pass "Deployment: Rolling updates"
+    fi
+
+    # Check for container security context constraints in deployment manifests
+    local yaml_files=()
+    while IFS= read -r f; do
+        yaml_files+=("$f")
+    done < <(find "$dir" -maxdepth 4 -type f \( -name "*.yaml" -o -name "*.yml" \) 2>/dev/null)
+
+    local sec_context_ok=true
+    for f in "${yaml_files[@]}"; do
+        [[ "$f" == *"node_modules"* || "$f" == *".tmp"* || "$f" == *".github"* ]] && continue
+        if grep -qE "kind:\s*(Deployment|StatefulSet|DaemonSet|Job|CronJob|Pod)" "$f" 2>/dev/null; then
+            if grep -q "allowPrivilegeEscalation:\s*true" "$f" 2>/dev/null; then
+                log_fail "CONTRACT VIOLATION: allowPrivilegeEscalation is set to true in $f"
+                sec_context_ok=false
+            fi
+            if grep -q "readOnlyRootFilesystem:\s*false" "$f" 2>/dev/null; then
+                log_fail "CONTRACT VIOLATION: readOnlyRootFilesystem is set to false in $f"
+                sec_context_ok=false
+            fi
+            if grep -q "runAsNonRoot:\s*false" "$f" 2>/dev/null; then
+                log_fail "CONTRACT VIOLATION: runAsNonRoot is set to false in $f"
+                sec_context_ok=false
+            fi
+        fi
+    done
+
+    if [ "$sec_context_ok" = false ]; then
+        log_fail "CONTRACT VIOLATION: Insecure container security contexts detected in deployment manifests"
+    else
+        log_pass "Deployment: Container security contexts are secure (no privilege escalations or writable root filesystems detected)"
     fi
 
     SCORES[deployment]=$score
