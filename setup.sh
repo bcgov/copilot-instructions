@@ -223,10 +223,11 @@ install_safety_functions() {
   # 3. Purge old blocks safely
   cleanup_old_bashrc_safety
 
-  # 4. Copy the safety script to ~/.githooks/git-safety.sh
-  cp "$git_safety" "$HOME/.githooks/git-safety.sh"
-  chmod +x "$HOME/.githooks/git-safety.sh"
-  echo "Copied safety script to ~/.githooks/git-safety.sh"
+  # 4. Copy the safety script to $HOOKS_DIR/git-safety.sh
+  mkdir -p "$HOOKS_DIR"
+  cp "$git_safety" "$HOOKS_DIR/git-safety.sh"
+  chmod +x "$HOOKS_DIR/git-safety.sh"
+  echo "Copied safety script to $HOOKS_DIR/git-safety.sh"
 
   # 5. Append the safety loader block wrapped in explicit BEGIN/END markers
   {
