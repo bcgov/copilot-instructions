@@ -2,6 +2,20 @@
 set -euo pipefail
 
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# Detect if running via curl | bash (no local setup assets available)
+if [[ ! -f "$SCRIPT_DIR/scripts/git-safety.sh" ]]; then
+  echo "Installer running in standalone/curl mode. Fetching setup assets..."
+  TEMP_SETUP_DIR=$(mktemp -d)
+  
+  # Fetch and extract only the latest main branch archive
+  curl -fsSL "https://github.com/bcgov/copilot-instructions/archive/refs/heads/main.tar.gz" \
+    | tar -xz -C "$TEMP_SETUP_DIR" --strip-components=1
+    
+  SCRIPT_DIR="$TEMP_SETUP_DIR"
+  trap 'rm -rf "$TEMP_SETUP_DIR"' EXIT
+fi
+
 HOOKS_DIR="$HOME/.githooks"
 BIN_DIR="$HOME/.local/bin"
 
@@ -96,13 +110,13 @@ install_gitleaks() {
 install_hooks() {
   mkdir -p "$HOOKS_DIR"
 
-  if [[ ! -f "$SCRIPT_DIR/hooks/pre-commit" ]]; then
-    echo "ERROR: Hook file not found: $SCRIPT_DIR/hooks/pre-commit" >&2
+  if [[ ! -f "$SCRIPT_DIR/scripts/hooks/pre-commit" ]]; then
+    echo "ERROR: Hook file not found: $SCRIPT_DIR/scripts/hooks/pre-commit" >&2
     exit 1
   fi
 
-  if [[ ! -f "$SCRIPT_DIR/hooks/pre-push" ]]; then
-    echo "ERROR: Hook file not found: $SCRIPT_DIR/hooks/pre-push" >&2
+  if [[ ! -f "$SCRIPT_DIR/scripts/hooks/pre-push" ]]; then
+    echo "ERROR: Hook file not found: $SCRIPT_DIR/scripts/hooks/pre-push" >&2
     exit 1
   fi
 
@@ -120,8 +134,8 @@ install_hooks() {
     echo "NOTE: Existing pre-push hook backed up to $HOOKS_DIR/pre-push.bak.$timestamp" >&2
   fi
 
-  cp "$SCRIPT_DIR/hooks/pre-commit" "$HOOKS_DIR/pre-commit"
-  cp "$SCRIPT_DIR/hooks/pre-push" "$HOOKS_DIR/pre-push"
+  cp "$SCRIPT_DIR/scripts/hooks/pre-commit" "$HOOKS_DIR/pre-commit"
+  cp "$SCRIPT_DIR/scripts/hooks/pre-push" "$HOOKS_DIR/pre-push"
 
   chmod +x "$HOOKS_DIR/pre-commit" "$HOOKS_DIR/pre-push"
 
@@ -190,7 +204,7 @@ with open(path, "w") as f:
 # Install safety functions to ~/.bashrc wrapped in explicit BEGIN/END markers (skipping shebang).
 install_safety_functions() {
   local bashrc="$HOME/.bashrc"
-  local git_safety="$SCRIPT_DIR/git-safety.sh"
+  local git_safety="$SCRIPT_DIR/scripts/git-safety.sh"
   local timestamp
   timestamp=$(date +%s)
 
@@ -209,20 +223,116 @@ install_safety_functions() {
   # 3. Purge old blocks safely
   cleanup_old_bashrc_safety
 
-  # 4. Append the safety functions wrapped in explicit BEGIN/END markers (skip shebang)
+  # 4. Copy the safety script to $HOOKS_DIR/git-safety.sh
+  mkdir -p "$HOOKS_DIR"
+  cp "$git_safety" "$HOOKS_DIR/git-safety.sh"
+  chmod +x "$HOOKS_DIR/git-safety.sh"
+  echo "Copied safety script to $HOOKS_DIR/git-safety.sh"
+
+  # 5. Append the safety loader block wrapped in explicit BEGIN/END markers
   {
     echo ""
     echo "# >>> bcgov/copilot-instructions safety block >>>"
     echo "# AI POLICY (bcgov/copilot-instructions)"
-    tail -n +2 "$git_safety"
+    echo "if [ -f \"\$HOME/.githooks/git-safety.sh\" ]; then"
+    echo "    . \"\$HOME/.githooks/git-safety.sh\""
+    echo "fi"
     echo "# <<< bcgov/copilot-instructions safety block <<<"
   } >> "$bashrc"
 
-  echo "Added safety functions to ~/.bashrc"
+  echo "Added safety function loader to ~/.bashrc"
+}
+
+install_skills() {
+  local skills_src="$SCRIPT_DIR/.github/skills"
+  local dest_dir="$HOME/.agents/skills"
+
+  echo "Installing global agent skills..."
+
+  if [[ ! -d "$skills_src" ]]; then
+    echo "WARNING: Skills source directory not found at $skills_src. Skipping skills installation." >&2
+    return 0
+  fi
+
+  # Clean up any legacy symlinks
+  for path in "$dest_dir" "$HOME/.gemini/config/skills" "$HOME/.gemini/antigravity/skills"; do
+    if [[ -L "$path" ]]; then
+      echo "Removing old symlink: $path"
+      rm -f "$path"
+    fi
+  done
+
+  # Ensure target directory exists and is a physical directory
+  if [[ -d "$dest_dir" ]] && [[ ! -L "$dest_dir" ]]; then
+    echo "Cleaning up existing skills installation..."
+    rm -rf "$dest_dir"
+  fi
+
+  mkdir -p "$dest_dir"
+
+  # Copy files physically
+  cp -R "$skills_src"/* "$dest_dir/"
+  echo "✓ Skills installed to $dest_dir"
+}
+
+bundle_instructions() {
+  local bundle_script="$SCRIPT_DIR/scripts/bundle.sh"
+  local profile_id="${1:-}"
+
+  if [[ -f "$bundle_script" ]]; then
+    echo "Bundling global instructions..."
+    bash "$bundle_script" ${profile_id:+"$profile_id"}
+  else
+    echo "WARNING: Bundle script not found at $bundle_script. Skipping instructions bundling." >&2
+  fi
+}
+
+configure_antigravity() {
+  if [[ "${ANTIGRAVITY:-}" == "true" || "${ANTIGRAVITY:-}" == "1" ]]; then
+    echo "Configuring Google Antigravity integration..."
+    mkdir -p "$HOME/.gemini/config"
+    mkdir -p "$HOME/.gemini/antigravity"
+
+    local global_prompt_file="$HOME/.config/Code/User/prompts/global.instructions.md"
+
+    # GEMINI.md symlink
+    if [[ -L "$HOME/.gemini/GEMINI.md" ]] || [[ ! -f "$HOME/.gemini/GEMINI.md" ]]; then
+      ln -sf "$global_prompt_file" "$HOME/.gemini/GEMINI.md"
+      echo "✓ Symlinked ~/.gemini/GEMINI.md -> $global_prompt_file"
+    fi
+
+    # Skills symlinks
+    if [[ -L "$HOME/.gemini/config/skills" ]] || [[ ! -d "$HOME/.gemini/config/skills" ]]; then
+      ln -sf "$HOME/.agents/skills" "$HOME/.gemini/config/skills"
+      echo "✓ Symlinked ~/.gemini/config/skills -> ~/.agents/skills"
+    fi
+
+    if [[ -L "$HOME/.gemini/antigravity/skills" ]] || [[ ! -d "$HOME/.gemini/antigravity/skills" ]]; then
+      ln -sf "$HOME/.gemini/config/skills" "$HOME/.gemini/antigravity/skills"
+      echo "✓ Symlinked ~/.gemini/antigravity/skills -> ~/.gemini/config/skills"
+    fi
+  fi
+}
+
+configure_cursor() {
+  if [[ "${CURSOR:-}" == "true" || "${CURSOR:-}" == "1" ]]; then
+    echo "Configuring Cursor integration..."
+    local global_prompt_file="$HOME/.config/Code/User/prompts/global.instructions.md"
+
+    mkdir -p "$HOME/.config/Cursor/User/prompts"
+    if [[ -L "$HOME/.config/Cursor/User/prompts/global.instructions.md" ]] || [[ ! -f "$HOME/.config/Cursor/User/prompts/global.instructions.md" ]]; then
+      ln -sf "$global_prompt_file" "$HOME/.config/Cursor/User/prompts/global.instructions.md"
+      echo "✓ Symlinked ~/.config/Cursor/User/prompts/global.instructions.md -> $global_prompt_file"
+    fi
+  fi
 }
 
 install_gitleaks
 install_hooks
+install_skills
+bundle_instructions "${1:-}"
+configure_antigravity
+configure_cursor
 cleanup_old_bashrc_safety
 
 # Delete any stale wrapper scripts installed in ~/.local/bin/
@@ -247,6 +357,13 @@ fi
 echo ""
 echo "✅ Setup complete!"
 echo "Git hooks:        Secrets blocked (Gitleaks) + main/master push blocked"
+echo "Instructions:     Bundled to ~/.config/Code/User/prompts/global.instructions.md"
+if [[ "${ANTIGRAVITY:-}" == "true" || "${ANTIGRAVITY:-}" == "1" ]]; then
+echo "Antigravity:      Symlinked instructions & skills successfully"
+fi
+if [[ "${CURSOR:-}" == "true" || "${CURSOR:-}" == "1" ]]; then
+echo "Cursor:           Symlinked prompts directory successfully"
+fi
 echo "Safety functions: Installed to ~/.bashrc (git, gh, npm, npx)"
 echo "                  Clean, non-exported shell functions (no export -f)"
 echo "Git config:       All git config commands blocked (use 'command git config' to bypass)"

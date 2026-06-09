@@ -1,10 +1,9 @@
 #!/bin/bash
 # Bundle Copilot Instructions
-# Usage: ./scripts/bundle.sh <destination> [github_id]
+# Usage: ./scripts/bundle.sh [github_id]
 #
 # Arguments:
-#   destination    Required. Path to output file.
-#   github_id      Optional. Profile in .github/profiles/ (defaults to gh api user)
+#   github_id      Optional. Profile in .github/profiles/ (defaults to gh api user or prompt)
 #
 
 set -euo pipefail
@@ -20,20 +19,23 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 # 1. Capture Arguments
-if [ $# -lt 1 ]; then
-    echo -e "${RED}ERROR:${NC} Missing destination path." >&2
-    echo -e "Usage: $0 <destination> [github_id]" >&2
-    exit 1
+OUTPUT_FILE="$HOME/.config/Code/User/prompts/global.instructions.md"
+GH_ID_FALLBACK=""
+if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    GH_ID_FALLBACK=$(gh api user --jq '.login' 2>/dev/null || true)
+    GH_ID_FALLBACK=$(echo "$GH_ID_FALLBACK" | tr -d '"{}[] ')
 fi
 
-OUTPUT_FILE="$1"
-GH_ID_FALLBACK=$(gh api user --jq '.login' 2>/dev/null || echo "${USER:-DerekRoberts}")
-PROFILE_NAME="${2:-$GH_ID_FALLBACK}"
+PROFILE_NAME="${1:-$GH_ID_FALLBACK}"
 
 # Paths
 GLOBAL_FILE="${REPO_ROOT}/.github/copilot-instructions.md"
 PROFILE_DIR="${REPO_ROOT}/.github/profiles"
-PROFILE_FILE="${PROFILE_DIR}/${PROFILE_NAME}.md"
+
+PROFILE_FILE=""
+if [[ -n "${PROFILE_NAME:-}" ]]; then
+    PROFILE_FILE="${PROFILE_DIR}/${PROFILE_NAME}.md"
+fi
 
 # 2. Analyze Global Instructions (CI Limit Report)
 if [[ ! -f "$GLOBAL_FILE" ]]; then
@@ -50,26 +52,38 @@ else
     echo -e "   ${GREEN}✅ Shared instructions:${NC} $GLOBAL_CHARS characters (CI Limit: 4,000)"
 fi
 
-# 3. Verify Profile
-echo -e "${BLUE}👤 Merging profile:${NC} '$PROFILE_NAME'..."
-if [[ ! -f "$PROFILE_FILE" ]]; then
-    echo -e "${RED}❌ ERROR:${NC} Profile file not found: $PROFILE_FILE" >&2
-    echo -e "   Use 'DerekRoberts' as a template for your own profile." >&2
-    exit 1
+# 3. Verify Profile if specified
+if [[ -n "${PROFILE_FILE}" ]]; then
+    echo -e "${BLUE}👤 Merging profile:${NC} '$PROFILE_NAME'..."
+    if [[ ! -f "$PROFILE_FILE" ]]; then
+        echo -e "${RED}❌ ERROR:${NC} Profile file not found: $PROFILE_FILE" >&2
+        echo -e "   Use 'DerekRoberts' as a template for your own profile." >&2
+        exit 1
+    fi
 fi
 
 # 4. Bundle
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
-{
-    cat "$GLOBAL_FILE"
-    echo -e "\n"
-    cat "$PROFILE_FILE"
-} > "$OUTPUT_FILE"
+if [[ -n "${PROFILE_FILE}" ]]; then
+    {
+        cat "$GLOBAL_FILE"
+        echo -e "\n"
+        cat "$PROFILE_FILE"
+    } > "$OUTPUT_FILE"
+else
+    echo -e "${YELLOW}⚠️  No profile specified. Bundling shared instructions only.${NC}"
+    cat "$GLOBAL_FILE" > "$OUTPUT_FILE"
+fi
 
 # 5. Result Summary
 TOTAL_CHARS=$(wc -m < "$OUTPUT_FILE")
-echo -e "${GREEN}✨ Success:${NC} Personalized instructions bundled to $OUTPUT_FILE"
+if [[ -n "${PROFILE_FILE}" ]]; then
+    echo -e "${GREEN}✨ Success:${NC} Personalized instructions bundled and written directly to global VS Code prompts path:"
+else
+    echo -e "${GREEN}✨ Success:${NC} Shared instructions bundled and written directly to global VS Code prompts path:"
+fi
+echo -e "           $OUTPUT_FILE"
 
 if [ "$TOTAL_CHARS" -gt 8000 ]; then
     echo -e "${YELLOW}⚠️  PERFORMANCE WARNING:${NC} Total size is $TOTAL_CHARS characters."

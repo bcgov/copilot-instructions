@@ -17,14 +17,13 @@ Guidelines and tooling to help developers effectively use GitHub Copilot while m
 
 ### Option 1: Global Context (Recommended for Chat)
 
-Copy the instructions to your home directory and reference them in every chat:
+Copy the instructions to your global VS Code prompts directory:
 
 ```bash
-curl -Lo ~/.copilot.md \
+mkdir -p ~/.config/Code/User/prompts
+curl -Lo ~/.config/Code/User/prompts/global.instructions.md \
   https://raw.githubusercontent.com/bcgov/copilot-instructions/main/.github/copilot-instructions.md
 ```
-
-Then start each chat with: `@~/.copilot.md`
 
 ### Option 2: Personalized Profiles (Highly Recommended)
 
@@ -34,9 +33,9 @@ If you want to maintain your own personality settings or technical preferences w
 2.  **Create your profile:** Create a file in `.github/profiles/your-GITHUB-id.md` (use `DerekRoberts.md` as a template).
 3.  **Bundle and install:** Run the bundle script:
     ```bash
-    ./scripts/bundle.sh <destination_file> [GitHubID]
+    ./scripts/bundle.sh [GitHubID]
     ```
-    *If you omit `GitHubID`, the script automatically detects it, verifies that your profile exists, warns if the bundled output exceeds GitHub's 4,000 character limit, and bundles everything into your destination file.*
+    *If you omit `GitHubID`, the script automatically detects it via the GitHub CLI, warns if the bundled output exceeds GitHub's 4,000 character limit, and bundles everything directly into your global VS Code prompts location (`~/.config/Code/User/prompts/global.instructions.md`). If it cannot resolve your ID, it defaults to bundling only the shared standards.*
 
 ### Option 3: Per-Project Instructions
 
@@ -72,27 +71,8 @@ For example:
 > **Copilot:** *loads security-review skill* "I'll scan the auth module for vulnerabilities..."
 
 > [!NOTE]
-> These skills work across multiple AI coding assistants. VS Code Copilot, Kilo Code, and Google Antigravity all support the same `.github/skills/` path. Kilo and Antigravity can also use them globally via symlink or config:
-> ```bash
-> # Antigravity global skills
-> ln -s ~/Repos/copilot-instructions/.github/skills ~/.gemini/antigravity/skills
-> 
-> # Kilo Code global skills (symlink)
-> ln -s ~/Repos/copilot-instructions/.github/skills ~/.kilocode/skills
-> 
-> # Or Kilo Code via config in kilo.jsonc:
-> ```jsonc
-> "skills": {
->   "paths": ["~/Repos/copilot-instructions/.github/skills/"]
-> }
-> ```
-> 
-> Kilo also supports loading skills directly from URLs, allowing auto-updates without copying:
-> ```json
-> "skills": {
->   "urls": ["https://raw.githubusercontent.com/github/awesome-copilot/main/skills/security-review/SKILL.md"]
-> }
-> ```
+> Global agent skills are physically installed to the standard user-level agent skills directory: `~/.agents/skills/`.
+> This directory is automatically searched by VS Code Copilot to load skills globally across all workspaces.
 
 ## Safety Setup (Recommended)
 
@@ -100,14 +80,15 @@ The Copilot instructions tell the AI "never push to main", "never merge PRs", an
 
 ### Option 1: Quick Install (curl)
 ```bash
-curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/setup.sh | bash
+curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh | bash
 ```
+*Note: You can pass environment flags and your GitHub ID directly to bash via subshell execution, e.g. `ANTIGRAVITY=true CURSOR=true bash -c "$(curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh)" -s -- DerekRoberts`.*
 
 ### Option 2: Clone and Run
 ```bash
 git clone https://github.com/bcgov/copilot-instructions.git
 cd copilot-instructions
-./scripts/setup.sh
+./setup.sh [GitHubID]
 ```
 
 ### What it installs:
@@ -142,9 +123,40 @@ Configure Git with recommended settings from core Git developers:
 curl -sSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/git-setup.sh | bash
 ```
 
+### Other AI Agents
+
+These instructions and skills are built using open standards, making them compatible with other AI coding assistants. You can configure other tools (like Google Antigravity, Cursor, or Kilo Code) to reuse the global Copilot instructions and skills:
+
+#### Google Antigravity & Cursor (Automated Setup)
+
+You can run the setup script with environment flags to automatically create symlinks for Google Antigravity and/or Cursor:
+
+```bash
+ANTIGRAVITY=true CURSOR=true ./setup.sh [GitHubID]
+```
+
+This will automatically configure:
+- **Google Antigravity**: Symlinks `~/.gemini/GEMINI.md` and skills directories to the global Copilot paths.
+- **Cursor**: Symlinks `~/.config/Cursor/User/prompts/global.instructions.md` to the global VS Code prompts directory.
+
+#### Manual Configuration
+
+To configure other editors (like Kilo Code) or run manual setups:
+
+```bash
+# Link global instructions for Cursor manually
+mkdir -p ~/.config/Cursor/User/prompts
+ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.config/Cursor/User/prompts/global.instructions.md
+
+# Link global instructions for Antigravity manually
+mkdir -p ~/.gemini/config
+ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.gemini/GEMINI.md
+ln -sf ~/.agents/skills ~/.gemini/config/skills
+```
+
 ## Attribution
 
-The Behavioral Guidelines section in our copilot instructions is adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang.
+The Behavioral Guidelines section in our copilot instructions was originally adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang.
 The recommended Git configuration settings in `git-setup.sh` are based on [How Git core developers configure Git](https://blog.gitbutler.com/how-git-core-devs-configure-git) by GitButler.
 Skills documentation and patterns are adapted from [awesome-copilot](https://github.com/github/awesome-copilot).
 
