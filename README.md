@@ -29,7 +29,7 @@ If you want to maintain your own personality settings or technical preferences w
    ````bash
    ./setup.sh [GitHubID]
    ````
-   *If you omit the ID, the script attempts to resolve it automatically via the GitHub CLI, and falls back to only bundling the shared standards if not found.*
+   *If you omit the ID, the script only bundles the shared standards by default.*
 
 ---
 
