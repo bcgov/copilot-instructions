@@ -28,10 +28,10 @@
 ### Hard Stops (Never)
 - **NEVER** branch from a feature branch; **ALWAYS** initialize from a fresh checkout of main.
 - **NEVER** push to main or merge PRs; leave merging to humans.
-- **NEVER** use destructive git commands (squash, rebase -i) on shared history.
+- **NEVER** rewrite history with interactive rebase or squashing (e.g. `git rebase -i`, `--autosquash`, `git merge --squash`).
 - **NEVER** use triple-backticks; **ALWAYS** wrap code, manifests, and copy-paste blocks in 4-backtick blocks.
 - **NEVER** commit or include credentials, secrets, or PII in code or PRs.
-- **NEVER** silence diagnostics (eslint-disable, @ts-ignore); fix the root cause.
+- **NEVER** silence diagnostics (`eslint-disable`, `@ts-ignore`); fix the root cause.
 - **NEVER** delete failing tests; **ALWAYS** fix the code to make the test suite pass.
 - **NEVER** run `oc` commands. Access to OpenShift is restricted.
 - **NEVER** comment or speak on behalf of any human (e.g. simulate human responses) or impersonate anyone in chat, comments, PRs, or commits.
