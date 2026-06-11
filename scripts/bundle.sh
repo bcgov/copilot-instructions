@@ -20,13 +20,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 # 1. Capture Arguments
 OUTPUT_FILE="$HOME/.config/Code/User/prompts/global.instructions.md"
-GH_ID_FALLBACK=""
-if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
-    GH_ID_FALLBACK=$(gh api user --jq '.login' 2>/dev/null || true)
-    GH_ID_FALLBACK=$(echo "$GH_ID_FALLBACK" | tr -d '"{}[] ')
-fi
-
-PROFILE_NAME="${1:-$GH_ID_FALLBACK}"
+PROFILE_NAME="${1:-}"
 
 # Paths
 GLOBAL_FILE="${REPO_ROOT}/.github/copilot-instructions.md"
