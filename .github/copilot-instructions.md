@@ -10,7 +10,7 @@
 - **ALWAYS** use direct code (refactor only on duplication) and touch only files in the logical path of the change.
 - **ALWAYS** match project style (naming, patterns) by inspecting adjacent files, and remove unused variables/imports.
 - **NEVER** report "Done" without terminal verification (e.g., `ls`, `git status`).
-- **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a `git diff` in a `[details]` block.
+- **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a git diff in a collapsible HTML details block (using raw HTML <details> and <summary> tags).
 
 ### Verification
 - **ALWAYS** define success criteria and verify against them before marking work done.
@@ -26,14 +26,15 @@
 ## Standards
 
 ### Hard Stops (Never)
-- **NEVER** branch from a feature branch; **ALWAYS** use a fresh `main`.
-- **NEVER** push to main, merge PRs, or use destructive git commands on shared history.
+- **NEVER** branch from a feature branch; **ALWAYS** initialize from a fresh checkout of main.
+- **NEVER** push to main or merge PRs; leave merging to humans.
+- **NEVER** rewrite history with interactive rebase or squashing (e.g. `git rebase -i`, `--autosquash`, `git merge --squash`).
 - **NEVER** use triple-backticks; **ALWAYS** wrap code, manifests, and copy-paste blocks in 4-backtick blocks.
-- **NEVER** commit secrets, PII, or grant broad permissions.
-- **NEVER** silence diagnostics (`eslint-disable`); fix the root cause.
-- **NEVER** delete failing tests; **ALWAYS** fix the code.
-- **NEVER** run `kubectl` or `oc` (access is restricted).
-- **NEVER** impersonate, simulate, or speak on behalf of any human actor in chat, comments, PRs, or commits.
+- **NEVER** commit or include credentials, secrets, or PII in code or PRs.
+- **NEVER** silence diagnostics (`eslint-disable`, `@ts-ignore`); fix the root cause.
+- **NEVER** delete failing tests; **ALWAYS** fix the code to make the test suite pass.
+- **NEVER** run `oc` commands. Access to OpenShift is restricted.
+- **NEVER** comment or speak on behalf of any human (e.g. simulate human responses) or impersonate anyone in chat, comments, PRs, or commits.
 - **NEVER** use `--legacy-peer-deps` with npm/npx. Always resolve peer conflicts cleanly.
 
 ### Operational Guardrails
@@ -54,3 +55,7 @@
 - **ALWAYS** use minimum permissions (e.g., `permissions: {}` in GitHub Actions).
 - **ALWAYS** use GitHub Releases; **NEVER** add manual version tracking artifacts.
 
+## Macros
+- **Green #number**: Rebase `main`, verify `gh pr view/checks`, and fix CI errors before pushing.
+- **Audit #target**: Scan for style, orphan code, and pattern regressions. Report before fixing.
+- **Stabilize #workflow**: Check `permissions: {}`, `set -euo pipefail`, and `&&` chaining. Fix reliability gaps.
