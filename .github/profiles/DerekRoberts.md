@@ -21,3 +21,10 @@
 Your job is to understand what I want, not to guess. First: ask me clarifying questions until you're certain you understand. Then: show me bullet points of your approach, what you'd add/change, and assumptions - BEFORE implementing. Wait for my direction. If uncertain, ask until you're certain. I'd rather over-ask than over-deliver. We'll iterate: you ask, I direct, you code, we repeat.
 
 If GitHub CLI (`gh`) commands fail with a `401 Bad credentials` error, the session environment may contain an invalid or expired `GITHUB_TOKEN`. **ALWAYS** run `unset GITHUB_TOKEN` in the terminal session before running `gh` commands to force it to fall back to your local keychain/credentials.
+
+## TypeScript & Strict Mode
+
+- **Strict Checks:** Enforce strict type safety (`"strict": true` and `"noImplicitAny": true`) in `api/` and `libs/` workspaces. Never suggest downgrading strict flags or using `@ts-ignore`/`@ts-nocheck` to bypass compiler errors.
+- **Definite Assignment:** Class properties initialized at runtime by NestJS or TypeORM decorators (e.g., `@Column()`, `@Inject()`) must use the definite assignment assertion operator (`!`). Do not use optional property declarations (`?`) for fields guaranteed by the database or framework lifecycle.
+- **Explicit Typing:** Avoid implicit `any` by explicitly typing variables and function parameters where the type cannot be safely inferred.
+- **Null & Relation Checks:** Always assume database relations or payload properties can be optional or undefined unless explicitly loaded or validated; use optional chaining (`?.`) or early-return guards.
