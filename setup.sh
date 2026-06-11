@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]:-}")" && pwd)
 
 # Detect if running via curl | bash (no local setup assets available)
 if [[ ! -f "$SCRIPT_DIR/scripts/git-safety.sh" ]]; then
