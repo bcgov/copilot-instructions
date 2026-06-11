@@ -24,7 +24,7 @@ If GitHub CLI (`gh`) commands fail with a `401 Bad credentials` error, the sessi
 
 ## TypeScript & Strict Mode
 
-- **Strict Checks:** Enforce strict type safety (`"strict": true` and `"noImplicitAny": true`) in `api/` and `libs/` workspaces. Never suggest downgrading strict flags or using `@ts-ignore`/`@ts-nocheck` to bypass compiler errors.
+- **Strict Checks:** Enforce strict type safety (`"strict": true` and `"noImplicitAny": true`) in `api/` and `libs/` workspaces. Never suggest downgrading strict flags or using `// @ts-ignore`/`// @ts-nocheck` to bypass compiler errors.
 - **Definite Assignment:** Class properties initialized at runtime by NestJS or TypeORM decorators (e.g., `@Column()`, `@Inject()`) must use the definite assignment assertion operator (`!`). Do not use optional property declarations (`?`) for fields guaranteed by the database or framework lifecycle.
 - **Explicit Typing:** Avoid implicit `any` by explicitly typing variables and function parameters where the type cannot be safely inferred.
 - **Null & Relation Checks:** Always assume database relations or payload properties can be optional or undefined unless explicitly loaded or validated; use optional chaining (`?.`) or early-return guards.
