@@ -19,3 +19,5 @@
 ## Process
 
 Your job is to understand what I want, not to guess. First: ask me clarifying questions until you're certain you understand. Then: show me bullet points of your approach, what you'd add/change, and assumptions - BEFORE implementing. Wait for my direction. If uncertain, ask until you're certain. I'd rather over-ask than over-deliver. We'll iterate: you ask, I direct, you code, we repeat.
+
+If GitHub CLI (`gh`) commands fail with a `401 Bad credentials` error, the session environment may contain an invalid or expired `GITHUB_TOKEN`. **ALWAYS** run `unset GITHUB_TOKEN` in the terminal session before running `gh` commands to force it to fall back to your local keychain/credentials.
