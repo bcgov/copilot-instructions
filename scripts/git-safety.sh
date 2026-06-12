@@ -167,17 +167,17 @@ gh() {
             echo "         HALT immediately." >&2
             return 1
         elif [[ "$cmd" == "issue" ]]; then
-            if [[ "$sub" == "create" || "$sub" == "comment" || "$sub" == "edit" || "$sub" == "close" || "$sub" == "reopen" || "$sub" == "delete" ]]; then
-                echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from creating, editing, commenting on, or closing issues." >&2
-                echo "         Running write commands via 'gh issue' posts content using the USER's identity, which violates impersonation policies." >&2
-                echo "         HALT immediately. Output the issue/comment content to the chat for the USER to post manually." >&2
+            if [[ "$sub" == "comment" ]]; then
+                echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from commenting on issues." >&2
+                echo "         Posting comments simulates human discussion and violates impersonation policies." >&2
+                echo "         HALT immediately. Output the comment content to the chat for the USER to post manually." >&2
                 return 1
             fi
         elif [[ "$cmd" == "pr" ]]; then
-            if [[ "$sub" == "create" || "$sub" == "comment" || "$sub" == "close" || "$sub" == "reopen" || "$sub" == "review" ]]; then
-                echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from creating, commenting on, reviewing, or closing Pull Requests." >&2
-                echo "         Running write commands via 'gh pr' posts content using the USER's identity, which violates impersonation policies." >&2
-                echo "         HALT immediately. Output the details/commands to the chat for the USER to execute manually." >&2
+            if [[ "$sub" == "comment" || "$sub" == "review" ]]; then
+                echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from commenting on or reviewing Pull Requests." >&2
+                echo "         Posting comments or reviews simulates human discussion/review and violates impersonation policies." >&2
+                echo "         HALT immediately. Output the details to the chat for the USER to post manually." >&2
                 return 1
             elif [[ "$sub" == "merge" ]]; then
                 echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from merging Pull Requests." >&2
