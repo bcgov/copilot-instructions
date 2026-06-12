@@ -166,22 +166,25 @@ gh() {
             echo "         Secret management must be handled directly by the USER." >&2
             echo "         HALT immediately." >&2
             return 1
+        elif [[ "$cmd" == "issue" ]]; then
+            if [[ "$sub" == "comment" ]]; then
+                echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from commenting on issues." >&2
+                echo "         Posting comments simulates human discussion and violates impersonation policies." >&2
+                echo "         HALT immediately. Output the comment content to the chat for the USER to post manually." >&2
+                return 1
+            fi
         elif [[ "$cmd" == "pr" ]]; then
-            if [[ "$sub" == "merge" ]]; then
+            if [[ "$sub" == "comment" || "$sub" == "review" ]]; then
+                echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from commenting on or reviewing Pull Requests." >&2
+                echo "         Posting comments or reviews simulates human discussion/review and violates impersonation policies." >&2
+                echo "         HALT immediately. Output the details to the chat for the USER to post manually." >&2
+                return 1
+            elif [[ "$sub" == "merge" ]]; then
                 echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from merging Pull Requests." >&2
                 echo "         Under bcgov/copilot-instructions policy, all merges must be reviewed and executed manually by the USER." >&2
                 echo "         Do NOT attempt to bypass this block using absolute paths, alternate flags, or command overrides." >&2
                 echo "         HALT immediately and report to the user." >&2
                 return 1
-            elif [[ "$sub" == "review" ]]; then
-                for arg in "$@"; do
-                    if [[ "$arg" == "--approve" || "$arg" == "-a" ]]; then
-                        echo "BLOCKED: AI Agents are STRICTLY FORBIDDEN from approving Pull Requests." >&2
-                        echo "         Self-approving or bypass-approving is a direct violation of repository security guardrails." >&2
-                        echo "         HALT immediately and request manual approval from the USER." >&2
-                        return 1
-                    fi
-                done
             fi
         fi
     fi

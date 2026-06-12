@@ -55,6 +55,8 @@ When running the setup script, transparent shell safety wrappers intercept the f
 | **GitHub CLI** | `pr merge` | Prevents AI from bypassing human review to merge its own code. |
 | **GitHub CLI** | `repo delete` | Catastrophic failure prevention. AI should never have the power to delete repositories. |
 | **GitHub CLI** | `secret` | Prevents AI from viewing or modifying organizational/repository secrets. |
+| **GitHub CLI** | `issue comment` | Prevents AI from commenting on issues under the user's name (impersonation). |
+| **GitHub CLI** | `pr comment/review` | Prevents AI from commenting on or reviewing Pull Requests under the user's name. |
 | **npm / npx** | `--legacy-peer-deps` | Prevents bypassing peer dependency resolution, ensuring clean package management. |
 
 > [!NOTE]
