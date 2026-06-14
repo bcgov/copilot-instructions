@@ -236,6 +236,7 @@ install_safety_functions() {
     echo "# AI POLICY (bcgov/copilot-instructions)"
     echo "if [ -f \"\$HOME/.githooks/git-safety.sh\" ]; then"
     echo "    . \"\$HOME/.githooks/git-safety.sh\""
+    echo "    export BASH_ENV=\"\$HOME/.githooks/git-safety.sh\""
     echo "fi"
     echo "# <<< bcgov/copilot-instructions safety block <<<"
   } >> "$bashrc"
