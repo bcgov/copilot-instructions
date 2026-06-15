@@ -236,7 +236,7 @@ install_safety_functions() {
     echo "# AI POLICY (bcgov/copilot-instructions)"
     echo "if [ -f \"\$HOME/.githooks/git-safety.sh\" ]; then"
     echo "    . \"\$HOME/.githooks/git-safety.sh\""
-    echo "    export BASH_ENV=\"\$HOME/.githooks/git-safety.sh\""
+    echo "    export BASH_ENV=\"\${BASH_ENV:-\$HOME/.githooks/git-safety.sh}\""
     echo "fi"
     echo "# <<< bcgov/copilot-instructions safety block <<<"
   } >> "$bashrc"
@@ -331,3 +331,32 @@ echo "Git config:       All git config commands blocked (use 'command git config
 echo "Kubernetes/OpenShift: Natively executed without safety blocks"
 echo ""
 echo "Restart your terminal or run: source ~/.bashrc"
+
+# Check if BASH_ENV is already set in the environment, or exported in ~/.bashrc outside our safety block
+has_other_bash_env=false
+if [[ -n "${BASH_ENV:-}" ]] && [[ "$BASH_ENV" != "$HOME/.githooks/git-safety.sh" ]]; then
+  has_other_bash_env=true
+fi
+
+if [[ -f "$HOME/.bashrc" ]]; then
+  # Exclude our safety block and check if BASH_ENV is exported elsewhere
+  if grep -v "git-safety.sh" "$HOME/.bashrc" | grep -q "export BASH_ENV="; then
+    has_other_bash_env=true
+  fi
+fi
+
+if [[ "$has_other_bash_env" == "true" ]]; then
+  echo ""
+  echo "######################################################################"
+  echo "⚠️  CRITICAL WARNING: BASH_ENV IS ALREADY SET BY ANOTHER TOOL!"
+  echo "   Current Environment Value: ${BASH_ENV:-(not set in current shell)}"
+  echo ""
+  echo "   Because BASH_ENV is already defined, the AI safety wrappers"
+  echo "   will be BYPASSED in non-interactive sub-shells (like agent runners)."
+  echo "   "
+  echo "   To enforce safety policies, you MUST manually edit your custom"
+  echo "   BASH_ENV script to source our safety wrappers:"
+  echo "   . \$HOME/.githooks/git-safety.sh"
+  echo "######################################################################"
+  echo ""
+fi
