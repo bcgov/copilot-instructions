@@ -1,129 +1,37 @@
-# Copilot Instructions & Guardrails
+# Copilot Instructions
 
-Guidelines and tooling to help developers effectively use GitHub Copilot while maintaining security and quality standards in the BC Gov developer ecosystem.
+Guidelines for AI-assisted development, written with the intent of becoming a practical standard for teams across the Government of British Columbia.
 
-This repository provides two main components:
-- **Shared Instructions**: Guidelines and rules that help align Copilot's code generation with project conventions, formatting, and safety expectations.
-- **Automated Guardrails**: Transparent local tooling to prevent AI agents from performing destructive commands (like force pushing or deleting repositories) while remaining fully bypassable for human developers.
+> **Not an official BC Government publication.** Content here reflects community work in progress. It does not speak for, bind, or represent the Province of British Columbia. We welcome contributors so this can grow into something genuinely useful for public-sector developers in BC.
+
+The canonical text lives in **[copilot-instructions.md](copilot-instructions.md)** at the repo root — visible, reviewable, and copy-ready.
 
 > [!IMPORTANT]
-> GitHub enforces a **4,000 character limit** for global Copilot Instructions. All changes to the shared `.github/copilot-instructions.md` MUST stay within this limit to remain compatible with GitHub's organizational settings.
+> GitHub enforces a **4,000 character limit** for organizational Copilot Instructions. Keep [copilot-instructions.md](copilot-instructions.md) under that limit (CI validates on every PR).
 
----
+## Use this file
 
-## Quick Start: Install Everything (Recommended)
-
-To automatically bundle instructions, set up global git hooks (including Gitleaks for secret scanning), and configure shell safety functions, run the setup script:
+**Project-level:** copy the root file into your repo as `.github/copilot-instructions.md`:
 
 ````bash
-curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/setup.sh | bash
+curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/copilot-instructions.md \
+  -o .github/copilot-instructions.md
 ````
 
-### Customizing with a Personalized Profile
+**Org-level:** configure GitHub Copilot custom instructions from the [raw file](https://raw.githubusercontent.com/bcgov/copilot-instructions/main/copilot-instructions.md) or paste its contents into org settings.
 
-If you want to maintain your own personality settings or technical preferences without polluting the shared standards:
+## Agent guardrails (enforcement)
 
-1. **Clone this repo** locally.
-2. **Create your profile**: Create a file in `.github/profiles/your-GITHUB-username.md` (use `DerekRoberts.md` as a template).
-3. **Run the installer** with your GitHub username:
-   ````bash
-   ./setup.sh [GitHubID]
-   ````
-   *If you omit the ID, the script only bundles the shared standards by default.*
-
----
-
-## What Setup Automates
-
-1. **AI Instructions Bundle**: Bundles the shared guidelines (and your personalized profile, if specified) and writes them to VS Code's global prompts directory (`~/.config/Code/User/prompts/global.instructions.md`).
-2. **Global Git Hooks**: Configures global pre-commit and pre-push hooks that scan for secrets (using Gitleaks) and prevent direct pushes to protected branches (e.g. `main`).
-3. **Shell Safety Wrappers**: Injects transparent shell safety functions into `~/.bashrc` to prevent AI agents from performing destructive operations (e.g., `repo delete`, `pr merge`, etc.) while remaining fully transparent and bypassable for developers.
-
----
-
-## Guardrails: Blocked Operations & Rationale
-
-When running the setup script, transparent shell safety wrappers intercept the following commands if run by an AI agent, preventing catastrophic mistakes:
-
-| Tool | Blocked Command | Rationale |
-| :--- | :--- | :--- |
-| **Git** | `tag` | Prevents AI from autonomously cutting releases or spawning version tags. |
-| **Git** | `config` | Prevents AI from tampering with your identity (name/email) or security settings. |
-| **Git** | `push --tags` | Prevents exfiltration of local tags that might trigger automated CI/CD deployments. |
-| **Git** | `rebase --squash` | Prevents history destruction. Squashing makes review and forensic auditing difficult. |
-| **GitHub CLI** | `release` | Complete block on creating or managing GitHub Releases via the CLI. |
-| **GitHub CLI** | `pr merge` | Prevents AI from bypassing human review to merge its own code. |
-| **GitHub CLI** | `repo delete` | Catastrophic failure prevention. AI should never have the power to delete repositories. |
-| **GitHub CLI** | `secret` | Prevents AI from viewing or modifying organizational/repository secrets. |
-| **GitHub CLI** | `issue comment` | Prevents AI from commenting on issues under the user's name (impersonation). |
-| **GitHub CLI** | `pr comment/review` | Prevents AI from commenting on or reviewing Pull Requests under the user's name. |
-| **npm / npx** | `--legacy-peer-deps` | Prevents bypassing peer dependency resolution, ensuring clean package management. |
-
-> [!NOTE]
-> **Kubernetes / OpenShift:** To ensure maximum developer convenience and standard workflows, `kubectl` and `oc` operate fully natively without any safety intercepts or blocks.
-
----
-
-## Project-Specific Instructions Setup
-
-If you prefer not to use the global installer, or want to configure project-specific instructions, you can copy these files directly into individual repositories:
-
-- **Project Instructions**: Copy or download [copilot-instructions.md](/.github/copilot-instructions.md) into your project's `.github/copilot-instructions.md` file.
-
----
-
-## Looking for Agent Skills?
-
-Shared workflow and agent skills are centrally hosted in the [bcgov/agent-skills](https://github.com/bcgov/agent-skills) repository. We highly encourage developers to install and use them to extend their AI assistant's capabilities:
+These have moved to [their own repository](https://github.com/bcgov/agent-guardrails).
 
 ````bash
-npx skills add bcgov/agent-skills
+curl -fsSL https://raw.githubusercontent.com/bcgov/agent-guardrails/main/setup.sh | bash
 ````
-
----
-
-## Optional Enhancements
-
-### Git Configuration Setup
-
-Configure Git with recommended settings from core Git developers (e.g., config defaults, global gitignore, and commit signing):
-
-````bash
-curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/scripts/git-setup.sh | bash
-````
-
-### Tolerated Editors & AI Agents (Antigravity and Cursor)
-
-While other editors and agents are not explicitly encouraged, the setup script can tolerate and link assets for them. Run the setup script with environment flags to automatically create symlinks:
-
-````bash
-ANTIGRAVITY=true CURSOR=true ./setup.sh [GitHubID]
-````
-
-This will automatically configure:
-- **Google Antigravity**: Symlinks `~/.gemini/GEMINI.md` to the global Copilot paths.
-- **Cursor**: Symlinks `~/.config/Cursor/User/prompts/global.instructions.md` to the global VS Code prompts directory.
-
-Alternatively, you can configure them manually:
-
-````bash
-# Link global instructions for Cursor manually
-mkdir -p ~/.config/Cursor/User/prompts
-ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.config/Cursor/User/prompts/global.instructions.md
-
-# Link global instructions for Antigravity manually
-mkdir -p ~/.gemini
-ln -sf ~/.config/Code/User/prompts/global.instructions.md ~/.gemini/GEMINI.md
-````
-
----
-
-## Attribution
-
-The Behavioral Guidelines section in our copilot instructions was originally adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang.
-The recommended Git configuration settings in `git-setup.sh` are based on [How Git core developers configure Git](https://blog.gitbutler.com/how-git-core-devs-configure-git) by GitButler.
-Skills documentation and patterns are adapted from [awesome-copilot](https://github.com/github/awesome-copilot).
 
 ## Contributing
 
-We welcome contributions! Submit issues or pull requests to improve these shared guidelines.
+We want this to become something teams across BC can actually adopt. Open a PR to improve [copilot-instructions.md](copilot-instructions.md) — keep it under 4,000 characters, stay concrete, and explain the *why* in the PR description when a rule is non-obvious.
+
+## Attribution
+
+Behavioral guidelines adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang. Guardrails and git setup moved to [bcgov/agent-guardrails](https://github.com/bcgov/agent-guardrails).
