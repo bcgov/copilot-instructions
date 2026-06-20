@@ -22,17 +22,11 @@ curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/cop
 
 ## Agent guardrails (enforcement)
 
-Shell safety wrappers, global git hooks, and optional human git configuration live in [bcgov/agent-guardrails](https://github.com/bcgov/agent-guardrails):
+These have moved to [their own repository](https://github.com/bcgov/agent-guardrails).
 
 ````bash
 curl -fsSL https://raw.githubusercontent.com/bcgov/agent-guardrails/main/setup.sh | bash
 ````
-
-## What is not in this repo
-
-- **Personal instructions** — maintain outside this repo (e.g. your own dotfiles).
-- **Instruction bundling** — consumers merge work + personal locally if needed.
-- **AI guardrails** (shell wrappers, gitleaks hooks, git-setup) — [bcgov/agent-guardrails](https://github.com/bcgov/agent-guardrails).
 
 ## Contributing
 
