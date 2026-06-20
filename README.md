@@ -1,17 +1,24 @@
 # Copilot Instructions
 
-Shared BC Government guidelines for AI-assisted development.
+Guidelines for AI-assisted development, written with the intent of becoming a practical standard for teams across the Government of British Columbia.
 
-This repository is **work standards only** — the canonical `.github/copilot-instructions.md` file teams copy into projects or receive via org-level GitHub Copilot settings.
+> **Not an official BC Government publication.** Content here reflects community work in progress. It does not speak for, bind, or represent the Province of British Columbia. We welcome contributors so this can grow into something genuinely useful for public-sector developers in BC.
+
+The canonical text lives in **[copilot-instructions.md](copilot-instructions.md)** at the repo root — visible, reviewable, and copy-ready.
 
 > [!IMPORTANT]
-> GitHub enforces a **4,000 character limit** for organizational Copilot Instructions. Keep `.github/copilot-instructions.md` under that limit (CI validates on every PR).
+> GitHub enforces a **4,000 character limit** for organizational Copilot Instructions. Keep [copilot-instructions.md](copilot-instructions.md) under that limit (CI validates on every PR).
 
 ## Use this file
 
-**Project-level:** copy [copilot-instructions.md](.github/copilot-instructions.md) into your repo as `.github/copilot-instructions.md`.
+**Project-level:** copy the root file into your repo as `.github/copilot-instructions.md`:
 
-**Org-level:** configure GitHub Copilot custom instructions to point at the shared content in this repository.
+````bash
+curl -fsSL https://raw.githubusercontent.com/bcgov/copilot-instructions/main/copilot-instructions.md \
+  -o .github/copilot-instructions.md
+````
+
+**Org-level:** configure GitHub Copilot custom instructions from the [raw file](https://raw.githubusercontent.com/bcgov/copilot-instructions/main/copilot-instructions.md) or paste its contents into org settings.
 
 ## Agent guardrails (enforcement)
 
@@ -29,7 +36,7 @@ curl -fsSL https://raw.githubusercontent.com/bcgov/agent-guardrails/main/setup.s
 
 ## Contributing
 
-Submit PRs to improve shared standards. Keep the main instructions file under 4,000 characters.
+We want this to become something teams across BC can actually adopt. Open a PR to improve [copilot-instructions.md](copilot-instructions.md) — keep it under 4,000 characters, stay concrete, and explain the *why* in the PR description when a rule is non-obvious.
 
 ## Attribution
 
