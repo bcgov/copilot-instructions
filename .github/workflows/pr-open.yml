@@ -29,7 +29,7 @@ jobs:
           for file in README.md instructions.md; do
             [ -f "$file" ] || continue
             { grep -oE '\]\([^)]+\)' "$file" || true; } | \
-              sed 's/^\]\(//;s/)$//' | \
+              sed 's/^\](//;s/)$//' | \
               while read -r link; do
                 [[ "$link" =~ ^# ]] && continue
                 [[ "$link" =~ ^https?:// ]] && continue
