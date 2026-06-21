@@ -14,7 +14,7 @@ jobs:
 
       - name: Check instruction length
         run: |
-          file="agent-instructions.md"
+          file="instructions.md"
           chars=$(wc -m < "$file")
           limit=4000
           if [ "$chars" -gt "$limit" ]; then
@@ -26,7 +26,7 @@ jobs:
 
       - name: Check for broken internal links
         run: |
-          for file in README.md agent-instructions.md; do
+          for file in README.md instructions.md; do
             [ -f "$file" ] || continue
             { grep -oE '\]\([^)]+\)' "$file" || true; } | \
               sed 's/^\]\(//;s/)$//' | \
