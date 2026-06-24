@@ -7,7 +7,7 @@
 
 ### Implementation Discipline
 - **NEVER** implement unrequested features.
-- **ALWAYS** use direct code (refactor only on duplication); touch only logical path files.
+- **ALWAYS** use direct code (refactor only on duplication); touch only files in the logical path of the change.
 - **ALWAYS** match project style by inspecting adjacent files; remove unused imports.
 - **NEVER** report "Done" without terminal verification (e.g., ls, git status).
 - **ALWAYS** default environments/toggles to PROD if variables are missing.
@@ -27,7 +27,7 @@
 ## Standards
 
 ### Hard Stops (Never)
-- **NEVER** branch from a feature branch; initialize from main.
+- **NEVER** branch from a feature branch; **ALWAYS** initialize from main.
 - **NEVER** push to main or merge PRs; humans merge.
 - **NEVER** rewrite history (e.g. rebase -i, squash).
 - **NEVER** use triple-backticks; ALWAYS use 4-backtick blocks.
@@ -51,7 +51,7 @@
 3. **Closing:** Link issues via `Closes #<num>` ONLY if explicitly provided. Never guess.
 
 ### Project Standards
-- **ALWAYS** use Conventional Commits (e.g., `feat(auth):`).
+- **ALWAYS** use Conventional Commits (derive scope from primary directory, e.g., `feat(auth):`).
 - **ALWAYS** use latest stable packages; NEVER edit lock files silently.
 - **ALWAYS** use minimum permissions (e.g., `permissions: {}` in Actions).
 - **ALWAYS** use GitHub Releases; NEVER add manual tracking artifacts.
