@@ -10,6 +10,7 @@
 - **ALWAYS** use direct code (refactor only on duplication) and touch only files in the logical path of the change.
 - **ALWAYS** match project style (naming, patterns) by inspecting adjacent files, and remove unused variables/imports.
 - **NEVER** report "Done" without terminal verification (e.g., `ls`, `git status`).
+- **ALWAYS** default environments, toggles, and configurations to PROD (or the safest/strictest setting) when environment variables or values are missing.
 - **DIFF-AS-RECEIPT**: Every turn with an edit MUST end with a git diff in a collapsible HTML details block (using raw HTML <details> and <summary> tags).
 
 ### Verification
