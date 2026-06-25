@@ -52,7 +52,7 @@
 4. Closing: Link issues via `Closes #<issue_number>` ONLY if explicitly provided in the prompt or branch name. Never guess or hallucinate issue numbers.
 
 ### Project Standards
-- ALWAYS use Conventional Commits (derive scope from the primary directory modified, e.g., `feat(auth):`).
+- ALWAYS use Conventional Commits.
 - ALWAYS use latest stable packages; NEVER downgrade or edit lock files silently.
 - ALWAYS use minimum permissions (e.g., `permissions: {}` in GitHub Actions).
 - ALWAYS use GitHub Releases; NEVER add manual version tracking artifacts.
