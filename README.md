@@ -28,7 +28,7 @@ curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instr
 ````
 
 ### Org-level (Organization)
-Configure custom agent instructions for your GitHub Organization by pointing to the [raw file](https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md) or pasting its contents directly into your organization's settings.
+Configure custom agent instructions for your GitHub Organization by copying the contents of the [raw file](https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md) and pasting them directly into your organization's settings.
 
 > [!IMPORTANT]
 > GitHub enforces a **4,000 character limit** for organizational Custom Instructions. Keep [instructions.md](instructions.md) under that limit (CI validates on every PR).
