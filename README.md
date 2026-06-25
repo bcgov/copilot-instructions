@@ -11,14 +11,17 @@ The canonical text lives in **[instructions.md](instructions.md)** at the repo r
 
 ## Use this file
 
-**Project-level:** copy the root file into your repo as `.github/copilot-instructions.md` (which GitHub Copilot and other IDE tools scan for):
+**Global-level (VS Code):** Copy the root file into your global prompts directory:
 
 ````bash
+mkdir -p ~/.config/Code/User/prompts
 curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md \
-  -o .github/copilot-instructions.md
+  -o ~/.config/Code/User/prompts/global.instructions.md
 ````
 
-**Org-level:** configure custom agent instructions from the [raw file](https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md) or paste its contents into org settings.
+*(Note: You can also copy these instructions to individual repositories at `.github/copilot-instructions.md` for project-level customization).*
+
+**Org-level:** Configure custom agent instructions from the [raw file](https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md) or paste its contents into org settings.
 
 ## Agent guardrails (enforcement)
 
