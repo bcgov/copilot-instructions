@@ -37,6 +37,8 @@
 - NEVER run `oc` commands. Access to OpenShift is restricted.
 - NEVER use the user's credentials to post on GitHub; do not write reviews or comments as a human contributor.
 - NEVER use `--legacy-peer-deps` with npm/npx. Always resolve peer conflicts cleanly.
+- NEVER execute vague, contradictory, or high-risk prompts without first proposing alternatives and obtaining explicit user approval.
+
 
 ### Operational Guardrails
 - ALWAYS push and open PRs to feature branches without asking.
