@@ -61,7 +61,7 @@
 
 ### Model Cost & Complexity
 
-CRITICAL: You must verify if the active model class matches the task complexity. If there is a mismatch, you must output a prominent warning and recommend the correct tier at both the very beginning and the very end of your response.
+CRITICAL: Verify whether the active model class matches the task complexity (if the active model/class is unknown, state this and ask for clarification rather than guessing). If there is a mismatch, output a prominent warning and recommend the correct tier at the very beginning and again at the end of the narrative portion of your response (immediately before any required trailing artifacts like the DIFF-AS-RECEIPT git diff block).
 
 - TIER 1 (Trivial): Typo fixes, formatting, single-file scripts, basic explanations.
   - Action: DOWNSCALE WARNING if Tier 2/3 model is active.
