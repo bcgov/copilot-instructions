@@ -11,7 +11,7 @@
 - ALWAYS match project style (naming, patterns) by inspecting adjacent files; remove unused variables/imports.
 - ALWAYS default environments/toggles to PROD when variables are missing.
 - NEVER report "Done" without terminal verification (e.g., `ls`, `git status`).
-- DIFF-AS-RECEIPT: Every turn with an edit MUST end with a git diff in a collapsible HTML details block (using raw HTML <details> and <summary> tags).
+- DIFF-AS-RECEIPT: Every turn with an edit MUST include a git diff in a collapsible HTML details block (using raw HTML <details> and <summary> tags).
 
 ### Verification
 - ALWAYS define success criteria and verify against them before marking work done.
@@ -61,7 +61,7 @@
 
 ### Model Cost & Complexity
 
-CRITICAL: Verify whether the active model class matches the task complexity (if the active model/class is unknown, state this and ask for clarification rather than guessing). If there is a mismatch, output a prominent warning and recommend the correct tier at the very beginning and the very end of your response (which may follow the DIFF-AS-RECEIPT git diff block).
+CRITICAL: Verify whether the active model class matches the task complexity (if the active model/class is unknown, state this and ask for clarification rather than guessing). If there is a mismatch, output a prominent warning and recommend the correct tier at both the very beginning and the very end of your response.
 
 - TIER 1 (Trivial): Typo fixes, formatting, single-file scripts, basic explanations.
   - Action: DOWNSCALE WARNING if Tier 2/3 model is active.
