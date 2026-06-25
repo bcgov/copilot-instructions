@@ -11,20 +11,12 @@ The canonical text lives in **[instructions.md](instructions.md)** at the repo r
 
 ## Use this file
 
-**Global-level (Linux/macOS):** Copy the root file into your global Copilot instructions folder:
+**Global-level (Linux/macOS/WSL):** Copy the root file into your global Copilot instructions folder:
 
 ````bash
 mkdir -p ~/.copilot/instructions
 curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md \
   -o ~/.copilot/instructions/instructions.md
-````
-
-**Global-level (Windows):** Copy the root file using PowerShell:
-
-````powershell
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.copilot\instructions"
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md" `
-  -OutFile "$env:USERPROFILE\.copilot\instructions\instructions.md"
 ````
 
 *(Note: You can also copy these instructions to individual repositories at `.github/copilot-instructions.md` for project-level customization).*
