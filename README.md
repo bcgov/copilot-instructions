@@ -11,32 +11,20 @@ The canonical text lives in **[instructions.md](instructions.md)** at the repo r
 
 ## Use this file
 
-**Global-level (VS Code - Linux/macOS):** Copy the root file into your global prompts or user-level Copilot directory:
+**Global-level (Linux/macOS):** Copy the root file into your global Copilot instructions folder:
 
 ````bash
-# Option 1: VS Code Custom Instructions (Default UI Path)
-# For Linux
-mkdir -p ~/.config/Code/User/prompts
+mkdir -p ~/.copilot/instructions
 curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md \
-  -o ~/.config/Code/User/prompts/global.instructions.md
-
-# For macOS
-mkdir -p ~/Library/Application\ Support/Code/User/prompts
-curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md \
-  -o ~/Library/Application\ Support/Code/User/prompts/global.instructions.md
-
-# Option 2: General User-level Copilot directory
-mkdir -p ~/.copilot
-curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md \
-  -o ~/.copilot/copilot-instructions.md
+  -o ~/.copilot/instructions/instructions.md
 ````
 
-**Global-level (VS Code - Windows):** Copy the root file using PowerShell:
+**Global-level (Windows):** Copy the root file using PowerShell:
 
 ````powershell
-New-Item -ItemType Directory -Force -Path "$env:APPDATA\Code\User\prompts"
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.copilot\instructions"
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md" `
-  -OutFile "$env:APPDATA\Code\User\prompts\global.instructions.md"
+  -OutFile "$env:USERPROFILE\.copilot\instructions\instructions.md"
 ````
 
 *(Note: You can also copy these instructions to individual repositories at `.github/copilot-instructions.md` for project-level customization).*
