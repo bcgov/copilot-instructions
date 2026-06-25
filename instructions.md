@@ -64,12 +64,9 @@
 CRITICAL: You must verify if the active model class matches the task complexity. If there is a mismatch, you must output a prominent warning and recommend the correct tier at both the very beginning and the very end of your response.
 
 - TIER 1 (Trivial): Typo fixes, formatting, single-file scripts, basic explanations.
-  - Class: Flash/Mini (e.g., Gemini Flash, GPT-4o-mini, Claude Haiku).
   - Action: DOWNSCALE WARNING if Tier 2/3 model is active.
 - TIER 2 (Standard): Feature implementation, refactors, tests, agentic codebase edits.
-  - Class: Pro/Sonnet (e.g., Gemini Pro, Claude Sonnet, GPT-4o).
   - Action: UPSCALE WARNING if Tier 1 active; DOWNSCALE WARNING if Tier 3 active.
 - TIER 3 (Architecture): Distributed systems, complex concurrency, major migrations, multi-repo changes.
-  - Class: Reasoning/Ultra (e.g., OpenAI o1/o3, Gemini Ultra/Reasoning, Claude Opus).
   - Action: UPSCALE WARNING if Tier 1/2 active.
 
