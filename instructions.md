@@ -49,8 +49,8 @@
 - For temporary storage, ALWAYS use `./.tmp/` if git-ignored, otherwise `/tmp`.
 
 ### Git Workflow
-1. Branching: `git checkout main && git pull && git switch -c feat/name && git push -u origin feat/name`.
-2. PR Creation: `gh pr create --fill`.
+1. Branching: `git fetch origin && git checkout -b feat/name origin/main && git push -u origin HEAD`.
+2. PR Creation: `unset GITHUB_TOKEN && gh pr create --fill`.
 3. Updating: ALWAYS fetch and merge `origin/main` before making new edits or pushing.
 4. Closing: ALWAYS link issues via `Closes #<num>` ONLY if explicitly provided. NEVER guess.
 
