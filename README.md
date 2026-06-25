@@ -47,4 +47,4 @@ We want this to become something teams across BC can actually adopt. Open a PR t
 
 ## Attribution
 
-Behavioral guidelines adapted from [CLAUDE.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md) by Forrest Chang. Guardrails and git setup moved to [bcgov/agent-guardrails](https://github.com/bcgov/agent-guardrails).
+Guardrails and git setup moved to [bcgov/agent-guardrails](https://github.com/bcgov/agent-guardrails).
