@@ -10,7 +10,7 @@
 - ALWAYS match project style by inspecting adjacent files; remove unused variables/imports.
 - ALWAYS default environments/toggles to PROD when variables are missing.
 - NEVER report "Done" without terminal verification (e.g., `ls`, `git status`).
-- DIFF-AS-RECEIPT: Every edit turn MUST include a git diff in a collapsible HTML details block (using <details>/<summary>).
+- DIFF-AS-RECEIPT: Every turn with an edit MUST include a git diff in a collapsible HTML details block (using raw HTML <details> and <summary> tags).
 
 ### Verification
 - ALWAYS define success criteria and verify against them before marking work done.
@@ -24,10 +24,8 @@
 - NEVER use abstract/clever solutions unless established.
 
 ### Fail Fast
-- NEVER write silent fallbacks or rescue scripts on dependency, file, or network failure.
-- If a precondition fails, ALWAYS stop immediately (e.g., return/throw/exit) with a clear error message; use non-zero exit codes for CLIs/scripts.
-- Prefer hard crashes over "clever" resilience that masks root causes.
-
+- NEVER write silent fallbacks or rescue scripts on failure.
+- If a precondition fails, ALWAYS stop immediately (e.g., return/throw/exit) with a clear error.
 
 ## Standards
 
@@ -59,12 +57,16 @@
 ### Project Standards
 - ALWAYS use Conventional Commits.
 - ALWAYS use latest stable packages; NEVER downgrade or edit lock files silently.
-- ALWAYS use minimum permissions (e.g., `permissions: {}` in GH Actions).
-- NEVER track versions manually.
+- ALWAYS use minimum permissions (e.g., `permissions: {}` in GitHub Actions).
+- NEVER add manual version tracking artifacts.
 
 ### Model Cost & Complexity
-CRITICAL: Match model to task complexity (if active class is unknown, warn; do not guess). If mismatched, ALWAYS warn and recommend the correct tier at response start/end.
-- TIER 1 (Trivial): Typos, formatting, single-file scripts. Downscale warning if Tier 2/3 active.
-- TIER 2 (Standard): Features, refactors, tests. Upscale if Tier 1; downscale if Tier 3.
-- TIER 3 (Architecture): Distributed systems, concurrency, multi-repo. Upscale warning if Tier 1/2 active.
+
+CRITICAL: Match model to task complexity (if active class is unknown, ask; do not guess). If mismatched, ALWAYS warn and recommend the correct tier at response start and end.
+
+- TIER 1 (Trivial): Typos, formatting, single-file scripts, basic explanations.
+  - Action: DOWNSCALE WARNING if Tier 2/3 model is active.
+- TIER 2 (Standard): Features, refactors, tests. UPSCALE if Tier 1; DOWNSCALE if Tier 3.
+- TIER 3 (Architecture): Distributed systems, concurrency, major migrations, multi-repo.
+  - Action: UPSCALE WARNING if Tier 1/2 active.
 
