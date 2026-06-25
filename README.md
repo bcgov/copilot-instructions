@@ -11,12 +11,26 @@ The canonical text lives in **[instructions.md](instructions.md)** at the repo r
 
 ## Use this file
 
-**Global-level (VS Code):** Copy the root file into your global prompts directory:
+**Global-level (VS Code - Linux/macOS):** Copy the root file into your global prompts directory:
 
 ````bash
+# For Linux
 mkdir -p ~/.config/Code/User/prompts
 curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md \
   -o ~/.config/Code/User/prompts/global.instructions.md
+
+# For macOS
+mkdir -p ~/Library/Application\ Support/Code/User/prompts
+curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md \
+  -o ~/Library/Application\ Support/Code/User/prompts/global.instructions.md
+````
+
+**Global-level (VS Code - Windows):** Copy the root file using PowerShell:
+
+````powershell
+New-Item -ItemType Directory -Force -Path "$env:APPDATA\Code\User\prompts"
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md" `
+  -OutFile "$env:APPDATA\Code\User\prompts\global.instructions.md"
 ````
 
 *(Note: You can also copy these instructions to individual repositories at `.github/copilot-instructions.md` for project-level customization).*
