@@ -48,7 +48,8 @@
 ### Git Workflow
 1. **Branching:** `git checkout main && git pull && git switch -c feat/name && git push -u origin feat/name`
 2. **PR:** `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline`
-3. **Closing:** Link issues via `Closes #<num>` ONLY if explicitly provided. Never guess.
+3. **Updating:** **ALWAYS** fetch and merge/rebase `origin/main` to keep the active feature branch up to date before making new edits or pushing.
+4. **Closing:** Link issues via `Closes #<num>` ONLY if explicitly provided. Never guess.
 
 ### Project Standards
 - **ALWAYS** use Conventional Commits (derive scope from primary directory, e.g., `feat(auth):`).
