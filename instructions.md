@@ -1,14 +1,13 @@
 ## Behavioral Guidelines
 
 ### Think & Plan
-- ALWAYS state assumptions; list interpretations if multiple exist.
-- ALWAYS propose simpler approaches; default to simplicity.
-- ALWAYS use EXPLICIT INNOVATION MODE: fix FIRST; ask before proposing broader refactors or enhancements.
+- ALWAYS state assumptions, list interpretations, and default to simplicity.
+- ALWAYS fix FIRST; ask before proposing broader refactors or enhancements.
 
 ### Implementation Discipline
 - NEVER implement unrequested features; limit changes to the active prompt.
-- ALWAYS use direct code (refactor only on duplication); touch only files in the logical path of the change.
-- ALWAYS match project style (naming, patterns) by inspecting adjacent files; remove unused variables/imports.
+- ALWAYS use direct code (refactor on duplication); touch only logical path files.
+- ALWAYS match project style by inspecting adjacent files; remove unused variables/imports.
 - ALWAYS default environments/toggles to PROD when variables are missing.
 - NEVER report "Done" without terminal verification (e.g., `ls`, `git status`).
 - DIFF-AS-RECEIPT: Every turn with an edit MUST include a git diff in a collapsible HTML details block (using raw HTML <details> and <summary> tags).
@@ -18,28 +17,26 @@
 - ALWAYS state a brief plan with verification checks for multi-step tasks.
 
 ### Dependencies
-- ALWAYS avoid dependencies for low-volume (< 20 lines) logic.
-- ALWAYS use libraries ONLY when bespoke alternatives are complex or high-risk.
-- ALWAYS verify new dependencies are maintained and lightweight.
-- ZERO SPECULATION: Verify APIs/triggers via available tools (e.g. search, run command). NEVER guess.
-- NEVER use "clever" or abstract solutions unless established.
+- ALWAYS avoid dependencies for low-volume (<20 lines) logic.
+- ALWAYS use libraries ONLY for complex/high-risk bespoke alternatives.
+- ALWAYS verify new dependencies are lightweight and maintained.
+- ZERO SPECULATION: Verify APIs via search/run command. NEVER guess.
+- NEVER use abstract/clever solutions unless established.
 
 ## Standards
 
 ### Hard Stops (Never)
-- NEVER branch from a feature branch; ALWAYS initialize from a fresh checkout of main.
+- NEVER branch from a feature branch; ALWAYS start from main.
 - NEVER push to main or merge PRs; leave merging to humans.
-- NEVER rewrite history with interactive rebase or squashing (e.g. `git rebase -i`, `--autosquash`, `git merge --squash`).
-- NEVER use triple-backticks; ALWAYS wrap code, manifests, and copy-paste blocks in 4-backtick blocks.
+- NEVER rewrite history with interactive rebase or squashing (e.g., `rebase -i`, `--squash`).
+- NEVER use triple-backticks; ALWAYS wrap code/manifests in 4-backtick blocks.
 - NEVER commit or include credentials, secrets, or PII in code or PRs.
 - NEVER silence diagnostics (`eslint-disable`, `@ts-ignore`); fix the root cause.
 - NEVER delete failing tests; ALWAYS fix the code to make the test suite pass.
 - NEVER run `oc` commands. Access to OpenShift is restricted.
-- NEVER use the user's credentials to post on GitHub; do not write reviews or comments as a human contributor.
+- NEVER use credentials to post, or impersonate human contributors.
 - NEVER use `--legacy-peer-deps` with npm/npx. Always resolve peer conflicts cleanly.
-- NEVER execute vague, contradictory, or high-risk prompts without first proposing alternatives and obtaining explicit user approval.
-
-
+- NEVER execute vague or high-risk prompts without explicit user approval.
 ### Operational Guardrails
 - ALWAYS push and open PRs to feature branches without asking.
 - NEVER mark work complete until verified, committed, pushed, and PR created.
@@ -51,7 +48,7 @@
 1. Branching: `git checkout main && git pull && git switch -c feat/name && git push -u origin feat/name`.
 2. PR Creation: `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline`.
 3. Updating: ALWAYS fetch and rebase `origin/main` before making new edits or pushing.
-4. Closing: Link issues via `Closes #<issue_number>` ONLY if explicitly provided in the prompt or branch name. Never guess or hallucinate issue numbers.
+4. Closing: ALWAYS link issues via `Closes #<num>` ONLY if explicitly provided. NEVER guess.
 
 ### Project Standards
 - ALWAYS use Conventional Commits.
@@ -61,12 +58,11 @@
 
 ### Model Cost & Complexity
 
-CRITICAL: Verify whether the active model class matches the task complexity (if the active model/class is unknown, state this and ask for clarification rather than guessing). If there is a mismatch, output a prominent warning and recommend the correct tier at both the very beginning and the very end of your response.
+CRITICAL: Match model to task complexity (if active class is unknown, ask; do not guess). If mismatched, ALWAYS warn and recommend the correct tier at response start and end.
 
-- TIER 1 (Trivial): Typo fixes, formatting, single-file scripts, basic explanations.
+- TIER 1 (Trivial): Typos, formatting, single-file scripts, basic explanations.
   - Action: DOWNSCALE WARNING if Tier 2/3 model is active.
-- TIER 2 (Standard): Feature implementation, refactors, tests, agentic codebase edits.
-  - Action: UPSCALE WARNING if Tier 1 active; DOWNSCALE WARNING if Tier 3 active.
-- TIER 3 (Architecture): Distributed systems, complex concurrency, major migrations, multi-repo changes.
+- TIER 2 (Standard): Features, refactors, tests. UPSCALE if Tier 1; DOWNSCALE if Tier 3.
+- TIER 3 (Architecture): Distributed systems, concurrency, major migrations, multi-repo.
   - Action: UPSCALE WARNING if Tier 1/2 active.
 
