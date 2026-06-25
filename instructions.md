@@ -60,13 +60,11 @@
 - ALWAYS use minimum permissions (e.g., `permissions: {}` in GitHub Actions).
 - NEVER add manual version tracking artifacts.
 
-### Model Cost & Complexity
+### Model Complexity
 
-CRITICAL: Match model to task complexity (if active class is unknown, ask; do not guess). If mismatched, ALWAYS warn and recommend the correct tier at response start and end. If matched correctly, DO NOT output any warning or confirmation.
+CRITICAL: Match model tier to task complexity. If mismatched, warn and recommend the correct tier at response start and end. Say nothing if matched.
 
-- TIER 1 (Trivial): Typos, formatting, single-file scripts, basic explanations.
-  - Action: DOWNSCALE WARNING if Tier 2/3 model is active.
-- TIER 2 (Standard): Features, refactors, tests. UPSCALE if Tier 1; DOWNSCALE if Tier 3.
-- TIER 3 (Architecture): Distributed systems, concurrency, major migrations, multi-repo.
-  - Action: UPSCALE WARNING if Tier 1/2 active.
+- **T1 (Trivial)**: Typos, formatting, basic scripts. (Warn to DOWNSCALE if T2/T3 active)
+- **T2 (Standard)**: Features, refactors, tests. (Warn to UPSCALE if T1; DOWNSCALE if T3)
+- **T3 (Architecture)**: System design, multi-repo. (Warn to UPSCALE if T1/T2 active)
 
