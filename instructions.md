@@ -35,7 +35,7 @@
 - NEVER silence diagnostics (`eslint-disable`, `@ts-ignore`); fix the root cause.
 - NEVER delete failing tests; ALWAYS fix the code to make the test suite pass.
 - NEVER run `oc` commands. Access to OpenShift is restricted.
-- NEVER comment, review, or post on GitHub using the user's identity or credentials; do not write comments or reviews as if you are a human contributor.
+- NEVER use the user's credentials to post on GitHub; do not write reviews or comments as a human contributor.
 - NEVER use `--legacy-peer-deps` with npm/npx. Always resolve peer conflicts cleanly.
 
 ### Operational Guardrails
