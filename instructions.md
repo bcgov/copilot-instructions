@@ -23,6 +23,10 @@
 - ZERO SPECULATION: Verify APIs via search/run command. NEVER guess.
 - NEVER use abstract/clever solutions unless established.
 
+### Fail Fast
+- NEVER write silent fallbacks or rescue scripts on failure.
+- If a precondition fails, ALWAYS stop immediately (e.g., return/throw/exit) with a clear error.
+
 ## Standards
 
 ### Hard Stops (Never)
