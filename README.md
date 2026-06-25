@@ -4,7 +4,7 @@ Guidelines for AI-assisted development, written with the intent of becoming a pr
 
 > **Not an official BC Government publication.** Content here reflects community work in progress. It does not speak for, bind, or represent the Province of British Columbia. We welcome contributors so this can grow into something genuinely useful for public-sector developers in BC.
 
-The canonical text lives in **[instructions.md](instructions.md)** at the repo root. It is visible, reviewable, and copy-ready.
+The canonical text lives in **[instructions.md](instructions.md)** at the repo root.
 
 ## Use this file
 
