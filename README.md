@@ -6,12 +6,12 @@ Guidelines for AI-assisted development, written with the intent of becoming a pr
 
 The canonical text lives in **[instructions.md](instructions.md)** at the repo root — visible, reviewable, and copy-ready.
 
-> [!IMPORTANT]
-> GitHub enforces a **4,000 character limit** for organizational Custom Instructions. Keep [instructions.md](instructions.md) under that limit (CI validates on every PR).
-
 ## Use this file
 
-**Global-level (Linux/macOS/WSL):** Copy the root file into your global Copilot instructions folder:
+You can apply these instructions at different levels depending on your setup:
+
+### Global-level (Linux/macOS/WSL)
+Copy the root file into your global Copilot instructions folder to apply these guidelines across all your local sessions:
 
 ````bash
 mkdir -p ~/.copilot/instructions
@@ -19,9 +19,19 @@ curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instr
   -o ~/.copilot/instructions/instructions.md
 ````
 
-*(Note: You can also copy these instructions to individual repositories at `.github/copilot-instructions.md` for project-level customization).*
+### Project-level (Repository)
+Copy the root file into individual repositories as `.github/copilot-instructions.md` for project-specific customization:
 
-**Org-level:** Configure custom agent instructions from the [raw file](https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md) or paste its contents into org settings.
+````bash
+curl -fsSL https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md \
+  -o .github/copilot-instructions.md
+````
+
+### Org-level (Organization)
+Configure custom agent instructions for your GitHub Organization by pointing to the [raw file](https://raw.githubusercontent.com/bcgov/agent-instructions/main/instructions.md) or pasting its contents directly into your organization's settings.
+
+> [!IMPORTANT]
+> GitHub enforces a **4,000 character limit** for organizational Custom Instructions. Keep [instructions.md](instructions.md) under that limit (CI validates on every PR).
 
 ## Agent guardrails (enforcement)
 
