@@ -62,7 +62,7 @@
 
 ### Model Cost & Complexity
 
-CRITICAL: Match model to task complexity (if active class is unknown, ask; do not guess). If mismatched, ALWAYS warn and recommend the correct tier at response start and end.
+CRITICAL: Match model to task complexity (if active class is unknown, ask; do not guess). If mismatched, ALWAYS warn and recommend the correct tier at response start and end. If matched correctly, DO NOT output any warning or confirmation.
 
 - TIER 1 (Trivial): Typos, formatting, single-file scripts, basic explanations.
   - Action: DOWNSCALE WARNING if Tier 2/3 model is active.
