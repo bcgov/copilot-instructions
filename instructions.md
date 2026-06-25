@@ -63,7 +63,7 @@
 - NEVER track versions manually.
 
 ### Model Cost & Complexity
-CRITICAL: Match model to task complexity (if active tier is unknown, ask; do not guess). If mismatched, ALWAYS warn and recommend the correct tier at response start/end.
+CRITICAL: Match model to task complexity (if active class is unknown, warn; do not guess). If mismatched, ALWAYS warn and recommend the correct tier at response start/end.
 - TIER 1 (Trivial): Typos, formatting, single-file scripts. Downscale warning if Tier 2/3 active.
 - TIER 2 (Standard): Features, refactors, tests. Upscale if Tier 1; downscale if Tier 3.
 - TIER 3 (Architecture): Distributed systems, concurrency, multi-repo. Upscale warning if Tier 1/2 active.
