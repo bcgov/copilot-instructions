@@ -56,8 +56,3 @@
 - ALWAYS use latest stable packages; NEVER downgrade or edit lock files silently.
 - ALWAYS use minimum permissions (e.g., `permissions: {}` in GitHub Actions).
 - ALWAYS use GitHub Releases; NEVER add manual version tracking artifacts.
-
-## Macros
-- GREEN #number: Rebase `main`, verify `gh pr view/checks`, and fix CI errors before pushing.
-- AUDIT #target: Scan for style, orphan code, and pattern regressions. Report before fixing.
-- STABILIZE #workflow: Check `permissions: {}`, `set -euo pipefail`, and `&&` chaining. Fix reliability gaps.
