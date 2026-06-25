@@ -50,8 +50,8 @@
 
 ### Git Workflow
 1. Branching: `git checkout main && git pull && git switch -c feat/name && git push -u origin feat/name`.
-2. PR Creation: `git fetch origin && git rebase origin/main && git log origin/main..HEAD --oneline`.
-3. Updating: ALWAYS fetch and rebase `origin/main` before making new edits or pushing.
+2. PR Creation: `git fetch origin && git merge origin/main && git log origin/main..HEAD --oneline`.
+3. Updating: ALWAYS fetch and merge `origin/main` before making new edits or pushing.
 4. Closing: ALWAYS link issues via `Closes #<num>` ONLY if explicitly provided. NEVER guess.
 
 ### Project Standards
