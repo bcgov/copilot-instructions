@@ -55,4 +55,4 @@
 - ALWAYS use Conventional Commits.
 - ALWAYS use latest stable packages; NEVER downgrade or edit lock files silently.
 - ALWAYS use minimum permissions (e.g., `permissions: {}` in GitHub Actions).
-- ALWAYS use GitHub Releases; NEVER add manual version tracking artifacts.
+- NEVER add manual version tracking artifacts.
