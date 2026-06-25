@@ -43,5 +43,5 @@ curl -fsSL https://raw.githubusercontent.com/bcgov/agent-guardrails/main/setup.s
 
 ## Contributing
 
-We want this to become something teams across BC can actually adopt. Open a PR to improve [instructions.md](instructions.md) — keep it under 4,000 characters, stay concrete, and explain the *why* in the PR description when a rule is non-obvious.
+We want this to become something teams across BC can actually adopt. Open a PR to improve [instructions.md](instructions.md). Keep it under 4,000 characters, stay concrete, and explain the *why* in the PR description when a rule is non-obvious.
 
