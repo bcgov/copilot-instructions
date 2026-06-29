@@ -52,7 +52,7 @@
 1. Branching: `git fetch origin && git checkout -b feat/name origin/main && git push -u origin HEAD`.
 2. PR Creation: `unset GITHUB_TOKEN && gh pr create --fill`.
 3. Updating: ALWAYS fetch and merge `origin/main` before making new edits or pushing.
-4. Closing: ALWAYS link issues via `Closes #<num>` ONLY if explicitly provided. NEVER guess.
+4. Closing: ONLY if an issue is explicitly provided, use 'Closes #<num>' in the PR body. Do not guess or link otherwise.
 
 ### Project Standards
 - ALWAYS use Conventional Commits.
